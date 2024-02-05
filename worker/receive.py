@@ -16,6 +16,7 @@ def main():
 
     print(' [*] Waiting for logs. To exit press CTRL+C')
 
+    # Need to define cases to check for what type of message it is and handle logic on a case by case basisgi
     def callback(ch, method, properties, body):
         print(f" [x] {body}")
 
