@@ -1,7 +1,9 @@
 #Updated 08 Jan 2024
 import Common
 from datetime import datetime
-import json
+
+global ComServer
+ComServer = Common.ComServer
 
 def GetListData():
     lSQL = "SELECT A.DOCNO, A.DOCDATE, A.CODE, A.COMPANYNAME, A.DESCRIPTION, A.DOCAMT, "
@@ -152,85 +154,3 @@ def deleteSalesRecord(invoiceId, itemCode):
     except Exception as e:
         print("Oops!", e)    
 
-
-try:
-    Common.CheckLogin()
-    global ComServer
-    ComServer = Common.ComServer     
-
-    sampleData = {
-        "DocNo": "test2",
-        "Code": "300-F0001",
-        "CompanyName": "bbb",
-        "Description": "hihi",
-        "Data": [
-            {
-                "ItemCode": "ANT",
-                "Account": "500-0000",
-                "Description": "testing",
-                "Qty": 10,
-                "UOM": "UNIT",
-                "UnitPrice": 20,
-                "Disc": "10%",
-                "Tax": "ST",
-                # "TaxRate": "5%",
-                "TaxInclusive": 1,
-            },
-            {
-                "ItemCode": "BOMBOM",
-                "Account": "500-1000",
-                "Description": "testing2",
-                "Qty": 100,
-                "UOM": "UNIT",
-                "UnitPrice": 5,
-                "Disc": "5%",
-                "Tax": "10%",
-                # "taxRate": "5%",
-                "TaxInclusive": 0,
-            },
-        ]
-    }      
-
-    sampleData2 = {
-        "DocNo": "test2",
-        "Code": "300-A0002",
-        "CompanyName": "bbbbb",
-        "Description": "ccccc",
-        "Data": [
-            {
-                "ItemCode": "123",
-                "Account": "500-1000",
-                "Description": "aaaaa",
-                "Qty": 100,
-                "UOM": "UNIT",
-                "UnitPrice": 200,
-                "Disc": "20%",
-                "Tax": "5%",
-                # "TaxRate": "5%",
-                "TaxInclusive": 1,
-            },
-            {
-                "ItemCode": "BOMBOM",
-                "Account": "500-2000",
-                "Description": "cccc",
-                "Qty": 200,
-                "UOM": "UNIT",
-                "UnitPrice": 1,
-                "Disc": "15%",
-                "Tax": "SV",
-                # "taxRate": "5%",
-                "TaxInclusive": 0,
-            },
-        ]
-    }  
-
-    # GetListData()
-    # createSalesInvoice(sampleData)
-    # editSalesInvoice(sampleData2)
-    # deleteSalesInvoice("test")
-    deleteSalesRecord("test2", "BOMBOM")
-
-    # ComServer.Logout()   
-finally:
-    ComServer = None
-    # Common.KillApp()

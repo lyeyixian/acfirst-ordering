@@ -1,0 +1,41 @@
+{
+    "DocNo": "test3",
+    "Code": "300-A0002",
+    "CompanyName": "bbbbb",
+    "Description": "ccccc",
+    "Data": [
+        {
+            "ItemCode": "123",
+            "Account": "500-1000",
+            "Description": "aaaaa",
+            "Qty": 100,
+            "UOM": "UNIT",
+            "UnitPrice": 200,
+            "Disc": "20%",
+            "Tax": "10%",
+            "TaxInclusive": 1
+        },
+        {
+            "ItemCode": "BOM",
+            "Account": "500-2000",
+            "Description": "cccc",
+            "Qty": 5,
+            "UOM": "UNIT",
+            "UnitPrice": 1,
+            "Disc": "15%",
+            "Tax": "SV",
+            "TaxInclusive": 0
+        },
+        {
+            "ItemCode": "BOMBOM",
+            "Account": "500-2000",
+            "Description": "cccc",
+            "Qty": 1010,
+            "UOM": "UNIT",
+            "UnitPrice": 1,
+            "Disc": "15%",
+            "Tax": "SV",
+            "TaxInclusive": 0
+        }
+    ]
+}  

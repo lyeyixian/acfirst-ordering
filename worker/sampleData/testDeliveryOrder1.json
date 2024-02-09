@@ -1,0 +1,28 @@
+{
+    "DocNo": "test2",
+    "Code": "300-A0002",
+    "CompanyName": "bbbbb",
+    "Description": "ccccc",
+    "Data": [
+        {
+            "ItemCode": "123",
+            "Description": "aaaaa",
+            "Qty": 100,
+            "UOM": "UNIT",
+            "UnitPrice": 200,
+            "Disc": "20%",
+            "Tax": "5%",
+            "TaxInclusive": 1
+        },
+        {
+            "ItemCode": "BOMBOM",
+            "Description": "cccc",
+            "Qty": 200,
+            "UOM": "UNIT",
+            "UnitPrice": 1,
+            "Disc": "15%",
+            "Tax": "SV",
+            "TaxInclusive": 0
+        }
+    ]
+}

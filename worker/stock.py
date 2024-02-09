@@ -1,6 +1,9 @@
 #Updated 21 Dec 2023
 import Common
-       
+
+global ComServer
+ComServer = Common.ComServer
+
 def GetListData():
     lSQL = "SELECT A.*, B.UOM, B.RATE, B.REFCOST, B.REFPRICE, B.ISBASE FROM ST_ITEM A "
     lSQL = lSQL + "INNER JOIN ST_ITEM_UOM B ON (A.CODE=B.CODE) "
@@ -110,22 +113,3 @@ def DelData():
         BizObject.Open()
         BizObject.Delete()        
         print ("Deleting Done")
-
-try:
-    Common.CheckLogin()
-    global ComServer
-    ComServer = Common.ComServer
-    GetListData()
-    PostData()
-    
-    answer = input("Continue To delete?")
-    if answer.lower() in ["y","yes"]:
-        DelData()
-    elif answer.lower() in ["n","no"]:
-        print ("Deleting Aborted")
-    else:
-       print ("Invalid Input")
-    ComServer.Logout()
-finally:
-    ComServer = None
-    Common.KillApp()

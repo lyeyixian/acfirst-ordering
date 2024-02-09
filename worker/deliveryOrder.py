@@ -1,7 +1,9 @@
 #Updated 08 Jan 2024
 import Common
 from datetime import datetime
-import json
+
+global ComServer
+ComServer = Common.ComServer 
 
 def GetListData():
     lSQL = "SELECT A.DOCNO, A.DOCDATE, A.CODE, A.COMPANYNAME, A.DESCRIPTION, A.DOCAMT, "
@@ -153,80 +155,3 @@ def deleteDeliveryRecord(deliveryId, itemCode):
     except Exception as e:
         print("Oops!", e)    
 
-
-try:
-    Common.CheckLogin()
-    global ComServer
-    ComServer = Common.ComServer     
-
-    sampleData = {
-        "DocNo": "test2",
-        "Code": "300-F0001",
-        "CompanyName": "bbb",
-        "Description": "hihi",
-        "Data": [
-            {
-                "ItemCode": "ANT",
-                "Description": "testing",
-                "Qty": 10,
-                "UOM": "UNIT",
-                "UnitPrice": 20,
-                "Disc": "10%",
-                "Tax": "ST",
-                # "TaxRate": "5%",
-                "TaxInclusive": 1,
-            },
-            {
-                "ItemCode": "BOMBOM",
-                "Description": "testing2",
-                "Qty": 100,
-                "UOM": "UNIT",
-                "UnitPrice": 5,
-                "Disc": "5%",
-                "Tax": "10%",
-                # "taxRate": "5%",
-                "TaxInclusive": 0,
-            },
-        ]
-    }      
-
-    sampleData2 = {
-        "DocNo": "test2",
-        "Code": "300-A0002",
-        "CompanyName": "bbbbb",
-        "Description": "ccccc",
-        "Data": [
-            {
-                "ItemCode": "123",
-                "Description": "aaaaa",
-                "Qty": 100,
-                "UOM": "UNIT",
-                "UnitPrice": 200,
-                "Disc": "20%",
-                "Tax": "5%",
-                # "TaxRate": "5%",
-                "TaxInclusive": 1,
-            },
-            {
-                "ItemCode": "BOMBOM",
-                "Description": "cccc",
-                "Qty": 200,
-                "UOM": "UNIT",
-                "UnitPrice": 1,
-                "Disc": "15%",
-                "Tax": "SV",
-                # "taxRate": "5%",
-                "TaxInclusive": 0,
-            },
-        ]
-    }  
-
-    GetListData()
-    # createDeliverOrder(sampleData)
-    # editDelivoryOrder(sampleData2)
-    # deleteDeliveryOrder("test2")
-    # deleteDeliveryRecord("test2", "BOMBOM")
-    # ComServer.Logout()   
-finally:
-    ComServer = None
-    # Common.KillApp()

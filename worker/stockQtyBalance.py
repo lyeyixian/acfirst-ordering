@@ -1,20 +1,24 @@
 #Updated 18 Jan 2024
 import Common
 
+global ComServer
+ComServer = Common.ComServer 
+
 def getStockBalanceByItemCode(itemCode):
-    lSQL = "SELECT  ItemCode, Location, Batch, Sum(Qty) Qty  FROM ST_TR   "
-    lSQL = lSQL + "WHERE ITEMCODE = '{}'".format(itemCode)
-    lSQL = lSQL + "GROUP BY ItemCode, Location, Batch "
+    lSQL = "SELECT  ItemCode, Sum(Qty) Qty  FROM ST_TR "
+    lSQL = lSQL + "WHERE ITEMCODE = '{}' ".format(itemCode)
+    lSQL = lSQL + "GROUP BY ItemCode"
+
+    print(lSQL)
     
     lDataSet = ComServer.DBManager.NewDataSet(lSQL)
     
     if lDataSet.RecordCount > 0:
         while not lDataSet.eof:
-            print(lDataSet.FindField('ItemCode').AsString)
-            print(lDataSet.FindField('Location').AsString)
-            print(lDataSet.FindField('Batch').AsString)
-            print(lDataSet.FindField('Qty').AsString)
-            print("===")
+            print("==================")
+            print("Item | Qty")
+            print(lDataSet.FindField('ItemCode').AsString + " | " + lDataSet.FindField('Qty').AsString)
+            print("==================")
             lDataSet.Next()
     else:
         print ("Record Not Found")
@@ -51,15 +55,3 @@ def getAllStocksBalanceItemCode():
             lDataSet.Next()
     else:
         print ("Record Not Found")
-
-try:
-    Common.CheckLogin()
-    global ComServer
-    ComServer = Common.ComServer 
-    itemCode = input("Input Itemcode: ")     
-    getStockBalanceByItemCode(itemCode)
-    # getAllStocksBalance()
-    # getAllStocksBalanceItemCode()
-finally:
-    ComServer = None
-    # Common.KillApp()
