@@ -1,10 +1,10 @@
 #Updated 18 Jan 2024
-import Common
-
-global ComServer
-ComServer = Common.ComServer 
+from sqlAccounting import Common
 
 def getStockBalanceByItemCode(itemCode):
+    global ComServer
+    ComServer = Common.ComServer 
+
     lSQL = "SELECT  ItemCode, Sum(Qty) Qty  FROM ST_TR "
     lSQL = lSQL + "WHERE ITEMCODE = '{}' ".format(itemCode)
     lSQL = lSQL + "GROUP BY ItemCode"
@@ -14,16 +14,22 @@ def getStockBalanceByItemCode(itemCode):
     lDataSet = ComServer.DBManager.NewDataSet(lSQL)
     
     if lDataSet.RecordCount > 0:
+        qty = -1
         while not lDataSet.eof:
             print("==================")
             print("Item | Qty")
             print(lDataSet.FindField('ItemCode').AsString + " | " + lDataSet.FindField('Qty').AsString)
+            qty = lDataSet.FindField('Qty').AsString
             print("==================")
             lDataSet.Next()
+        return qty
     else:
         print ("Record Not Found")
 
 def getAllStocksBalanceByItemCodeAndLocationAndBatch():
+    global ComServer
+    ComServer = Common.ComServer 
+
     lSQL = "SELECT  ItemCode, Location, Batch, Sum(Qty) Qty  FROM ST_TR   "
     # lSQL = lSQL + "WHERE ITEMCODE ='ANT' "
     lSQL = lSQL + "GROUP BY ItemCode, Location, Batch "
@@ -41,6 +47,9 @@ def getAllStocksBalanceByItemCodeAndLocationAndBatch():
 
 
 def getAllStocksBalanceItemCode():
+    global ComServer
+    ComServer = Common.ComServer 
+
     lSQL = "SELECT  ItemCode, Sum(Qty) Qty  FROM ST_TR   "
     # lSQL = lSQL + "WHERE ITEMCODE ='ANT' "
     lSQL = lSQL + "GROUP BY ItemCode "

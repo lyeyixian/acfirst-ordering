@@ -1,10 +1,11 @@
 #Updated 03 Oct 2023
 import win32com.client
-import Common
 import os
 from time import sleep
+import pythoncom
 
-ComServer = win32com.client.Dispatch("SQLAcc.BizApp")
+
+ComServer = win32com.client.Dispatch("SQLAcc.BizApp", pythoncom.CoInitialize())
 
 def KillApp():
     os.system('cmd /c "taskkill /IM "SQLACC.exe" /F"')
@@ -13,10 +14,10 @@ def KillApp():
 
 def CheckLogin():
     global ComServer
-    ComServer = win32com.client.Dispatch("SQLAcc.BizApp")
+    ComServer = win32com.client.Dispatch("SQLAcc.BizApp", pythoncom.CoInitialize())
     B = ComServer.IsLogin
     if B == False:
-        ComServer = win32com.client.Dispatch("SQLAcc.BizApp")
+        ComServer = win32com.client.Dispatch("SQLAcc.BizApp", pythoncom.CoInitialize())
         try:     
             ComServer.Login("ADMIN", "ADMIN", #UserName, Password
                             # "D:\\Happy\\DB\\Default.DCF",
