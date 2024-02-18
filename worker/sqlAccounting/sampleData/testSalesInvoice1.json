@@ -1,30 +1,16 @@
 {
-    "DocNo": "test2",
+    "DocNo": "test4",
     "Code": "300-F0001",
-    "CompanyName": "bbb",
-    "Description": "hihi",
     "Data": [
         {
             "ItemCode": "ANT",
-            "Account": "500-0000",
-            "Description": "testing",
             "Qty": 10,
-            "UOM": "UNIT",
-            "UnitPrice": 202,
-            "Disc": "10%",
-            "Tax": "ST",
-            "TaxInclusive": 1
+            "Batch": "BT-00001",
+            "Location": "BC"
         },
         {
             "ItemCode": "BOMBOM",
-            "Account": "500-1000",
-            "Description": "testing2",
-            "Qty": 100,
-            "UOM": "UNIT",
-            "UnitPrice": 51,
-            "Disc": "5%",
-            "Tax": "10%",
-            "TaxInclusive": 0
+            "Qty": 100
         }
     ]
 }     

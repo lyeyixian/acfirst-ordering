@@ -1,5 +1,5 @@
 #Updated 18 Jan 2024
-from sqlAccounting import Common
+import Common
 
 def getStockBalanceByItemCode(itemCode):
     global ComServer
@@ -26,12 +26,12 @@ def getStockBalanceByItemCode(itemCode):
     else:
         print ("Record Not Found")
 
-def getAllStocksBalanceByItemCodeAndLocationAndBatch():
+def getAllStocksBalanceByItemCodeAndLocationAndBatch(itemCode):
     global ComServer
     ComServer = Common.ComServer 
 
     lSQL = "SELECT  ItemCode, Location, Batch, Sum(Qty) Qty  FROM ST_TR   "
-    # lSQL = lSQL + "WHERE ITEMCODE ='ANT' "
+    lSQL = lSQL + "WHERE ITEMCODE = '{}' ".format(itemCode)
     lSQL = lSQL + "GROUP BY ItemCode, Location, Batch "
     
     lDataSet = ComServer.DBManager.NewDataSet(lSQL)

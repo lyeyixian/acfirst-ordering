@@ -35,7 +35,8 @@ def main():
                     itemcode = input("Enter item code: ")
                     stockQtyBalance.getStockBalanceByItemCode(itemcode)
                 case 2:
-                    stockQtyBalance.getAllStocksBalanceByItemCodeAndLocationAndBatch()
+                    itemcode = input("Enter item code: ")
+                    stockQtyBalance.getAllStocksBalanceByItemCodeAndLocationAndBatch(itemcode)
                 case 3:
                     stockQtyBalance.getAllStocksBalanceItemCode()
                 case 4:
@@ -80,16 +81,16 @@ def main():
         except Exception as e:
             print(e)
 
-# if __name__ == '__main__':
-#     try:
-#         Common.CheckLogin()
-#         main()
-#     except KeyboardInterrupt:
-#         print('Interrupted')
-#         try:
-#             sys.exit(0)
-#         except SystemExit:
-#             os._exit(0)
-#     finally:
-#         ComServer = None
-#         # Common.KillApp()
+if __name__ == '__main__':
+    try:
+        Common.CheckLogin()
+        main()
+    except KeyboardInterrupt:
+        print('Interrupted')
+        try:
+            sys.exit(0)
+        except SystemExit:
+            os._exit(0)
+    finally:
+        ComServer = None
+        # Common.KillApp()
