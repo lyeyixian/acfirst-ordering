@@ -30,15 +30,20 @@ def CheckLogin():
 
 def ShowResult(ADataset):
     if ADataset.RecordCount > 0:
+        result = {}
+        count = 1
         while not ADataset.eof:
+            result[count] = {}
             fc = ADataset.Fields.Count
             for x in range(fc):
                 fn = ADataset.Fields.Items(x).FieldName
                 fv = ADataset.FindField(fn).AsString
-                lresult = "Index : "+ str(x) + " FieldName : " + fn + " Value : " + fv
-                print (lresult)
-            print("====")
+                result[count][fn] = fv
+                # lresult = "Index : "+ str(x) + " FieldName : " + fn + " Value : " + fv
+                # print (lresult)
             ADataset.Next()
+            count += 1
+        return result
     else:
         print ("Record Not Found")
         

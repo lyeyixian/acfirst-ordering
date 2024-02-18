@@ -83,6 +83,3 @@ def convertDOtoSI(deliveryOrderDocNo, salesInvoiceDocNo, customerAccount, compan
         print("Oops!", e)    
     BizObject.Close()
     print ("Posting/Update Done")
-
-Common.CheckLogin()
-convertDOtoSI("test6", "test6SalesInvoice", "300-A0002", "ALPHA & BETA COMPUTER")

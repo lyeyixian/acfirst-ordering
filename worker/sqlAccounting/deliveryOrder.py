@@ -5,7 +5,7 @@ from datetime import datetime
 global ComServer
 ComServer = Common.ComServer 
 
-def GetListData():
+def getAllDeliveryOrder():
     lSQL = "SELECT A.DOCNO, A.DOCDATE, A.CODE, A.COMPANYNAME, A.DESCRIPTION, A.DOCAMT, "
     lSQL = lSQL + "A.AGENT, A.AREA, "
     lSQL = lSQL + "B.ITEMCODE, B.DESCRIPTION ITEMDESC, B.QTY, B.UOM, B.UNITPRICE, B.DISC,  "
@@ -17,7 +17,7 @@ def GetListData():
     
     lDataSet = ComServer.DBManager.NewDataSet(lSQL)
         
-    Common.ShowResult(lDataSet)
+    return Common.ShowResult(lDataSet)
 
 def createDeliverOrder(salesData):
     BizObject = ComServer.BizObjects.Find("SL_DO")

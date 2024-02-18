@@ -12,7 +12,7 @@ def GetListData():
     
     lDataSet = ComServer.DBManager.NewDataSet(lSQL)
         
-    Common.ShowResult(lDataSet)
+    return Common.ShowResult(lDataSet)
 
 def PostData():
     BizObject = ComServer.BizObjects.Find("ST_ITEM")

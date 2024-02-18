@@ -4,6 +4,7 @@ import stock
 import deliveryOrder
 import salesInvoice
 import stockQtyBalance
+import deliveryOrderToSalesInvoice
 import json
 
 def main():
@@ -21,6 +22,9 @@ def main():
               "8: Edit Delivery Order\n" +
               "9: Delete Sales Inovice\n" +
               "10: Delete Delivery Order\n" +
+              "11: Transfer Delivory Order to Sales Invoice\n" +
+              "12: Get all Sales Invoice\n" +
+              "13: Get all Delivery Orders\n" +
               "0: Exit SQL App")
         
         inputType = input("Input a number to select the function to execute: ")
@@ -40,7 +44,8 @@ def main():
                 case 3:
                     stockQtyBalance.getAllStocksBalanceItemCode()
                 case 4:
-                    stock.GetListData()
+                    result = stock.GetListData()
+                    print(result)
                 case 5:
                     salesInvoiceFilePath = input("Enter sales invoice json file path (Example (/sampleData/testSalesInvoice1.json)): ") #/sampleData/testSalesInvoice1.json
                     absolutePath = os.path.dirname(__file__)
@@ -71,11 +76,23 @@ def main():
                     deliveryOrderData = json.load(deliveryOrderFile)
                     deliveryOrder.editDelivoryOrder(deliveryOrderData)
                 case 9:
-                    invoiceId = input("Enter sales invoice id to delete (Example (test2)): ") #/sampleData/testSalesInvoice1.json
-                    salesInvoice.deleteSalesInvoice(invoiceId)
+                    salesInvoiceId = input("Enter sales invoice id to delete (Example (test2)): ") #/sampleData/testDeliveryOrder1.json
+                    salesInvoice.deleteSalesInvoice(salesInvoiceId)
                 case 10:
                     deliveryId = input("Enter delivery id to delete (Example (test2)): ") #/sampleData/testDeliveryOrder1.json
                     deliveryOrder.deleteDeliveryOrder(deliveryId)
+                case 11:
+                    deliveryOrderDocNo = input("Enter Delivery Order Doc No: ")
+                    salesInvoiceDocNo = input("Enter Sales Invoice Doc No: ")
+                    customerAccount = input("Customer Account (Code)")
+                    companyName = input("Company Name")
+                    deliveryOrderToSalesInvoice.convertDOtoSI(deliveryOrderDocNo, salesInvoiceDocNo, customerAccount, companyName)
+                case 12:
+                    result = salesInvoice.getAllSalesInvoice()
+                    print(result)
+                case 13:
+                    result = deliveryOrder.getAllDeliveryOrder()
+                    print(result)
                 case _:
                     print("No actions available for " + inputType)
         except Exception as e:
