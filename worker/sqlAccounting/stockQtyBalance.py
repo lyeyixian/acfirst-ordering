@@ -37,11 +37,20 @@ def getAllStocksBalanceByItemCodeAndLocationAndBatch(itemCode):
     lDataSet = ComServer.DBManager.NewDataSet(lSQL)
     
     if lDataSet.RecordCount > 0:
+        result = {}
+        count  = 1
         while not lDataSet.eof:
-            print("===================================")
-            print("Item Code | Location | Batch | Qty")
-            print(lDataSet.FindField('ItemCode').AsString + " | " +  lDataSet.FindField('Location').AsString + " | " + lDataSet.FindField('Batch').AsString + " | " + lDataSet.FindField('Qty').AsString)
+            result[count] = {}
+            result[count]["itemCode"] = itemCode
+            result[count]["location"] = lDataSet.FindField('Location').AsString
+            result[count]["batch"] = lDataSet.FindField('batch').AsString
+            result[count]["quantity"] = lDataSet.FindField('Qty').AsString
+            # print("===================================")
+            # print("Item Code | Location | Batch | Qty")
+            # print(lDataSet.FindField('ItemCode').AsString + " | " +  lDataSet.FindField('Location').AsString + " | " + lDataSet.FindField('Batch').AsString + " | " + lDataSet.FindField('Qty').AsString)
             lDataSet.Next()
+            count += 1
+        return result
     else:
         print ("Record Not Found")
 

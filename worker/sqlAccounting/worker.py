@@ -40,7 +40,8 @@ def main():
                     stockQtyBalance.getStockBalanceByItemCode(itemcode)
                 case 2:
                     itemcode = input("Enter item code: ")
-                    stockQtyBalance.getAllStocksBalanceByItemCodeAndLocationAndBatch(itemcode)
+                    result = stockQtyBalance.getAllStocksBalanceByItemCodeAndLocationAndBatch(itemcode)
+                    print(result)
                 case 3:
                     stockQtyBalance.getAllStocksBalanceItemCode()
                 case 4:
