@@ -17,41 +17,161 @@ global ComServer
 ComServer = Common.ComServer
 
 @https_fn.on_request()
-def getStockQtyByItemCode(req: https_fn.Request) -> https_fn.Response:
+def getStockByItemCode(req: https_fn.Request) -> https_fn.Response:
     # Grab the text parameter.
     itemCode = req.args.get("itemCode")
     user = req.args.get("user")
 
-    if itemCode is None:
+    if itemCode is None or user is None:
         return https_fn.Response("No text parameter provided", status=400)
 
     firestore_client: google.cloud.firestore.Client = firestore.client()
 
     # Push the new message into Cloud Firestore using the Firebase Admin SDK.
-    _, doc_ref = firestore_client.collection("stockQtyByItemCodeQuery").add({"itemCode": itemCode, "user": user, "timestamp": datetime.now()})
+    _, doc_ref = firestore_client.collection("stockByItemCodeQuery").add({"itemCode": itemCode, "user": user, "timestamp": datetime.now()})
 
     # Send back a message that we've successfully written the message
     return https_fn.Response(f"Message with ID {doc_ref.id} added.")
 
-@firestore_fn.on_document_created(document="stockQtyByItemCodeQuery/{pushId}")
-def getStockQtyByItemCodeTrigger(event: firestore_fn.Event[firestore_fn.DocumentSnapshot | None]) -> None:
-    print("TEST")
+@https_fn.on_request()
+def getAllStock(req: https_fn.Request) -> https_fn.Response:
+    # Grab the text parameter.
+    user = req.args.get("user")
 
-    # Get the value of "original" if it exists.
-    if event.data is None:
-        return
-    try:
-        itemCode = event.data.get("itemCode")
-    except KeyError:
-        # No "original" field, so do nothing.
-        return
+    if user is None:
+        return https_fn.Response("No text parameter provided", status=400)
 
-    # Set the "uppercase" field.
-    print(f"Getting {event.params['pushId']}: {itemCode}")
-    Common.CheckLogin()
-    stockQty = stockQtyBalance.getStockBalanceByItemCode(itemCode)
-    # upper = original.upper()
-    event.data.reference.update({"quantity": int(stockQty)})
+    firestore_client: google.cloud.firestore.Client = firestore.client()
+
+    # Push the new message into Cloud Firestore using the Firebase Admin SDK.
+    _, doc_ref = firestore_client.collection("allStocksQuery").add({"user": user, "timestamp": datetime.now()})
+
+    # Send back a message that we've successfully written the message
+    return https_fn.Response(f"Message with ID {doc_ref.id} added.")
+
+@https_fn.on_request()
+def getSalesInvoice(req: https_fn.Request) -> https_fn.Response:
+    # Grab the text parameter.
+    user = req.args.get("user")
+
+    if user is None:
+        return https_fn.Response("No user parameter provided", status=400)
+
+    firestore_client: google.cloud.firestore.Client = firestore.client()
+
+    # Push the new message into Cloud Firestore using the Firebase Admin SDK.
+    _, doc_ref = firestore_client.collection("salesInvoiceQuery").add({"user": user, "timestamp": datetime.now()})
+
+    # Send back a message that we've successfully written the message
+    return https_fn.Response(f"Message with ID {doc_ref.id} added.")
+
+@https_fn.on_request()
+def getDelivoryOrder(req: https_fn.Request) -> https_fn.Response:
+    # Grab the text parameter.
+    user = req.args.get("user")
+
+    if user is None:
+        return https_fn.Response("No user parameter provided", status=400)
+
+    firestore_client: google.cloud.firestore.Client = firestore.client()
+
+    # Push the new message into Cloud Firestore using the Firebase Admin SDK.
+    _, doc_ref = firestore_client.collection("deliveryOrderQuery").add({"user": user, "timestamp": datetime.now()})
+
+    # Send back a message that we've successfully written the message
+    return https_fn.Response(f"Message with ID {doc_ref.id} added.")
+
+@https_fn.on_request()
+def createSalesInvoice(req: https_fn.Request) -> https_fn.Response:
+    # Grab the text parameter.
+    user = req.args.get("user")
+
+    payload = req.get_json(silent=True)
+    if payload is None:
+        return https_fn.Response(status=400, response="Mising payload")
+
+    if user is None:
+        return https_fn.Response("No user parameter provided", status=400)
+    
+    payload["timestamp"] = datetime.now()
+    firestore_client: google.cloud.firestore.Client = firestore.client()
+
+    # Push the new message into Cloud Firestore using the Firebase Admin SDK.
+    _, doc_ref = firestore_client.collection("salesInvoice").add(payload)
+
+    # Send back a message that we've successfully written the message
+    return https_fn.Response(f"Message with ID {doc_ref.id} added.")
+
+@https_fn.on_request()
+def createDeliveryOrder(req: https_fn.Request) -> https_fn.Response:
+    # Grab the text parameter.
+    user = req.args.get("user")
+
+    payload = req.get_json(silent=True)
+    if payload is None:
+        return https_fn.Response(status=400, response="Mising payload")
+
+    if user is None:
+        return https_fn.Response("No user parameter provided", status=400)
+
+    payload["timestamp"] = datetime.now()
+    firestore_client: google.cloud.firestore.Client = firestore.client()
+
+    # Push the new message into Cloud Firestore using the Firebase Admin SDK.
+    _, doc_ref = firestore_client.collection("deliveryOrder").add(payload)
+
+    # Send back a message that we've successfully written the message
+    return https_fn.Response(f"Message with ID {doc_ref.id} added.")
+
+@https_fn.on_request()
+def convertDeliveryOrderToSalesInvoice(req: https_fn.Request) -> https_fn.Response:
+    # Grab the text parameter.
+    user = req.args.get("user")
+    deliveryOrderDocNo = req.args.get("deliveryOrderId")
+    salesInvoiceDocNo = req.args.get("salesInvoiceId")
+    customerAccount = req.args.get("customerAccount")
+    companyName = req.args.get("companyName")
+    payload = { 
+        "user" : user, 
+        "deliveryOrderDocNo": deliveryOrderDocNo, 
+        "salesInvoiceDocNo": salesInvoiceDocNo, 
+        "customerAccount" : customerAccount, 
+        "companyName" : companyName,
+        "timestamp": datetime.now()
+    }
+
+    if user is None or deliveryOrderDocNo is None or salesInvoiceDocNo is None or customerAccount is None or companyName is None:
+        return https_fn.Response("No user parameter provided", status=400)
+
+    firestore_client: google.cloud.firestore.Client = firestore.client()
+
+    # Push the new message into Cloud Firestore using the Firebase Admin SDK.
+    _, doc_ref = firestore_client.collection("deliveryOrdertoSalesInvoice").add(payload)
+
+    # Send back a message that we've successfully written the message
+    return https_fn.Response(f"Message with ID {doc_ref.id} added.")
+
+@https_fn.on_request()
+
+# @firestore_fn.on_document_created(document="stockQtyByItemCodeQuery/{pushId}")
+# def getStockQtyByItemCodeTrigger(event: firestore_fn.Event[firestore_fn.DocumentSnapshot | None]) -> None:
+#     print("TEST")
+
+#     # Get the value of "original" if it exists.
+#     if event.data is None:
+#         return
+#     try:
+#         itemCode = event.data.get("itemCode")
+#     except KeyError:
+#         # No "original" field, so do nothing.
+#         return
+
+#     # Set the "uppercase" field.
+#     print(f"Getting {event.params['pushId']}: {itemCode}")
+#     Common.CheckLogin()
+#     stockQty = stockQtyBalance.getStockBalanceByItemCode(itemCode)
+#     # upper = original.upper()
+#     event.data.reference.update({"quantity": int(stockQty)})
 
 def listen_document():
     db = firestore.client()
@@ -197,5 +317,4 @@ def listen_for_changes():
     delete_done.wait(timeout=60)
     query_watch.unsubscribe()
 
-
-listen_multiple()
+# listen_multiple()

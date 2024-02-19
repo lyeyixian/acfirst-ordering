@@ -99,16 +99,16 @@ def main():
         except Exception as e:
             print(e)
 
-if __name__ == '__main__':
-    try:
-        Common.CheckLogin()
-        main()
-    except KeyboardInterrupt:
-        print('Interrupted')
-        try:
-            sys.exit(0)
-        except SystemExit:
-            os._exit(0)
-    finally:
-        ComServer = None
-        # Common.KillApp()
+# if __name__ == '__main__':
+#     try:
+#         Common.CheckLogin()
+#         main()
+#     except KeyboardInterrupt:
+#         print('Interrupted')
+#         try:
+#             sys.exit(0)
+#         except SystemExit:
+#             os._exit(0)
+#     finally:
+#         ComServer = None
+#         # Common.KillApp()
