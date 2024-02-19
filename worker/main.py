@@ -6,6 +6,10 @@ from firebase_admin import initialize_app, firestore
 import google.cloud.firestore
 from datetime import datetime
 from sqlAccounting import Common
+from sqlAccounting import deliveryOrder
+from sqlAccounting import deliveryOrderToSalesInvoice
+from sqlAccounting import salesInvoice
+from sqlAccounting import stock
 from sqlAccounting import stockQtyBalance
 import threading
 from time import sleep
@@ -66,7 +70,7 @@ def getSalesInvoice(req: https_fn.Request) -> https_fn.Response:
     return https_fn.Response(f"Message with ID {doc_ref.id} added.")
 
 @https_fn.on_request()
-def getDelivoryOrder(req: https_fn.Request) -> https_fn.Response:
+def getDeliveryOrder(req: https_fn.Request) -> https_fn.Response:
     # Grab the text parameter.
     user = req.args.get("user")
 
@@ -93,14 +97,15 @@ def createSalesInvoice(req: https_fn.Request) -> https_fn.Response:
     if user is None:
         return https_fn.Response("No user parameter provided", status=400)
     
-    payload["timestamp"] = datetime.now()
+    payload["requestAt"] = datetime.now()
+    payload["user"] = user
     firestore_client: google.cloud.firestore.Client = firestore.client()
 
     # Push the new message into Cloud Firestore using the Firebase Admin SDK.
-    _, doc_ref = firestore_client.collection("salesInvoice").add(payload)
+    firestore_client.collection("salesInvoice").document(payload["DocNo"]).set(payload)
 
     # Send back a message that we've successfully written the message
-    return https_fn.Response(f"Message with ID {doc_ref.id} added.")
+    return https_fn.Response(f"Message with ID {payload["DocNo"]} added.")
 
 @https_fn.on_request()
 def createDeliveryOrder(req: https_fn.Request) -> https_fn.Response:
@@ -114,102 +119,39 @@ def createDeliveryOrder(req: https_fn.Request) -> https_fn.Response:
     if user is None:
         return https_fn.Response("No user parameter provided", status=400)
 
-    payload["timestamp"] = datetime.now()
+    payload["requestAt"] = datetime.now()
+    payload["user"] = user
     firestore_client: google.cloud.firestore.Client = firestore.client()
 
     # Push the new message into Cloud Firestore using the Firebase Admin SDK.
-    _, doc_ref = firestore_client.collection("deliveryOrder").add(payload)
+    firestore_client.collection("deliveryOrder").document(payload["DocNo"]).set(payload)
 
     # Send back a message that we've successfully written the message
-    return https_fn.Response(f"Message with ID {doc_ref.id} added.")
+    return https_fn.Response(f"Message with ID {payload["DocNo"]} added.")
 
 @https_fn.on_request()
 def convertDeliveryOrderToSalesInvoice(req: https_fn.Request) -> https_fn.Response:
     # Grab the text parameter.
     user = req.args.get("user")
-    deliveryOrderDocNo = req.args.get("deliveryOrderId")
-    salesInvoiceDocNo = req.args.get("salesInvoiceId")
-    customerAccount = req.args.get("customerAccount")
-    companyName = req.args.get("companyName")
-    payload = { 
-        "user" : user, 
-        "deliveryOrderDocNo": deliveryOrderDocNo, 
-        "salesInvoiceDocNo": salesInvoiceDocNo, 
-        "customerAccount" : customerAccount, 
-        "companyName" : companyName,
-        "timestamp": datetime.now()
-    }
+    
+    payload = req.get_json(silent=True)
+    if payload is None:
+        return https_fn.Response(status=400, response="Mising payload")
 
-    if user is None or deliveryOrderDocNo is None or salesInvoiceDocNo is None or customerAccount is None or companyName is None:
+    if user is None:
         return https_fn.Response("No user parameter provided", status=400)
-
+    
+    payload["requestAt"] = datetime.now()
+    payload["user"] = user
     firestore_client: google.cloud.firestore.Client = firestore.client()
 
     # Push the new message into Cloud Firestore using the Firebase Admin SDK.
-    _, doc_ref = firestore_client.collection("deliveryOrdertoSalesInvoice").add(payload)
+    firestore_client.collection("deliveryOrdertoSalesInvoice").document(payload["deliveryOrderDocNo"]).set(payload)
 
     # Send back a message that we've successfully written the message
-    return https_fn.Response(f"Message with ID {doc_ref.id} added.")
+    return https_fn.Response(f"Message with ID {payload["deliveryOrderDocNo"]} added.")
 
-@https_fn.on_request()
-
-# @firestore_fn.on_document_created(document="stockQtyByItemCodeQuery/{pushId}")
-# def getStockQtyByItemCodeTrigger(event: firestore_fn.Event[firestore_fn.DocumentSnapshot | None]) -> None:
-#     print("TEST")
-
-#     # Get the value of "original" if it exists.
-#     if event.data is None:
-#         return
-#     try:
-#         itemCode = event.data.get("itemCode")
-#     except KeyError:
-#         # No "original" field, so do nothing.
-#         return
-
-#     # Set the "uppercase" field.
-#     print(f"Getting {event.params['pushId']}: {itemCode}")
-#     Common.CheckLogin()
-#     stockQty = stockQtyBalance.getStockBalanceByItemCode(itemCode)
-#     # upper = original.upper()
-#     event.data.reference.update({"quantity": int(stockQty)})
-
-def listen_document():
-    db = firestore.client()
-    # [START firestore_listen_document]
-
-    # Create an Event for notifying main thread.
-    callback_done = threading.Event()
-
-    # Create a callback on_snapshot function to capture changes
-    def on_snapshot(doc_snapshot, changes, read_time):
-        for doc in doc_snapshot:
-            print(f"Received document snapshot: {doc.id}")
-        callback_done.set()
-
-    doc_ref = db.collection("cities").document("SF")
-
-    # Watch the document
-    doc_watch = doc_ref.on_snapshot(on_snapshot)
-    # [END firestore_listen_document]
-
-    # Creating document
-    data = {
-        "name": "San Francisco",
-        "state": "CA",
-        "country": "USA",
-        "capital": False,
-        "population": 860000,
-    }
-    doc_ref.set(data)
-    # Wait for the callback.
-    callback_done.wait(timeout=60)
-    # [START firestore_listen_detach]
-    # Terminate watch on a document
-    doc_watch.unsubscribe()
-    # [END firestore_listen_detach]
-
-
-def listen_multiple():
+def listenStockByItemCodeQuery():
     db = firestore.client()
     # [START firestore_listen_query_snapshots]
 
@@ -221,100 +163,148 @@ def listen_multiple():
         print("Callback received query snapshot.")
         for change in changes:
             if change.type.name == "ADDED":
-                print(f"New query: {change.document.id}")
+                print(f"New listenStockByItemCodeQuery: {change.document.id}")
                 itemCode = change.document.get("itemCode")
                 print(itemCode)
-                # itemCode = newData["itemCode"]
                 Common.CheckLogin()
-                stockQty = stockQtyBalance.getStockBalanceByItemCode(itemCode)
-                db.collection("stockQtyByItemCodeQuery").document(change.document.id).update({"quantity": -1 if  stockQty == None else int(stockQty)})
-                print(stockQty)
+                result = stockQtyBalance.getStocksBalanceByItemCodeAndLocationAndBatch(itemCode)
+                print(result)
+                db.collection("stockItemsByItemCodeBatchLocation").document(itemCode).set(result)
             elif change.type.name == "MODIFIED":
                 print(f"Added stockqty: {change.document.id}")
 
         print(read_time)
         callback_done.set()
 
-    col_query = db.collection("stockQtyByItemCodeQuery")
+    col_query = db.collection("stockByItemCodeQuery")
 
     # Watch the collection query
     query_watch = col_query.on_snapshot(on_snapshot)
     # query_watch.unsubscribe()
 
-    # query_watch.unsubscribe()
-
-
-    # [END firestore_listen_query_snapshots]
-    # # Creating document
-    # data = {
-    #     "name": "San Francisco",
-    #     "state": "CA",
-    #     "country": "USA",
-    #     "capital": False,
-    #     "population": 860000,
-    # }
-    # db.collection("cities").document("SF").set(data)
-    # Wait for the callback.
-    # callback_done.wait(timeout=60)
-    # query_watch.unsubscribe()
-
-
-def listen_for_changes():
+def listenAllStocksQuery():
     db = firestore.client()
-    # [START firestore_listen_query_changes]
+    # [START firestore_listen_query_snapshots]
 
     # Create an Event for notifying main thread.
-    delete_done = threading.Event()
+    callback_done = threading.Event()
 
     # Create a callback on_snapshot function to capture changes
     def on_snapshot(col_snapshot, changes, read_time):
         print("Callback received query snapshot.")
-        print("Current cities in California: ")
         for change in changes:
             if change.type.name == "ADDED":
-                print(f"New city: {change.document.id}")
+                print(f"New listenAllStocksQuery: {change.document.id}")
+                Common.CheckLogin()
+                result = stockQtyBalance.getAllStocksBalanceByItemCodeAndLocationAndBatch()
+                print(result)
+                db.collection("allStocks").document("itemcodes").set(result)
             elif change.type.name == "MODIFIED":
-                print(f"Modified city: {change.document.id}")
-            elif change.type.name == "REMOVED":
-                print(f"Removed city: {change.document.id}")
-                delete_done.set()
+                print(f"Added stockqty: {change.document.id}")
 
-    col_query = db.collection("cities").where(filter=FieldFilter("state", "==", "CA"))
+        print(read_time)
+        callback_done.set()
+
+    col_query = db.collection("allStocksQuery")
 
     # Watch the collection query
     query_watch = col_query.on_snapshot(on_snapshot)
+    # query_watch.unsubscribe()
 
-    # [END firestore_listen_query_changes]
-    mtv_document = db.collection("cities").document("MTV")
-    # Creating document
-    mtv_document.set(
-        {
-            "name": "Mountain View",
-            "state": "CA",
-            "country": "USA",
-            "capital": False,
-            "population": 80000,
-        }
-    )
-    sleep(1)
+def listenSalesInvoicePost():
+    db = firestore.client()
+    # [START firestore_listen_query_snapshots]
 
-    # Modifying document
-    mtv_document.update(
-        {
-            "name": "Mountain View",
-            "state": "CA",
-            "country": "USA",
-            "capital": False,
-            "population": 90000,
-        }
-    )
-    sleep(1)
+    # Create an Event for notifying main thread.
+    callback_done = threading.Event()
 
-    # Delete document
-    mtv_document.delete()
+    # Create a callback on_snapshot function to capture changes
+    def on_snapshot(col_snapshot, changes, read_time):
+        print("Callback received query snapshot.")
+        for change in changes:
+            if change.type.name == "ADDED":
+                print(f"New listenSalesInvoicePost: {change.document.id}")
+                data = change.document._data
+                print(data)
+                Common.CheckLogin()
+                result = salesInvoice.createSalesInvoice(data)
+                print(result)
+                db.collection("salesInvoice").document(change.document.id).update({"createdAt": datetime.now()})
 
-    # Wait for the callback captures the deletion.
-    delete_done.wait(timeout=60)
-    query_watch.unsubscribe()
+        print(read_time)
+        callback_done.set()
 
-# listen_multiple()
+    col_query = db.collection("salesInvoice")
+
+    # Watch the collection query
+    query_watch = col_query.on_snapshot(on_snapshot)
+    # query_watch.unsubscribe()
+
+def listenDeliveryOrderPost():
+    db = firestore.client()
+    # [START firestore_listen_query_snapshots]
+
+    # Create an Event for notifying main thread.
+    callback_done = threading.Event()
+
+    # Create a callback on_snapshot function to capture changes
+    def on_snapshot(col_snapshot, changes, read_time):
+        print("Callback received query snapshot.")
+        for change in changes:
+            if change.type.name == "ADDED":
+                print(f"New listenDeliveryOrderPost: {change.document.id}")
+                data = change.document._data
+                print(data)
+                Common.CheckLogin()
+                result = deliveryOrder.createDeliverOrder(data)
+                print(result)
+                db.collection("deliveryOrder").document(change.document.id).update({"createdAt": datetime.now()})
+
+        print(read_time)
+        callback_done.set()
+
+    col_query = db.collection("deliveryOrder")
+
+    # Watch the collection query
+    query_watch = col_query.on_snapshot(on_snapshot)
+    # query_watch.unsubscribe()
+
+
+def listenDeliveryOrderToSalesInvoicePost():
+    db = firestore.client()
+    # [START firestore_listen_query_snapshots]
+
+    # Create an Event for notifying main thread.
+    callback_done = threading.Event()
+
+    # Create a callback on_snapshot function to capture changes
+    def on_snapshot(col_snapshot, changes, read_time):
+        print("Callback received query snapshot.")
+        for change in changes:
+            if change.type.name == "ADDED":
+                print(f"New listenDeliveryOrderToSalesInvoicePost: {change.document.id}")
+                data = change.document._data
+                deliveryOrderDocNo = data["deliveryOrderDocNo"]
+                salesInvoiceDocNo = data["salesInvoiceDocNo"]
+                customerAccount = data["customerAccount"]
+                companyName = data["companyName"]
+                print(data)
+                Common.CheckLogin()
+                result = deliveryOrderToSalesInvoice.convertDOtoSI(deliveryOrderDocNo, salesInvoiceDocNo, customerAccount, companyName)
+                print(result)
+                db.collection("deliveryOrdertoSalesInvoice").document(change.document.id).update({"createdAt": datetime.now()})
+
+        print(read_time)
+        callback_done.set()
+
+    col_query = db.collection("deliveryOrdertoSalesInvoice")
+
+    # Watch the collection query
+    query_watch = col_query.on_snapshot(on_snapshot)
+    # query_watch.unsubscribe()
+
+# listenStockByItemCodeQuery()
+# listenAllStocksQuery()
+# listenSalesInvoicePost()
+# listenDeliveryOrderPost()
+listenDeliveryOrderToSalesInvoicePost()

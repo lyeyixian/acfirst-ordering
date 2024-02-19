@@ -1,5 +1,5 @@
 #Updated 08 Jan 2024
-import Common
+from sqlAccounting import Common
 from datetime import datetime
 
 global ComServer
@@ -20,6 +20,8 @@ def getAllSalesInvoice():
     return Common.ShowResult(lDataSet)
 
 def createSalesInvoice(salesData):
+    global ComServer
+    ComServer = Common.ComServer
     BizObject = ComServer.BizObjects.Find("SL_IV")
     lMain = BizObject.DataSets.Find("MainDataSet") #lMain contains master data
     lDetail = BizObject.DataSets.Find("cdsDocDetail") #lDetail contains detail data
@@ -36,6 +38,8 @@ def createSalesInvoice(salesData):
         lMain.FindField("PostDate").value = lDate
 
         for field in parsedData:
+            if field == "requestAt" or field == "user":
+                continue
             print(field)
             if field == "Data":
                 invoiceData = parsedData[field]

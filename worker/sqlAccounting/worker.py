@@ -13,8 +13,8 @@ def main():
 
     while True:
         print("1: Check stock balance by itemcode\n" +
-              "2: Check all stocks balance (Group by Item Code, Location, Batch)\n" +
-              "3: Check all stocks balance group by Item Code\n" + 
+              "2: Check stock balance (Group by Item Code, Location, Batch)\n by itemcode" +
+              "3: Check all stocks balance (Group by Item Code, Location, Batch)\n" + 
               "4: Get all stocks details\n" +
               "5: Create Sales Invoice\n" + 
               "6: Create Delivery Order\n" +
@@ -40,10 +40,10 @@ def main():
                     stockQtyBalance.getStockBalanceByItemCode(itemcode)
                 case 2:
                     itemcode = input("Enter item code: ")
-                    result = stockQtyBalance.getAllStocksBalanceByItemCodeAndLocationAndBatch(itemcode)
+                    result = stockQtyBalance.getStocksBalanceByItemCodeAndLocationAndBatch(itemcode)
                     print(result)
                 case 3:
-                    stockQtyBalance.getAllStocksBalanceItemCode()
+                    stockQtyBalance.getAllStocksBalanceByItemCodeAndLocationAndBatch()
                 case 4:
                     result = stock.GetListData()
                     print(result)

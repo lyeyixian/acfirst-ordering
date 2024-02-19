@@ -1,5 +1,5 @@
 #Updated 21 Dec 2023
-import Common
+from sqlAccounting import Common
 
 global ComServer
 ComServer = Common.ComServer

@@ -1,11 +1,12 @@
 #Updated 08 Jan 2024
-import Common
+from sqlAccounting import Common
 from datetime import datetime
 
-global ComServer
-ComServer = Common.ComServer
 
 def convertDOtoSI(deliveryOrderDocNo, salesInvoiceDocNo, customerAccount, companyName):
+    global ComServer
+    ComServer = Common.ComServer
+
     # Check Is transfered or not
     lSQL = "SELECT DocKey FROM SL_IVDTL "
     lSQL = lSQL + "WHERE FromDockey=(SELECT DocKey FROM SL_DO " 
@@ -31,7 +32,7 @@ def convertDOtoSI(deliveryOrderDocNo, salesInvoiceDocNo, customerAccount, compan
         BizObject.New()
         lMain.FindField("DocDate").value = lDate
         lMain.FindField("PostDate").value = lDate
-        lMain.FindField("Description").AsString = "Generated from Delivory Order"
+        lMain.FindField("Description").AsString = "Generated from Delivery Order"
         lMain.FindField("DocKey").value = -1
         lMain.FindField("DocNo").AsString = salesInvoiceDocNo
         lMain.FindField("Code").AsString        = customerAccount
