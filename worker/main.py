@@ -4,7 +4,7 @@ from firebase_functions import firestore_fn, https_fn
 # The Firebase Admin SDK to access Cloud Firestore.
 from firebase_admin import initialize_app, firestore
 import google.cloud.firestore
-from datetime import datetime
+from datetime import datetime, timedelta
 from sqlAccounting import Common
 from sqlAccounting import deliveryOrder
 from sqlAccounting import deliveryOrderToSalesInvoice
@@ -176,7 +176,7 @@ def listenStockByItemCodeQuery():
         print(read_time)
         callback_done.set()
 
-    col_query = db.collection("stockByItemCodeQuery")
+    col_query = db.collection("stockByItemCodeQuery").where(filter=FieldFilter("timestamp", ">=", datetime.now()-timedelta(minutes=1)))
 
     # Watch the collection query
     query_watch = col_query.on_snapshot(on_snapshot)
@@ -205,7 +205,7 @@ def listenAllStocksQuery():
         print(read_time)
         callback_done.set()
 
-    col_query = db.collection("allStocksQuery")
+    col_query = db.collection("allStocksQuery").where(filter=FieldFilter("timestamp", ">=", datetime.now()-timedelta(minutes=1)))
 
     # Watch the collection query
     query_watch = col_query.on_snapshot(on_snapshot)
@@ -234,7 +234,7 @@ def listenSalesInvoicePost():
         print(read_time)
         callback_done.set()
 
-    col_query = db.collection("salesInvoice")
+    col_query = db.collection("salesInvoice").where(filter=FieldFilter("timestamp", ">=", datetime.now()-timedelta(minutes=1)))
 
     # Watch the collection query
     query_watch = col_query.on_snapshot(on_snapshot)
@@ -263,7 +263,7 @@ def listenDeliveryOrderPost():
         print(read_time)
         callback_done.set()
 
-    col_query = db.collection("deliveryOrder")
+    col_query = db.collection("deliveryOrder").where(filter=FieldFilter("timestamp", ">=", datetime.now()-timedelta(minutes=1)))
 
     # Watch the collection query
     query_watch = col_query.on_snapshot(on_snapshot)
@@ -297,14 +297,14 @@ def listenDeliveryOrderToSalesInvoicePost():
         print(read_time)
         callback_done.set()
 
-    col_query = db.collection("deliveryOrdertoSalesInvoice")
+    col_query = db.collection("deliveryOrdertoSalesInvoice").where(filter=FieldFilter("timestamp", ">=", datetime.now()-timedelta(minutes=1)))
 
     # Watch the collection query
     query_watch = col_query.on_snapshot(on_snapshot)
     # query_watch.unsubscribe()
 
-# listenStockByItemCodeQuery()
-# listenAllStocksQuery()
-# listenSalesInvoicePost()
-# listenDeliveryOrderPost()
+listenStockByItemCodeQuery()
+listenAllStocksQuery()
+listenSalesInvoicePost()
+listenDeliveryOrderPost()
 listenDeliveryOrderToSalesInvoicePost()
