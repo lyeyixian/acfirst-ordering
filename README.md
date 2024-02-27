@@ -32,13 +32,21 @@ Python version: `3.12`
 Make sure you have python and pip installed and the following packages:
 - pywin32 (`pip install pypiwin32`)
 
+Make sure you have Postman installed to make API calls
+
+To use firebase emulator:
+1. Install: `npm install -g firebase-tools`
+2. Login using your firebase account: `firebase login`
+3. Check that acfirst-ordering project is in: `firebase projects:list`
+
+
 To get started with the Python service worker code, follow these steps:
 
 1. Clone the repository: `git clone <repository-url>`
 2. Navigate to the `service-worker` directory: `cd service-worker`
 3. Install the dependencies: `pip install -r requirements.txt`
 4. Change credentials, database (DCF) file and database name for the SQL Accounting Software IN `Common.py`
-4. Start the service worker: `python worker.py`
+4. Start the firebase emulator: `firebase emulators:start`
 5. Follow the instructions on the Command Line Output
 
 

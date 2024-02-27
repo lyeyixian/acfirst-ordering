@@ -22,7 +22,7 @@ def main():
               "8: Edit Delivery Order\n" +
               "9: Delete Sales Inovice\n" +
               "10: Delete Delivery Order\n" +
-              "11: Transfer Delivory Order to Sales Invoice\n" +
+              "11: Transfer Delivery Order to Sales Invoice\n" +
               "12: Get all Sales Invoice\n" +
               "13: Get all Delivery Orders\n" +
               "0: Exit SQL App")
@@ -75,7 +75,7 @@ def main():
                     fullPath = os.path.join(absolutePath + deliveryOrderFilePath)
                     deliveryOrderFile = open(fullPath)
                     deliveryOrderData = json.load(deliveryOrderFile)
-                    deliveryOrder.editDelivoryOrder(deliveryOrderData)
+                    deliveryOrder.editDeliveryOrder(deliveryOrderData)
                 case 9:
                     salesInvoiceId = input("Enter sales invoice id to delete (Example (test2)): ") #/sampleData/testDeliveryOrder1.json
                     salesInvoice.deleteSalesInvoice(salesInvoiceId)

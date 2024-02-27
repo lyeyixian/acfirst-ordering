@@ -2,7 +2,6 @@
 from sqlAccounting import Common
 from datetime import datetime
 
-
 def convertDOtoSI(deliveryOrderDocNo, salesInvoiceDocNo, customerAccount, companyName):
     global ComServer
     ComServer = Common.ComServer

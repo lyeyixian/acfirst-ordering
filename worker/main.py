@@ -99,6 +99,7 @@ def createSalesInvoice(req: https_fn.Request) -> https_fn.Response:
     
     payload["requestAt"] = datetime.now()
     payload["user"] = user
+    payload["status"] = "pending"
     firestore_client: google.cloud.firestore.Client = firestore.client()
 
     # Push the new message into Cloud Firestore using the Firebase Admin SDK.
@@ -121,6 +122,7 @@ def createDeliveryOrder(req: https_fn.Request) -> https_fn.Response:
 
     payload["requestAt"] = datetime.now()
     payload["user"] = user
+    payload["status"] = "pending"
     firestore_client: google.cloud.firestore.Client = firestore.client()
 
     # Push the new message into Cloud Firestore using the Firebase Admin SDK.
@@ -143,6 +145,7 @@ def convertDeliveryOrderToSalesInvoice(req: https_fn.Request) -> https_fn.Respon
     
     payload["requestAt"] = datetime.now()
     payload["user"] = user
+    payload["status"] = "pending"
     firestore_client: google.cloud.firestore.Client = firestore.client()
 
     # Push the new message into Cloud Firestore using the Firebase Admin SDK.
@@ -229,12 +232,12 @@ def listenSalesInvoicePost():
                 Common.CheckLogin()
                 result = salesInvoice.createSalesInvoice(data)
                 print(result)
-                db.collection("salesInvoice").document(change.document.id).update({"createdAt": datetime.now()})
+                db.collection("salesInvoice").document(change.document.id).update({"createdAt": datetime.now(), "status": "success"})
 
         print(read_time)
         callback_done.set()
 
-    col_query = db.collection("salesInvoice").where(filter=FieldFilter("timestamp", ">=", datetime.now()-timedelta(minutes=1)))
+    col_query = db.collection("salesInvoice").where(filter=FieldFilter("requestAt", ">=", datetime.now()-timedelta(minutes=1)))
 
     # Watch the collection query
     query_watch = col_query.on_snapshot(on_snapshot)
@@ -258,53 +261,61 @@ def listenDeliveryOrderPost():
                 Common.CheckLogin()
                 result = deliveryOrder.createDeliverOrder(data)
                 print(result)
-                db.collection("deliveryOrder").document(change.document.id).update({"createdAt": datetime.now()})
-
+                db.collection("deliveryOrder").document(change.document.id).update({"createdAt": datetime.now(), "status": "success"})
+                deliveryOrderDocNo = data["DocNo"]
+                salesInvoiceDocNo = data["DocNo"]
+                customerAccount = data["Code"]
+                # companyName = data["CompanyName"] #TODO Add companyname in deliveryOrder field
+                companyName = "test"
+                convertResults = deliveryOrderToSalesInvoice.convertDOtoSI(deliveryOrderDocNo, salesInvoiceDocNo, customerAccount, companyName)
+                db.collection("deliveryOrdertoSalesInvoice").document(change.document.id).update({"createdAt": datetime.now(), "status": "success"})
+                print(convertResults)
         print(read_time)
         callback_done.set()
 
-    col_query = db.collection("deliveryOrder").where(filter=FieldFilter("timestamp", ">=", datetime.now()-timedelta(minutes=1)))
+    col_query = db.collection("deliveryOrder").where(filter=FieldFilter("requestAt", ">=", datetime.now()-timedelta(minutes=1)))
 
     # Watch the collection query
     query_watch = col_query.on_snapshot(on_snapshot)
     # query_watch.unsubscribe()
 
 
-def listenDeliveryOrderToSalesInvoicePost():
-    db = firestore.client()
-    # [START firestore_listen_query_snapshots]
+# Called in listenDeliveryOrder. Sales Invoice created after delivery order is created.
+# def listenDeliveryOrderToSalesInvoicePost():
+#     db = firestore.client()
+#     # [START firestore_listen_query_snapshots]
 
-    # Create an Event for notifying main thread.
-    callback_done = threading.Event()
+#     # Create an Event for notifying main thread.
+#     callback_done = threading.Event()
 
-    # Create a callback on_snapshot function to capture changes
-    def on_snapshot(col_snapshot, changes, read_time):
-        print("Callback received query snapshot.")
-        for change in changes:
-            if change.type.name == "ADDED":
-                print(f"New listenDeliveryOrderToSalesInvoicePost: {change.document.id}")
-                data = change.document._data
-                deliveryOrderDocNo = data["deliveryOrderDocNo"]
-                salesInvoiceDocNo = data["salesInvoiceDocNo"]
-                customerAccount = data["customerAccount"]
-                companyName = data["companyName"]
-                print(data)
-                Common.CheckLogin()
-                result = deliveryOrderToSalesInvoice.convertDOtoSI(deliveryOrderDocNo, salesInvoiceDocNo, customerAccount, companyName)
-                print(result)
-                db.collection("deliveryOrdertoSalesInvoice").document(change.document.id).update({"createdAt": datetime.now()})
+#     # Create a callback on_snapshot function to capture changes
+#     def on_snapshot(col_snapshot, changes, read_time):
+#         print("Callback received query snapshot.")
+#         for change in changes:
+#             if change.type.name == "ADDED":
+#                 print(f"New listenDeliveryOrderToSalesInvoicePost: {change.document.id}")
+#                 data = change.document._data
+#                 deliveryOrderDocNo = data["deliveryOrderDocNo"]
+#                 salesInvoiceDocNo = data["salesInvoiceDocNo"]
+#                 customerAccount = data["customerAccount"]
+#                 companyName = data["companyName"]
+#                 print(data)
+#                 Common.CheckLogin()
+#                 result = deliveryOrderToSalesInvoice.convertDOtoSI(deliveryOrderDocNo, salesInvoiceDocNo, customerAccount, companyName)
+#                 print(result)
+#                 db.collection("deliveryOrdertoSalesInvoice").document(change.document.id).update({"createdAt": datetime.now()})
 
-        print(read_time)
-        callback_done.set()
+#         print(read_time)
+#         callback_done.set()
 
-    col_query = db.collection("deliveryOrdertoSalesInvoice").where(filter=FieldFilter("timestamp", ">=", datetime.now()-timedelta(minutes=1)))
+#     col_query = db.collection("deliveryOrdertoSalesInvoice").where(filter=FieldFilter("requestAt", ">=", datetime.now()-timedelta(minutes=1)))
 
-    # Watch the collection query
-    query_watch = col_query.on_snapshot(on_snapshot)
-    # query_watch.unsubscribe()
+#     # Watch the collection query
+#     query_watch = col_query.on_snapshot(on_snapshot)
+#     # query_watch.unsubscribe()
 
 listenStockByItemCodeQuery()
 listenAllStocksQuery()
 listenSalesInvoicePost()
 listenDeliveryOrderPost()
-listenDeliveryOrderToSalesInvoicePost()
+# listenDeliveryOrderToSalesInvoicePost()
