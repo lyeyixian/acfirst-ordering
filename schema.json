@@ -1,0 +1,26 @@
+{
+  "events": {
+    "id": "firebase-id",
+    "name": "refreshStocks | createInvoice | createDeliveryOrder",
+    "payload": {},
+    "status": "queued | processing | completed | failed",
+    "createdBy": "userId",
+    "createdAt": "timestamp",
+    "updatedAt": "timestamp"
+  },
+  "stocks": {
+    "id": "itemCode (assuming their itemCode don't have slashes or special characters)",
+    "itemCode": "string",
+    "location": "string",
+    "batch": "string",
+    "quantity": "number",
+    "pricePerUnit": "number",
+    "updatedAt": "timestamp"
+  },
+  "users": {
+    "id": "email",
+    "email": "string",
+    "company": "string",
+    "userId": "firebase-id"
+  }
+}
