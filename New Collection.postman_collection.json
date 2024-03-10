@@ -1,0 +1,198 @@
+{
+	"info": {
+		"_postman_id": "3e8508d3-72ac-4448-857e-de631d40dca9",
+		"name": "New Collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "22755641"
+	},
+	"item": [
+		{
+			"name": "convertDeliveryOrderToSalesInvoice",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \r\n    \"deliveryOrderDocNo\": \"testFirestore\", \r\n    \"salesInvoiceDocNo\": \"testFirestore5\", \r\n    \"customerAccount\" : \"300-A0002\", \r\n    \"companyName\" : \"ALPHA & BETA COMPUTER\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:5001/acfirst-ordering/us-central1/convertDeliveryOrderToSalesInvoice?user=test",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5001",
+					"path": [
+						"acfirst-ordering",
+						"us-central1",
+						"convertDeliveryOrderToSalesInvoice"
+					],
+					"query": [
+						{
+							"key": "user",
+							"value": "test"
+						},
+						{
+							"key": "configuredLevel",
+							"value": "INFO",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getAllStock",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:5001/acfirst-ordering/us-central1/getAllStock?user=test",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5001",
+					"path": [
+						"acfirst-ordering",
+						"us-central1",
+						"getAllStock"
+					],
+					"query": [
+						{
+							"key": "user",
+							"value": "test"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getStockByItemCode",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:5001/acfirst-ordering/us-central1/getAllStock?user=test",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5001",
+					"path": [
+						"acfirst-ordering",
+						"us-central1",
+						"getAllStock"
+					],
+					"query": [
+						{
+							"key": "user",
+							"value": "test"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "salesInvoice",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"DocNo\": \"testFirestore3\",\r\n    \"Code\": \"300-F0001\",\r\n    \"Description\": \"Tested from firestore snapshot!\",\r\n    \"Data\": [\r\n        {\r\n            \"ItemCode\": \"ANT\",\r\n            \"Qty\": 10,\r\n            \"Batch\": \"BT-00001\",\r\n            \"Location\": \"BC\"\r\n        },\r\n        {\r\n            \"ItemCode\": \"BOMBOM\",\r\n            \"Qty\": 100\r\n        }\r\n    ]\r\n}     ",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:5001/acfirst-ordering/us-central1/createSalesInvoice?user=test",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5001",
+					"path": [
+						"acfirst-ordering",
+						"us-central1",
+						"createSalesInvoice"
+					],
+					"query": [
+						{
+							"key": "user",
+							"value": "test"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "deliveryOrder",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"DocNo\": \"testFirestore\",\r\n    \"Code\": \"300-A0002\",\r\n    \"Description\": \"Test from firestore snapshot trigger!\",\r\n    \"Data\": [\r\n        {\r\n            \"ItemCode\": \"ANT\",\r\n            \"Qty\": 10,\r\n            \"Batch\": \"BT-00001\",\r\n            \"Location\": \"BC\"\r\n        },\r\n        {\r\n            \"ItemCode\": \"BOMBOM\",\r\n            \"Qty\": 100\r\n        }\r\n    ]\r\n}     ",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:5001/acfirst-ordering/us-central1/createDeliveryOrder?user=test",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5001",
+					"path": [
+						"acfirst-ordering",
+						"us-central1",
+						"createDeliveryOrder"
+					],
+					"query": [
+						{
+							"key": "user",
+							"value": "test"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

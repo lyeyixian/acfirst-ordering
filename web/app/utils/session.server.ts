@@ -1,4 +1,4 @@
-import { createCookieSessionStorage, redirect } from 'remix';
+import { createCookieSessionStorage, redirect } from "@remix-run/node";
 
 import { getSessionToken, signOutFirebase, adminAuth } from "~/utils/db.server";
 
@@ -24,7 +24,7 @@ const storage = createCookieSessionStorage({
   },
 });
 
-async function createUserSession(idToken: string, redirectTo: string) {
+async function createUserSession(idToken, redirectTo) {
   const token = await getSessionToken(idToken);
   const session = await storage.getSession();
   session.set("token", token);
@@ -36,7 +36,7 @@ async function createUserSession(idToken: string, redirectTo: string) {
   });
 }
 
-async function getUserSession(request: Request) {
+async function getUserSession(request) {
   const cookieSession = await storage.getSession(request.headers.get("Cookie"));
   const token = cookieSession.get("token");
   if (!token) return null;
@@ -49,14 +49,14 @@ async function getUserSession(request: Request) {
   }
 }
 
-async function destroySession(request: Request) {
+async function destroySession(request) {
   const session = await storage.getSession(request.headers.get("Cookie"));
   const newCookie = await storage.destroySession(session);
 
   return redirect("/login", { headers: { "Set-Cookie": newCookie } });
 }
 
-async function signOut(request: Request) {
+async function signOut(request) {
   await signOutFirebase();
   return await destroySession(request);
 }

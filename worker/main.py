@@ -143,42 +143,6 @@ def listenDeliveryOrderPost():
     query_watch = col_query.on_snapshot(on_snapshot)
     # query_watch.unsubscribe()
 
-
-# Called in listenDeliveryOrder. Sales Invoice created after delivery order is created.
-# def listenDeliveryOrderToSalesInvoicePost():
-#     db = firestore.client()
-#     # [START firestore_listen_query_snapshots]
-
-#     # Create an Event for notifying main thread.
-#     callback_done = threading.Event()
-
-#     # Create a callback on_snapshot function to capture changes
-#     def on_snapshot(col_snapshot, changes, read_time):
-#         print("Callback received query snapshot.")
-#         for change in changes:
-#             if change.type.name == "ADDED":
-#                 print(f"New listenDeliveryOrderToSalesInvoicePost: {change.document.id}")
-#                 data = change.document._data
-#                 deliveryOrderDocNo = data["deliveryOrderDocNo"]
-#                 salesInvoiceDocNo = data["salesInvoiceDocNo"]
-#                 customerAccount = data["customerAccount"]
-#                 companyName = data["companyName"]
-#                 print(data)
-#                 Common.CheckLogin()
-#                 result = deliveryOrderToSalesInvoice.convertDOtoSI(deliveryOrderDocNo, salesInvoiceDocNo, customerAccount, companyName)
-#                 print(result)
-#                 db.collection("deliveryOrdertoSalesInvoice").document(change.document.id).update({"createdAt": datetime.now()})
-
-#         print(read_time)
-#         callback_done.set()
-
-#     col_query = db.collection("deliveryOrdertoSalesInvoice").where(filter=FieldFilter("requestAt", ">=", datetime.now()-timedelta(minutes=1)))
-
-#     # Watch the collection query
-#     query_watch = col_query.on_snapshot(on_snapshot)
-#     # query_watch.unsubscribe()
-# listenDeliveryOrderToSalesInvoicePost()
-
 if __name__ == "__main__":
     listenStockByItemCodeQuery()
     listenAllStocksQuery()

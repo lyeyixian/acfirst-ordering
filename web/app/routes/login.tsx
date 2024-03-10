@@ -1,9 +1,9 @@
-import { Form, Link } from "remix";
+import { Form, Link } from "@remix-run/react";
 
 import { signIn } from "~/utils/db.server";
 import { createUserSession } from "~/utils/session.server";
 
-export let action = async ({ request }) => {
+export let action = async ({ request } : {request: any}) => {
   let formData = await request.formData();
 
   let email = formData.get("email");
