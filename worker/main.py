@@ -1,161 +1,27 @@
-# The Cloud Functions for Firebase SDK to create Cloud Functions and set up triggers.
-from firebase_functions import firestore_fn, https_fn
-
 # The Firebase Admin SDK to access Cloud Firestore.
-from firebase_admin import initialize_app, firestore
-import google.cloud.firestore
-from datetime import datetime, timedelta
-from sqlAccounting import Common
-from sqlAccounting import deliveryOrder
-from sqlAccounting import deliveryOrderToSalesInvoice
-from sqlAccounting import salesInvoice
-from sqlAccounting import stock
-from sqlAccounting import stockQtyBalance
+import os
+from firebase_admin import initialize_app, firestore, credentials
+from datetime import datetime, timedelta, timezone
+import Common
+import deliveryOrder
+import deliveryOrderToSalesInvoice
+import salesInvoice
+import stock
+import stockQtyBalance
 import threading
-from time import sleep
-
 from google.cloud.firestore_v1.base_query import FieldFilter
-app = initialize_app()
+from dotenv import load_dotenv
+
+load_dotenv()
+
+cred = credentials.Certificate('../firebase-creds.json')
+app = initialize_app(cred)
+db = firestore.client()
 
 global ComServer
 ComServer = Common.ComServer
 
-@https_fn.on_request()
-def getStockByItemCode(req: https_fn.Request) -> https_fn.Response:
-    # Grab the text parameter.
-    itemCode = req.args.get("itemCode")
-    user = req.args.get("user")
-
-    if itemCode is None or user is None:
-        return https_fn.Response("No text parameter provided", status=400)
-
-    firestore_client: google.cloud.firestore.Client = firestore.client()
-
-    # Push the new message into Cloud Firestore using the Firebase Admin SDK.
-    _, doc_ref = firestore_client.collection("stockByItemCodeQuery").add({"itemCode": itemCode, "user": user, "timestamp": datetime.now()})
-
-    # Send back a message that we've successfully written the message
-    return https_fn.Response(f"Message with ID {doc_ref.id} added.")
-
-@https_fn.on_request()
-def getAllStock(req: https_fn.Request) -> https_fn.Response:
-    # Grab the text parameter.
-    user = req.args.get("user")
-
-    if user is None:
-        return https_fn.Response("No text parameter provided", status=400)
-
-    firestore_client: google.cloud.firestore.Client = firestore.client()
-
-    # Push the new message into Cloud Firestore using the Firebase Admin SDK.
-    _, doc_ref = firestore_client.collection("allStocksQuery").add({"user": user, "timestamp": datetime.now()})
-
-    # Send back a message that we've successfully written the message
-    return https_fn.Response(f"Message with ID {doc_ref.id} added.")
-
-@https_fn.on_request()
-def getSalesInvoice(req: https_fn.Request) -> https_fn.Response:
-    # Grab the text parameter.
-    user = req.args.get("user")
-
-    if user is None:
-        return https_fn.Response("No user parameter provided", status=400)
-
-    firestore_client: google.cloud.firestore.Client = firestore.client()
-
-    # Push the new message into Cloud Firestore using the Firebase Admin SDK.
-    _, doc_ref = firestore_client.collection("salesInvoiceQuery").add({"user": user, "timestamp": datetime.now()})
-
-    # Send back a message that we've successfully written the message
-    return https_fn.Response(f"Message with ID {doc_ref.id} added.")
-
-@https_fn.on_request()
-def getDeliveryOrder(req: https_fn.Request) -> https_fn.Response:
-    # Grab the text parameter.
-    user = req.args.get("user")
-
-    if user is None:
-        return https_fn.Response("No user parameter provided", status=400)
-
-    firestore_client: google.cloud.firestore.Client = firestore.client()
-
-    # Push the new message into Cloud Firestore using the Firebase Admin SDK.
-    _, doc_ref = firestore_client.collection("deliveryOrderQuery").add({"user": user, "timestamp": datetime.now()})
-
-    # Send back a message that we've successfully written the message
-    return https_fn.Response(f"Message with ID {doc_ref.id} added.")
-
-@https_fn.on_request()
-def createSalesInvoice(req: https_fn.Request) -> https_fn.Response:
-    # Grab the text parameter.
-    user = req.args.get("user")
-
-    payload = req.get_json(silent=True)
-    if payload is None:
-        return https_fn.Response(status=400, response="Mising payload")
-
-    if user is None:
-        return https_fn.Response("No user parameter provided", status=400)
-    
-    payload["requestAt"] = datetime.now()
-    payload["user"] = user
-    payload["status"] = "pending"
-    firestore_client: google.cloud.firestore.Client = firestore.client()
-
-    # Push the new message into Cloud Firestore using the Firebase Admin SDK.
-    firestore_client.collection("salesInvoice").document(payload["DocNo"]).set(payload)
-
-    # Send back a message that we've successfully written the message
-    return https_fn.Response(f"Message with ID {payload["DocNo"]} added.")
-
-@https_fn.on_request()
-def createDeliveryOrder(req: https_fn.Request) -> https_fn.Response:
-    # Grab the text parameter.
-    user = req.args.get("user")
-
-    payload = req.get_json(silent=True)
-    if payload is None:
-        return https_fn.Response(status=400, response="Mising payload")
-
-    if user is None:
-        return https_fn.Response("No user parameter provided", status=400)
-
-    payload["requestAt"] = datetime.now()
-    payload["user"] = user
-    payload["status"] = "pending"
-    firestore_client: google.cloud.firestore.Client = firestore.client()
-
-    # Push the new message into Cloud Firestore using the Firebase Admin SDK.
-    firestore_client.collection("deliveryOrder").document(payload["DocNo"]).set(payload)
-
-    # Send back a message that we've successfully written the message
-    return https_fn.Response(f"Message with ID {payload["DocNo"]} added.")
-
-@https_fn.on_request()
-def convertDeliveryOrderToSalesInvoice(req: https_fn.Request) -> https_fn.Response:
-    # Grab the text parameter.
-    user = req.args.get("user")
-    
-    payload = req.get_json(silent=True)
-    if payload is None:
-        return https_fn.Response(status=400, response="Mising payload")
-
-    if user is None:
-        return https_fn.Response("No user parameter provided", status=400)
-    
-    payload["requestAt"] = datetime.now()
-    payload["user"] = user
-    payload["status"] = "pending"
-    firestore_client: google.cloud.firestore.Client = firestore.client()
-
-    # Push the new message into Cloud Firestore using the Firebase Admin SDK.
-    firestore_client.collection("deliveryOrdertoSalesInvoice").document(payload["deliveryOrderDocNo"]).set(payload)
-
-    # Send back a message that we've successfully written the message
-    return https_fn.Response(f"Message with ID {payload["deliveryOrderDocNo"]} added.")
-
 def listenStockByItemCodeQuery():
-    db = firestore.client()
     # [START firestore_listen_query_snapshots]
 
     # Create an Event for notifying main thread.
@@ -163,7 +29,8 @@ def listenStockByItemCodeQuery():
 
     # Create a callback on_snapshot function to capture changes
     def on_snapshot(col_snapshot, changes, read_time):
-        print("Callback received query snapshot.")
+        print("Received query snapshot: StockByItemCodeQuery")
+        print("DEBUG changes: ", changes)
         for change in changes:
             if change.type.name == "ADDED":
                 print(f"New listenStockByItemCodeQuery: {change.document.id}")
@@ -176,7 +43,7 @@ def listenStockByItemCodeQuery():
             elif change.type.name == "MODIFIED":
                 print(f"Added stockqty: {change.document.id}")
 
-        print(read_time)
+        # print(read_time)
         callback_done.set()
 
     col_query = db.collection("stockByItemCodeQuery").where(filter=FieldFilter("timestamp", ">=", datetime.now()-timedelta(minutes=1)))
@@ -186,7 +53,6 @@ def listenStockByItemCodeQuery():
     # query_watch.unsubscribe()
 
 def listenAllStocksQuery():
-    db = firestore.client()
     # [START firestore_listen_query_snapshots]
 
     # Create an Event for notifying main thread.
@@ -194,7 +60,7 @@ def listenAllStocksQuery():
 
     # Create a callback on_snapshot function to capture changes
     def on_snapshot(col_snapshot, changes, read_time):
-        print("Callback received query snapshot.")
+        print("Received query snapshot: AllStocksQuery")
         for change in changes:
             if change.type.name == "ADDED":
                 print(f"New listenAllStocksQuery: {change.document.id}")
@@ -205,7 +71,7 @@ def listenAllStocksQuery():
             elif change.type.name == "MODIFIED":
                 print(f"Added stockqty: {change.document.id}")
 
-        print(read_time)
+        # print(read_time)
         callback_done.set()
 
     col_query = db.collection("allStocksQuery").where(filter=FieldFilter("timestamp", ">=", datetime.now()-timedelta(minutes=1)))
@@ -215,7 +81,6 @@ def listenAllStocksQuery():
     # query_watch.unsubscribe()
 
 def listenSalesInvoicePost():
-    db = firestore.client()
     # [START firestore_listen_query_snapshots]
 
     # Create an Event for notifying main thread.
@@ -223,7 +88,7 @@ def listenSalesInvoicePost():
 
     # Create a callback on_snapshot function to capture changes
     def on_snapshot(col_snapshot, changes, read_time):
-        print("Callback received query snapshot.")
+        print("Received query snapshot: SalesInvoicePost")
         for change in changes:
             if change.type.name == "ADDED":
                 print(f"New listenSalesInvoicePost: {change.document.id}")
@@ -234,7 +99,7 @@ def listenSalesInvoicePost():
                 print(result)
                 db.collection("salesInvoice").document(change.document.id).update({"createdAt": datetime.now(), "status": "success"})
 
-        print(read_time)
+        # print(read_time)
         callback_done.set()
 
     col_query = db.collection("salesInvoice").where(filter=FieldFilter("requestAt", ">=", datetime.now()-timedelta(minutes=1)))
@@ -244,7 +109,6 @@ def listenSalesInvoicePost():
     # query_watch.unsubscribe()
 
 def listenDeliveryOrderPost():
-    db = firestore.client()
     # [START firestore_listen_query_snapshots]
 
     # Create an Event for notifying main thread.
@@ -252,7 +116,7 @@ def listenDeliveryOrderPost():
 
     # Create a callback on_snapshot function to capture changes
     def on_snapshot(col_snapshot, changes, read_time):
-        print("Callback received query snapshot.")
+        print("Received query snapshot: DeliveryOrderPost")
         for change in changes:
             if change.type.name == "ADDED":
                 print(f"New listenDeliveryOrderPost: {change.document.id}")
@@ -270,7 +134,7 @@ def listenDeliveryOrderPost():
                 convertResults = deliveryOrderToSalesInvoice.convertDOtoSI(deliveryOrderDocNo, salesInvoiceDocNo, customerAccount, companyName)
                 db.collection("deliveryOrdertoSalesInvoice").document(change.document.id).update({"createdAt": datetime.now(), "status": "success"})
                 print(convertResults)
-        print(read_time)
+        # print(read_time)
         callback_done.set()
 
     col_query = db.collection("deliveryOrder").where(filter=FieldFilter("requestAt", ">=", datetime.now()-timedelta(minutes=1)))
@@ -313,9 +177,24 @@ def listenDeliveryOrderPost():
 #     # Watch the collection query
 #     query_watch = col_query.on_snapshot(on_snapshot)
 #     # query_watch.unsubscribe()
-
-listenStockByItemCodeQuery()
-listenAllStocksQuery()
-listenSalesInvoicePost()
-listenDeliveryOrderPost()
 # listenDeliveryOrderToSalesInvoicePost()
+
+if __name__ == "__main__":
+    listenStockByItemCodeQuery()
+    listenAllStocksQuery()
+    listenSalesInvoicePost()
+    listenDeliveryOrderPost()
+
+    # docs = db.collection("stockByItemCodeQuery").stream()
+
+    # for doc in docs:
+    #     print(f"{doc.id} => {doc.to_dict()["timestamp"]}")
+
+    # time = datetime.now(timezone.utc)-timedelta(minutes=1)
+    # print(time)
+    # docs = db.collection("stockByItemCodeQuery").where(filter=FieldFilter("timestamp", ">=", time)).stream()
+
+    # for doc in docs:
+    #     print(f"{doc.id} => {doc.to_dict()}")
+    while True:
+        pass

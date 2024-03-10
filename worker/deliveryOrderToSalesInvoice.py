@@ -1,5 +1,5 @@
 #Updated 08 Jan 2024
-from sqlAccounting import Common
+import Common
 from datetime import datetime
 
 def convertDOtoSI(deliveryOrderDocNo, salesInvoiceDocNo, customerAccount, companyName):

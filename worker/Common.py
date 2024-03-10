@@ -22,7 +22,7 @@ def CheckLogin():
             ComServer.Login("ADMIN", "ADMIN", #UserName, Password
                             # "D:\\Happy\\DB\\Default.DCF",
                             "C:\\eStream\\SQLAccounting\\Share\\Default.DCF",  #DCF file
-                            "ACC-0002.FDB") #Database Name
+                            "ACC-0001.FDB") #Database Name
             print("Success!")
         except Exception as e:
             print("Oops !", e)

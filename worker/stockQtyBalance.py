@@ -1,5 +1,5 @@
 #Updated 18 Jan 2024
-from sqlAccounting import Common
+import Common
 
 def getStocksBalanceByItemCodeAndLocationAndBatch(itemCode):
     global ComServer
