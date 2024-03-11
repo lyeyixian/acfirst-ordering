@@ -28,7 +28,7 @@ export default function Index() {
   return (
     <div className="remix__page">
       <main>
-        <h2>Welcome to Remix Firebase demo</h2>
+        <h2>Stocks Overview</h2>
 
         <Form method="post">
           <button type="submit">Sign Out</button>

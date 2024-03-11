@@ -1,8 +1,10 @@
 import * as React from "react";
 import {
+  Form,
   Link,
   Links,
   LiveReload,
+  useLoaderData,
   Meta,
   Outlet,
   Scripts,
@@ -10,10 +12,13 @@ import {
   useCatch,
   useLocation,
 } from "@remix-run/react";
+import { redirect } from "@remix-run/node";
 
 import deleteMeRemixStyles from "~/styles/demos/remix.css";
 import globalStylesUrl from "~/styles/global.css";
 import darkStylesUrl from "~/styles/dark.css";
+
+import { signOut, getUserSession } from "~/utils/session.server";
 
 /**
  * The `links` export is a function that returns an array of objects that map to
@@ -35,6 +40,19 @@ export let links = () => {
   ];
 };
 
+export let action = ({ request }: {request : Request}) => {
+  return signOut(request);
+};
+
+export let loader = async ({ request }: {request : Request}) => {
+  const sessionUser = await getUserSession(request);
+  console.log(sessionUser);
+  if (sessionUser !== null) {
+    return sessionUser;
+  }
+  return null;
+};
+
 /**
  * The root module's default export is a component that renders the current
  * route via the `<Outlet />` component. Think of this as the global layout
@@ -42,8 +60,8 @@ export let links = () => {
  */
 export default function App() {
   return (
-    <Document title="Test">
-      <Layout>
+    <Document title="acfirst ordering">
+      <Layout >
         <Outlet />
       </Layout>
     </Document>
@@ -72,6 +90,8 @@ function Document({ children, title }: {children: any, title: any}) {
 }
 
 function Layout({ children }: {children: any}) {
+  const data = useLoaderData();
+  console.log(data)
   return (
     <div className="remix-app">
       <header className="remix-app__header">
@@ -85,11 +105,15 @@ function Layout({ children }: {children: any}) {
                 <Link to="/">Home</Link>
               </li>
               <li>
-                <Link to="/posts">Posts</Link>
+                <Link to="/salesinvoice">Sales Invoice</Link>
               </li>
-              <li>
-                <Link to="/admin">Admin</Link>
-              </li>
+              {data !== null ? (
+                <li>
+                  <Form method="post">
+                      <button type="submit">Sign Out</button>
+                  </Form>
+                </li>
+              ): ""}
             </ul>
           </nav>
         </div>

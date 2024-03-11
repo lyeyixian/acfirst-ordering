@@ -48,6 +48,11 @@ async function signUp(email: string, password: string) {
   return createUserWithEmailAndPassword(auth, email, password);
 }
 
+async function createUserDocument(username: string, payload: any) {
+  db.collection("users").doc(username).set(payload);
+}
+
+
 async function getSessionToken(idToken: string) {
   const decodedToken = await adminAuth.verifyIdToken(idToken);
   if (new Date().getTime() / 1000 - decodedToken.auth_time > 5 * 60) {
@@ -61,4 +66,4 @@ async function signOutFirebase() {
   await signOut(getAuth());
 }
 
-export { db, signUp, getSessionToken, signOutFirebase, signIn, adminAuth };
+export { db, signUp, getSessionToken, signOutFirebase, signIn, createUserDocument, adminAuth };

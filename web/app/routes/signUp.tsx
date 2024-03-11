@@ -1,6 +1,6 @@
 import { Form, Link } from "@remix-run/react";
 
-import { signUp } from "~/utils/db.server";
+import { signUp, createUserDocument } from "~/utils/db.server";
 import { createUserSession } from "~/utils/session.server";
 
 export let action = async ({ request } : {request: Request}) => {
@@ -8,8 +8,19 @@ export let action = async ({ request } : {request: Request}) => {
 
   let email : any = formData.get("email");
   let password : any = formData.get("password");
+  let company : any = formData.get("company");
+  let username : any = formData.get("username");
 
   const { user } = await signUp(email, password);
+  const payload = {
+    "username": username,
+    "email": email,
+    "company": company,
+    "userId": user.uid
+  }
+
+  await createUserDocument(username, payload);
+
   const token = await user.getIdToken();
   return createUserSession(token, "/posts");
 };
@@ -30,6 +41,18 @@ export default function SignUp() {
           <label>
             Password
             <input type="password" name="password" />
+          </label>
+        </p>
+        <p>
+          <label>
+            Company Name
+            <input type="text" name="company" />
+          </label>
+        </p>
+        <p>
+          <label>
+            Username
+            <input type="text" name="username" />
           </label>
         </p>
 
