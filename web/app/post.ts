@@ -1,7 +1,7 @@
+import { redirect } from "@remix-run/node";
 
 import { db } from "~/utils/db.server";
 import { getUserSession } from "./utils/session.server";
-import { redirect } from "@remix-run/node";
 
 export async function getPosts(request: Request) {
   const sessionUser = await getUserSession(request);
@@ -19,7 +19,7 @@ export async function getPosts(request: Request) {
   return data;
 }
 
-export async function getPost({ request, slug } : {request: any, slug: string}) {
+export async function getPost({ request, slug }: {request: Request, slug: any}) {
   const sessionUser = await getUserSession(request);
   if (!sessionUser) {
     return redirect("/login");
@@ -35,7 +35,7 @@ export async function getPost({ request, slug } : {request: any, slug: string}) 
   }
 }
 
-export async function createPost({ request, post } : {request: any, post: any}) {
+export async function createPost({ request, post }: {request: Request, post: any}) {
   const sessionUser = await getUserSession(request);
   if (!sessionUser) {
     return redirect("/login");

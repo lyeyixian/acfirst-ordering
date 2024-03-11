@@ -1,94 +1,8 @@
-import {
-  IconBath,
-  IconCar,
-  IconSofa,
-  IconToolsKitchen2,
-} from '@tabler/icons-react'
-import HeroBanner from '../components/home/HeroBanner'
-import ProductsSection from '../components/home/ProductsSection'
-import ShowcaseSection from '../components/home/ShowcaseSection'
+
 import { Button, Group, Image, List, Text } from '@mantine/core'
 import { Link } from '@remix-run/react'
-import TestimonialsSection from '../components/home/TestimonialsSection'
 
-export function renderSection(section, index) {
-  if (!section) {
-    return null
-  }
-
-  switch (section.type) {
-    case 'elements.text':
-    case 'hero':
-      const { title: heroTitle, description, button, imgUrl } = section
-
-      return (
-        <HeroBanner
-          key={index}
-          title={heroTitle}
-          description={description}
-          buttonProps={button}
-          imgUrl={imgUrl}
-        />
-      )
-    case 'showcase':
-      const {
-        title: showcaseTitle,
-        subtitle: showcaseSubtitle,
-        products,
-      } = section
-
-      return (
-        <ShowcaseSection
-          key={index}
-          title={showcaseTitle}
-          subtitle={showcaseSubtitle}
-          products={products}
-        />
-      )
-    case 'product-categories':
-      const {
-        title: categoriesTitle,
-        subtitle: categoriesSubtitle,
-        categories,
-      } = section
-
-      return (
-        <ProductsSection
-          key={index}
-          title={categoriesTitle}
-          subtitle={categoriesSubtitle}
-          categories={categories}
-        />
-      )
-    case 'testimonials':
-      const { reviews } = section
-
-      return <TestimonialsSection key={index} reviews={reviews} />
-    default:
-      return null
-  }
-}
-
-export function renderCategoryIcon(category) {
-  if (!category) {
-    return null
-  }
-
-  switch (category.slug) {
-    case 'kitchen':
-      return IconToolsKitchen2
-    case 'bathroom':
-      return IconBath
-    case 'living-room':
-      return IconSofa
-    case 'car-poch':
-      return IconCar
-    default:
-      return null
-  }
-}
-
-export function renderErrorDescription(statusCode, description) {
+export function renderErrorDescription(statusCode: number, description: string) {
   switch (statusCode) {
     case 404:
       return 'Page you are trying to open does not exist. You may have mistyped the address, or the page has been moved to another URL. If you think this is an error contact support.'
@@ -101,7 +15,7 @@ export function renderErrorDescription(statusCode, description) {
   }
 }
 
-export function renderErrorButton(statusCode, pathname) {
+export function renderErrorButton(statusCode: number, pathname: string) {
   let buttonText = ''
   let url = ''
 
