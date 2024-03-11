@@ -49,9 +49,16 @@ async function signUp(email: string, password: string) {
 }
 
 async function createUserDocument(username: string, payload: any) {
-  db.collection("users").doc(username).set(payload);
+  return db.collection("users").doc(username).set(payload);
 }
 
+async function getStocks() {
+  return await db.collection("allStocks").doc("itemcodes").get();
+}
+
+async function getSalesInvoices() {
+  return await db.collection("salesInvoice").get();
+}
 
 async function getSessionToken(idToken: string) {
   const decodedToken = await adminAuth.verifyIdToken(idToken);
@@ -66,4 +73,4 @@ async function signOutFirebase() {
   await signOut(getAuth());
 }
 
-export { db, signUp, getSessionToken, signOutFirebase, signIn, createUserDocument, adminAuth };
+export { db, signUp, getStocks, getSalesInvoices, getSessionToken, signOutFirebase, signIn, createUserDocument, adminAuth };

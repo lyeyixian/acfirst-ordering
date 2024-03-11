@@ -46,7 +46,6 @@ export let action = ({ request }: {request : Request}) => {
 
 export let loader = async ({ request }: {request : Request}) => {
   const sessionUser = await getUserSession(request);
-  console.log(sessionUser);
   if (sessionUser !== null) {
     return sessionUser;
   }
@@ -91,7 +90,6 @@ function Document({ children, title }: {children: any, title: any}) {
 
 function Layout({ children }: {children: any}) {
   const data = useLoaderData();
-  console.log(data)
   return (
     <div className="remix-app">
       <header className="remix-app__header">
