@@ -9,6 +9,7 @@ from datetime import datetime
 app = initialize_app()
 firestore_client: Client = firestore.client()
 
+
 @https_fn.on_request()
 def getStockByItemCode(req: https_fn.Request) -> https_fn.Response:
     # Grab the text parameter.
@@ -16,13 +17,17 @@ def getStockByItemCode(req: https_fn.Request) -> https_fn.Response:
     user = req.args.get("user")
 
     if itemCode is None or user is None:
-        return https_fn.Response("No text parameter provided", status=400)
+        return {
+            "message": "No itemCode or user parameter provided"
+        }, 400
 
     # Push the new message into Cloud Firestore using the Firebase Admin SDK.
-    _, doc_ref = firestore_client.collection("stockByItemCodeQuery").add({"itemCode": itemCode, "user": user, "timestamp": datetime.now()})
+    _, doc_ref = firestore_client.collection("stockByItemCodeQuery").add(
+        {"itemCode": itemCode, "user": user, "timestamp": datetime.now()})
 
     # Send back a message that we've successfully written the message
-    return https_fn.Response(f"Message with ID {doc_ref.id} added.")
+    return {"message": f"Message with ID {doc_ref.id} added."}
+
 
 @https_fn.on_request()
 def getAllStock(req: https_fn.Request) -> https_fn.Response:
@@ -30,13 +35,15 @@ def getAllStock(req: https_fn.Request) -> https_fn.Response:
     user = req.args.get("user")
 
     if user is None:
-        return https_fn.Response("No text parameter provided", status=400)
+        return {"message": "No text parameter provided"}, 400
 
     # Push the new message into Cloud Firestore using the Firebase Admin SDK.
-    _, doc_ref = firestore_client.collection("allStocksQuery").add({"user": user, "timestamp": datetime.now()})
+    _, doc_ref = firestore_client.collection("allStocksQuery").add(
+        {"user": user, "timestamp": datetime.now()})
 
     # Send back a message that we've successfully written the message
-    return https_fn.Response(f"Message with ID {doc_ref.id} added.")
+    return {"message": f"Message with ID {doc_ref.id} added."}
+
 
 @https_fn.on_request()
 def getSalesInvoice(req: https_fn.Request) -> https_fn.Response:
@@ -44,13 +51,15 @@ def getSalesInvoice(req: https_fn.Request) -> https_fn.Response:
     user = req.args.get("user")
 
     if user is None:
-        return https_fn.Response("No user parameter provided", status=400)
+        return {"message": "No user parameter provided"}, 400
 
     # Push the new message into Cloud Firestore using the Firebase Admin SDK.
-    _, doc_ref = firestore_client.collection("salesInvoiceQuery").add({"user": user, "timestamp": datetime.now()})
+    _, doc_ref = firestore_client.collection("salesInvoiceQuery").add(
+        {"user": user, "timestamp": datetime.now()})
 
     # Send back a message that we've successfully written the message
-    return https_fn.Response(f"Message with ID {doc_ref.id} added.")
+    return {"message": f"Message with ID {doc_ref.id} added."}
+
 
 @https_fn.on_request()
 def getDeliveryOrder(req: https_fn.Request) -> https_fn.Response:
@@ -58,13 +67,15 @@ def getDeliveryOrder(req: https_fn.Request) -> https_fn.Response:
     user = req.args.get("user")
 
     if user is None:
-        return https_fn.Response("No user parameter provided", status=400)
+        return {"message": "No user parameter provided"}, 400
 
     # Push the new message into Cloud Firestore using the Firebase Admin SDK.
-    _, doc_ref = firestore_client.collection("deliveryOrderQuery").add({"user": user, "timestamp": datetime.now()})
+    _, doc_ref = firestore_client.collection("deliveryOrderQuery").add(
+        {"user": user, "timestamp": datetime.now()})
 
     # Send back a message that we've successfully written the message
-    return https_fn.Response(f"Message with ID {doc_ref.id} added.")
+    return {"message": f"Message with ID {doc_ref.id} added."}
+
 
 @https_fn.on_request()
 def createSalesInvoice(req: https_fn.Request) -> https_fn.Response:
@@ -73,20 +84,22 @@ def createSalesInvoice(req: https_fn.Request) -> https_fn.Response:
 
     payload = req.get_json(silent=True)
     if payload is None:
-        return https_fn.Response(status=400, response="Mising payload")
+        return {"message": "Mising payload"}, 400
 
     if user is None:
-        return https_fn.Response("No user parameter provided", status=400)
+        return {"message": "No user parameter provided"}, 400
 
     payload["requestAt"] = datetime.now()
     payload["user"] = user
     payload["status"] = "pending"
 
     # Push the new message into Cloud Firestore using the Firebase Admin SDK.
-    firestore_client.collection("salesInvoice").document(payload["DocNo"]).set(payload)
+    firestore_client.collection("salesInvoice").document(
+        payload["DocNo"]).set(payload)
 
     # Send back a message that we've successfully written the message
-    return https_fn.Response(f"Message with ID {payload["DocNo"]} added.")
+    return {"message": f"Message with ID {payload["DocNo"]} added."}
+
 
 @https_fn.on_request()
 def createDeliveryOrder(req: https_fn.Request) -> https_fn.Response:
@@ -95,39 +108,42 @@ def createDeliveryOrder(req: https_fn.Request) -> https_fn.Response:
 
     payload = req.get_json(silent=True)
     if payload is None:
-        return https_fn.Response(status=400, response="Mising payload")
+        return {"message": "Mising payload"}, 400
 
     if user is None:
-        return https_fn.Response("No user parameter provided", status=400)
+        return {"message": "No user parameter provided"}, 400
 
     payload["requestAt"] = datetime.now()
     payload["user"] = user
     payload["status"] = "pending"
 
     # Push the new message into Cloud Firestore using the Firebase Admin SDK.
-    firestore_client.collection("deliveryOrder").document(payload["DocNo"]).set(payload)
+    firestore_client.collection("deliveryOrder").document(
+        payload["DocNo"]).set(payload)
 
     # Send back a message that we've successfully written the message
-    return https_fn.Response(f"Message with ID {payload["DocNo"]} added.")
+    return {"message": f"Message with ID {payload["DocNo"]} added."}
+
 
 @https_fn.on_request()
 def convertDeliveryOrderToSalesInvoice(req: https_fn.Request) -> https_fn.Response:
     # Grab the text parameter.
     user = req.args.get("user")
-    
+
     payload = req.get_json(silent=True)
     if payload is None:
-        return https_fn.Response(status=400, response="Mising payload")
+        return {"message": "Mising payload"}, 400
 
     if user is None:
-        return https_fn.Response("No user parameter provided", status=400)
-    
+        return {"message": "No user parameter provided"}, 400
+
     payload["requestAt"] = datetime.now()
     payload["user"] = user
     payload["status"] = "pending"
 
     # Push the new message into Cloud Firestore using the Firebase Admin SDK.
-    firestore_client.collection("deliveryOrdertoSalesInvoice").document(payload["deliveryOrderDocNo"]).set(payload)
+    firestore_client.collection("deliveryOrdertoSalesInvoice").document(
+        payload["deliveryOrderDocNo"]).set(payload)
 
     # Send back a message that we've successfully written the message
-    return https_fn.Response(f"Message with ID {payload["deliveryOrderDocNo"]} added.")
+    return {"message": f"Message with ID {payload["deliveryOrderDocNo"]} added."}
