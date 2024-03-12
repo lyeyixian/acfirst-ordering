@@ -9,6 +9,37 @@ from datetime import datetime
 app = initialize_app()
 firestore_client: Client = firestore.client()
 
+# - refresh stocks
+# - get stocks
+# - get stock by id
+# - create order (invoice or DO)
+# - get order history
+
+
+@https_fn.on_request()
+def refreshStock(req: https_fn.Request) -> https_fn.Response:
+    pass
+
+
+@https_fn.on_request()
+def getStocks(req: https_fn.Request) -> https_fn.Response:
+    pass
+
+
+@https_fn.on_request()
+def getStockById(req: https_fn.Request) -> https_fn.Response:
+    pass
+
+
+@https_fn.on_request()
+def createOrder(req: https_fn.Request) -> https_fn.Response:
+    pass
+
+
+@https_fn.on_request()
+def getOrderHistory(req: https_fn.Request) -> https_fn.Response:
+    pass
+
 
 @https_fn.on_request()
 def getStockByItemCode(req: https_fn.Request) -> https_fn.Response:
