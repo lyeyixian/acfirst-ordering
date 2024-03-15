@@ -132,7 +132,8 @@ def listenDeliveryOrderPost():
                 # companyName = data["CompanyName"] #TODO Add companyname in deliveryOrder field
                 companyName = "test"
                 convertResults = deliveryOrderToSalesInvoice.convertDOtoSI(deliveryOrderDocNo, salesInvoiceDocNo, customerAccount, companyName)
-                db.collection("deliveryOrdertoSalesInvoice").document(change.document.id).update({"createdAt": datetime.now(), "status": "success"})
+                db.collection("salesInvoice").document(change.document.id).set(db.collection("deliveryOrder").document(change.document.id).get())
+                db.collection("salesInvoice").document(change.document.id).update({"createdAt": datetime.now(), "status": "success"})
                 print(convertResults)
         # print(read_time)
         callback_done.set()

@@ -23,7 +23,7 @@ export function StocksTable({ stocks } : {stocks :any}) {
         <Button mb={10} type="submit">Refresh Stocks</Button>
       </refreshStocksFetcher.Form>
 
-      <Table striped withBorder>
+      <Table horizontalSpacing="xl" striped withBorder highlightOnHover>
           <thead>
             <tr>
               <th>Item Code</th>

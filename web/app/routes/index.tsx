@@ -44,22 +44,22 @@ export let loader = async ({ request }: {request : Request}) => {
 
 // https://remix.run/guides/routing#index-routes
 export default function Index() {
-  const [activeTab, setActiveTab] = useState<string | null>('history');
+  const [activeTab, setActiveTab] = useState<string | null>('stocks');
   const {stocks, salesInvoices} = useLoaderData();
 
   return (
     <div className="remix__page">
       <Tabs value={activeTab} onTabChange={setActiveTab} color="indigo" radius="md" defaultValue="gallery">
-      <Tabs.List>
-        <Tabs.Tab value="stocks" icon={<IconPhoto size="0.8rem" />}>Stocks Overiew</Tabs.Tab>
-        <Tabs.Tab value="history" icon={<IconMessageCircle size="0.8rem" />}>Order History</Tabs.Tab>
-      </Tabs.List>
-      <Tabs.Panel value="stocks" pt="md">
-        <StocksTable stocks={stocks}/>
-      </Tabs.Panel>
-      <Tabs.Panel value="history" pt="md">
-        <OrderHistory orderHistory={salesInvoices}/>
-      </Tabs.Panel>
+        <Tabs.List>
+          <Tabs.Tab value="stocks" icon={<IconPhoto size="0.8rem" />}>Stocks Overiew</Tabs.Tab>
+          <Tabs.Tab value="history" icon={<IconMessageCircle size="0.8rem" />}>Order History</Tabs.Tab>
+        </Tabs.List>
+        <Tabs.Panel value="stocks" pt="md">
+          <StocksTable stocks={stocks}/>
+        </Tabs.Panel>
+        <Tabs.Panel value="history" pt="md">
+          <OrderHistory orderHistory={salesInvoices}/>
+        </Tabs.Panel>
       </Tabs>
     </div>
   );
