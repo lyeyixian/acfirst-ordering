@@ -11,7 +11,7 @@ export let action = async ({ request } : {request: any}) => {
 
   const { user } = await signIn(email, password);
   const token = await user.getIdToken();
-  return createUserSession(token, "/posts");
+  return createUserSession(email, token, "/");
 };
 
 export default function Login() {

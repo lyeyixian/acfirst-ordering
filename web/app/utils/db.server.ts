@@ -10,6 +10,7 @@ import {
   getAuth,
   signOut,
 } from "firebase/auth";
+import { collection, query, where, getDocs } from "firebase/firestore";
 
 require("dotenv").config();
 
@@ -48,16 +49,24 @@ async function signUp(email: string, password: string) {
   return createUserWithEmailAndPassword(auth, email, password);
 }
 
-async function createUserDocument(username: string, payload: any) {
-  return db.collection("users").doc(username).set(payload);
+async function createUserDocument(email: string, payload: any) {
+  return db.collection("users").doc(email.toLowerCase()).set(payload);
+}
+
+async function getUser(email: string) {
+  return db.collection("users").doc(email.toLowerCase()).get();
 }
 
 async function getStocks() {
   return await db.collection("allStocks").doc("itemcodes").get();
 }
 
-async function getSalesInvoices() {
-  return await db.collection("salesInvoice").get();
+async function getSalesInvoices(username: string) {
+  return (await db.collection("salesInvoice").where("user", "==", username).get()).docs;
+}
+
+async function refreshStocks(payload: any) {
+  return db.collection("events").add(payload);
 }
 
 async function getSessionToken(idToken: string) {
@@ -65,6 +74,7 @@ async function getSessionToken(idToken: string) {
   if (new Date().getTime() / 1000 - decodedToken.auth_time > 5 * 60) {
     throw new Error("Recent sign in required");
   }
+
   const twoWeeks = 60 * 60 * 24 * 14 * 1000;
   return adminAuth.createSessionCookie(idToken, { expiresIn: twoWeeks });
 }
@@ -73,4 +83,4 @@ async function signOutFirebase() {
   await signOut(getAuth());
 }
 
-export { db, signUp, getStocks, getSalesInvoices, getSessionToken, signOutFirebase, signIn, createUserDocument, adminAuth };
+export { db, signUp, getStocks, getUser, getSalesInvoices, getSessionToken, signOutFirebase, signIn, createUserDocument, refreshStocks, adminAuth };

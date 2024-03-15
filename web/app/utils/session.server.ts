@@ -24,16 +24,24 @@ const storage = createCookieSessionStorage({
   },
 });
 
-async function createUserSession(idToken: string, redirectTo: any) {
+async function createUserSession(email:String, idToken: string, redirectTo: any) {
   const token = await getSessionToken(idToken);
   const session = await storage.getSession();
   session.set("token", token);
+  session.set("userEmail", email.toLowerCase())
 
   return redirect(redirectTo, {
     headers: {
       "Set-Cookie": await storage.commitSession(session),
     },
   });
+}
+
+async function getUserSessionEmail(request: Request) {
+  const cookieSession = await storage.getSession(request.headers.get("Cookie"));
+  const userEmail = cookieSession.get("userEmail");
+  if (!userEmail) return null;
+  return userEmail.toLowerCase();
 }
 
 async function getUserSession(request: Request) {
@@ -61,4 +69,4 @@ async function signOut(request: Request) {
   return await destroySession(request);
 }
 
-export { createUserSession, signOut, getUserSession };
+export { createUserSession, signOut, getUserSession, getUserSessionEmail };

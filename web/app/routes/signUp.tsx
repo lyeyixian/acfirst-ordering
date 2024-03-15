@@ -19,10 +19,10 @@ export let action = async ({ request } : {request: Request}) => {
     "userId": user.uid
   }
 
-  await createUserDocument(username, payload);
+  await createUserDocument(email, payload);
 
   const token = await user.getIdToken();
-  return createUserSession(token, "/posts");
+  return createUserSession(email, token, "/");
 };
 
 export default function SignUp() {
@@ -55,7 +55,6 @@ export default function SignUp() {
             <input type="text" name="username" />
           </label>
         </p>
-
         <button type="submit">Sign Up</button>
       </Form>
 

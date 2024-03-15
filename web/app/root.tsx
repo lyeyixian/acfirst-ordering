@@ -102,16 +102,19 @@ function Layout({ children }: {children: any}) {
               <li>
                 <Link to="/">Home</Link>
               </li>
+            {data !== null && data !== undefined ? (
+              <>
               <li>
                 <Link to="/salesinvoice">Sales Invoice</Link>
               </li>
-              {data !== null ? (
                 <li>
                   <Form method="post">
                       <button type="submit">Sign Out</button>
                   </Form>
                 </li>
+                </>
               ): ""}
+              
             </ul>
           </nav>
         </div>

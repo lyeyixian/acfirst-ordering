@@ -1,19 +1,19 @@
-import { useLoaderData } from "@remix-run/react";
 import { redirect } from "@remix-run/node";
-import { signOut, getUserSession } from "~/utils/session.server";
-import { getStocks, getSalesInvoices } from "~/utils/db.server";
-import { Button, Table, Flex, Title } from '@mantine/core';
+import { getUserSession, getUserSessionEmail } from "~/utils/session.server";
+import { getStocks, getSalesInvoices, getUser } from "~/utils/db.server";
+import { Tabs, Flex, Title } from '@mantine/core';
+import { IconPhoto, IconMessageCircle, IconSettings } from '@tabler/icons-react';
+import { StocksTable } from "~/components/StocksTable/StocksTable";
+import { useState } from "react";
+import { OrderHistory } from "~/components/OrderHistory/OrderHistory";
+import { useLoaderData } from "@remix-run/react";
 
 // https://remix.run/api/conventions#meta
 export let meta = () => {
   return {
-    title: "Remix Starter",
-    description: "Welcome to remix!",
+    title: "acfirst ordering system",
+    description: "acfirst ordering system!",
   };
-};
-
-export let action = ({ request }: {request : Request}) => {
-  return signOut(request);
 };
 
 export let loader = async ({ request }: {request : Request}) => {
@@ -22,55 +22,45 @@ export let loader = async ({ request }: {request : Request}) => {
     return redirect("/login") 
   }
   const stocks = await getStocks();
-  const salesInvoice = await getSalesInvoices();
-  salesInvoice.docs.forEach(doc => console.log(doc.data()))
   if (!stocks.exists) {
     throw null;
-  } else {
-    return stocks.data();
   }
+
+  const userEmail = await getUserSessionEmail(request);
+  const user = await getUser(userEmail);
+
+  if (!user.exists || user.data() === null || user.data() === undefined) {
+    throw new Error('Missing user information!')
+  }
+  const salesInvoices = await getSalesInvoices(user.data().username);
+  if (!salesInvoices) {
+    throw null;
+  }
+
+  const parsedSalesInvoices = salesInvoices.map(salesInvoice => salesInvoice.data());
+  return { stocks: stocks.data(), salesInvoices: parsedSalesInvoices }
+
 };
-
-const generateRows = (stocksData: any) => {
-  const parsedStocksData = Object.values(stocksData);
-  return (
-    parsedStocksData.map((data: any) => (
-      <tr key={data.itemCode}>
-        <td>{data.itemCode}</td>
-        <td>{data.batch}</td>
-        <td>{data.location}</td>
-        <td>{data.quantity}</td>
-      </tr>
-  )
-))};
-
 
 // https://remix.run/guides/routing#index-routes
 export default function Index() {
-  const stocksData = useLoaderData();
+  const [activeTab, setActiveTab] = useState<string | null>('history');
+  const {stocks, salesInvoices} = useLoaderData();
+
   return (
     <div className="remix__page">
-      <main>
-        <Flex gap={"sm"} pb={10}>
-          <Title order={2}>Stocks Overview</Title>
-          <Button>Refresh Stocks</Button>
-        </Flex>
-        <Table striped withBorder>
-          <thead>
-            <tr>
-              <th>Item Code</th>
-              <th>Batch</th>
-              <th>Location</th>
-              <th>Quantity</th>
-            </tr>
-          </thead>
-          <tbody>{generateRows(stocksData)}</tbody>
-        </Table>
-        <Flex gap={"sm"} pb={10}>
-          <Title order={2}>Order History</Title>
-        </Flex>
-
-      </main>
+      <Tabs value={activeTab} onTabChange={setActiveTab} color="indigo" radius="md" defaultValue="gallery">
+      <Tabs.List>
+        <Tabs.Tab value="stocks" icon={<IconPhoto size="0.8rem" />}>Stocks Overiew</Tabs.Tab>
+        <Tabs.Tab value="history" icon={<IconMessageCircle size="0.8rem" />}>Order History</Tabs.Tab>
+      </Tabs.List>
+      <Tabs.Panel value="stocks" pt="md">
+        <StocksTable stocks={stocks}/>
+      </Tabs.Panel>
+      <Tabs.Panel value="history" pt="md">
+        <OrderHistory orderHistory={salesInvoices}/>
+      </Tabs.Panel>
+      </Tabs>
     </div>
   );
 }
