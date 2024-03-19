@@ -12,9 +12,8 @@ import {
   useCatch,
   useLocation,
 } from "@remix-run/react";
-import { redirect } from "@remix-run/node";
 
-import deleteMeRemixStyles from "~/styles/demos/remix.css";
+import deleteMeRemixStyles from "~/styles/remix.css";
 import globalStylesUrl from "~/styles/global.css";
 import darkStylesUrl from "~/styles/dark.css";
 
@@ -105,7 +104,7 @@ function Layout({ children }: {children: any}) {
             {data !== null && data !== undefined ? (
               <>
               <li>
-                <Link to="/salesinvoice">Sales Invoice</Link>
+                <Link to="/order">New Order</Link>
               </li>
                 <li>
                   <Form method="post">
@@ -124,7 +123,7 @@ function Layout({ children }: {children: any}) {
       </div>
       <footer className="remix-app__footer">
         <div className="container remix-app__footer-content">
-          <p>&copy; You!</p>
+          <p>&copy; acfirst ordering</p>
         </div>
       </footer>
     </div>

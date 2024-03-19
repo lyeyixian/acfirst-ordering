@@ -1,5 +1,5 @@
 import { getUserSessionEmail } from "~/utils/session.server";
-import { refreshStocks, getUser } from "~/utils/db.server";
+import { createEvent, getUser } from "~/utils/db.server";
 
 export async function action({ request }: {request : Request}) {
   const userEmail = await getUserSessionEmail(request);
@@ -13,11 +13,11 @@ export async function action({ request }: {request : Request}) {
   const requestBody = {
     "id": user.data().userId,
     "name": formData.get('event'),
-    "payload": {},
+    "payload": formData.get('payload'),
     "status": "queued",
     "createdBy": user.data().username,
     "createdAt": Date.now(),
     "updatedAt": Date.now()
   }
-  return await refreshStocks(requestBody)
+  return await createEvent(requestBody)
 }

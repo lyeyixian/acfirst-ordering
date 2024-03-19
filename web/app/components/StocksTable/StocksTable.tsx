@@ -20,6 +20,7 @@ export function StocksTable({ stocks } : {stocks :any}) {
     <Container>
       <refreshStocksFetcher.Form method="post" action="/api/events">
         <input type="hidden" name="event" value={"refreshStocks"} />
+        <input type="hidden" name="payload" value={""} />
         <Button mb={10} type="submit">Refresh Stocks</Button>
       </refreshStocksFetcher.Form>
 

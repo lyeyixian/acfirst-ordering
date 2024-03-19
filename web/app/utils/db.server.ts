@@ -65,7 +65,7 @@ async function getSalesInvoices(username: string) {
   return (await db.collection("salesInvoice").where("user", "==", username).get()).docs;
 }
 
-async function refreshStocks(payload: any) {
+async function createEvent(payload: any) {
   return db.collection("events").add(payload);
 }
 
@@ -83,4 +83,4 @@ async function signOutFirebase() {
   await signOut(getAuth());
 }
 
-export { db, signUp, getStocks, getUser, getSalesInvoices, getSessionToken, signOutFirebase, signIn, createUserDocument, refreshStocks, adminAuth };
+export { db, signUp, getStocks, getUser, getSalesInvoices, getSessionToken, signOutFirebase, signIn, createUserDocument, createEvent, adminAuth };
