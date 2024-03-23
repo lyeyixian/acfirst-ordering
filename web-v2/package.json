@@ -1,5 +1,5 @@
 {
-  "name": "vite-remix",
+  "name": "web",
   "private": true,
   "sideEffects": false,
   "type": "module",
@@ -41,6 +41,5 @@
   },
   "engines": {
     "node": ">=18.0.0"
-  },
-  "packageManager": "yarn@4.1.1"
+  }
 }
