@@ -62,7 +62,7 @@ module.exports = {
           },
           typescript: {
             alwaysTryTypes: true,
-            project: 'web-v2/tsconfig.json',
+            project: 'web-v2/tsconfig.json', // fix the path unresolved issue in typescript
           },
         },
       },
