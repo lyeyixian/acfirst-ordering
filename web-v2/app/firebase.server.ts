@@ -60,3 +60,16 @@ export async function createUser(docId: string, payload: CreateUserPayload) {
     throw new Error('Handled error creating user document')
   }
 }
+
+export async function getUser(email: string) {
+  const docSnapshot = await db
+    .collection('users')
+    .doc(email.toLowerCase())
+    .get()
+
+  if (!docSnapshot.exists) {
+    throw new Error('User does not exist')
+  }
+
+  return docSnapshot.data()
+}

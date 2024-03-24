@@ -1,6 +1,10 @@
 import { createCookieSessionStorage, json, redirect } from '@remix-run/node'
 import dotenv from 'dotenv'
-import { generateSessionToken, verifySessionToken } from './firebase.server'
+import {
+  generateSessionToken,
+  getUser,
+  verifySessionToken,
+} from './firebase.server'
 import { TWO_WEEKS } from './constants'
 
 dotenv.config()
@@ -60,12 +64,7 @@ export async function verifySession(
 
   try {
     const decodedToken = await verifySessionToken(token)
-    const user = {
-      // TODO: get user profile from token
-      email: decodedToken.email,
-      uid: decodedToken.uid,
-    }
-    let data = { user }
+    let data = { user: await getUser(decodedToken.email || '') }
 
     if (callback) {
       const callbackData = callback()
