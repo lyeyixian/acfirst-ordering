@@ -98,3 +98,53 @@ export async function getStocks() {
 
   return data
 }
+
+// Events
+interface Event {
+  id: string
+  type: EventType
+  payload: EventPayload
+  status: EventStatus
+  createdBy: string
+  createdAt: Timestamp
+  updatedAt: Timestamp
+}
+
+enum EventType {
+  REFRESH_STOCKS = 'refreshStocks',
+  CREATE_INVOICE = 'createInvoice',
+  CREATE_DELIVERY_ORDER = 'createDeliveryOrder',
+}
+
+enum EventStatus {
+  QUEUED = 'queued',
+  PROCESSING = 'processing',
+  COMPLETED = 'completed',
+  FAILED = 'failed',
+}
+
+interface EventPayload {
+  docNo: string
+  code: string
+  description: string
+  data: EventStockPayload[]
+}
+
+interface EventStockPayload {
+  itemCode: string
+  qty: number
+}
+
+export async function getEvents() {
+  const querySnapshot = await db.collection('events').get()
+
+  const data: Event[] = []
+
+  querySnapshot.forEach((doc) => {
+    const docData = doc.data() as Event
+
+    data.push({ ...docData, id: doc.id })
+  })
+
+  return data
+}
