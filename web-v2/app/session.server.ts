@@ -27,15 +27,10 @@ const storage = createCookieSessionStorage({
 const getSession = async (request: Request) =>
   storage.getSession(request.headers.get('Cookie'))
 
-export async function createUserSession(
-  email: string,
-  idToken: string,
-  redirectTo: string
-) {
+export async function createUserSession(idToken: string, redirectTo: string) {
   const session = await storage.getSession()
 
   session.set('token', await generateSessionToken(idToken))
-  session.set('userEmail', email.toLowerCase())
 
   return redirect(redirectTo, {
     headers: {

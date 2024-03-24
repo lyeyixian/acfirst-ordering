@@ -6,7 +6,6 @@ export const loginAction: ActionFunction = async ({
 }: ActionFunctionArgs) => {
   const form = await request.formData()
   const idToken = form.get('idToken')?.toString() || ''
-  const email = form.get('email')?.toString() || ''
 
-  return createUserSession(email, idToken, '/')
+  return createUserSession(idToken, '/')
 }

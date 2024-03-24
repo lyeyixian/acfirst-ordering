@@ -28,7 +28,7 @@ export default function LoginPage() {
         console.log('after signing in DEBUG idToken: ', idToken)
 
         // Trigger a POST request which the action will handle
-        fetcher.submit({ idToken, email }, { method: 'post', action: '/login' })
+        fetcher.submit({ idToken }, { method: 'post', action: '/login' })
       } catch (e: unknown) {
         console.log('Error logging in!')
         console.error(e)
