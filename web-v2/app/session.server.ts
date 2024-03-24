@@ -39,14 +39,6 @@ export async function createUserSession(idToken: string, redirectTo: string) {
   })
 }
 
-// async function getUserSessionEmail(request: Request) {
-//   const cookieSession = await getSession(request)
-//   const userEmail = cookieSession.get('userEmail')
-
-//   if (!userEmail) return null
-//   return userEmail.toLowerCase()
-// }
-
 /**
  * Verifies the session by checking if the token exists and is valid.
  * If the token is valid, it returns the user profile along with any additional data provided by the callback function.
@@ -89,6 +81,16 @@ export async function verifySession(
 
     return redirect('/logout')
   }
+}
+
+export async function destroyUserSession(request: Request) {
+  const session = await getSession(request)
+
+  return redirect('/login', {
+    headers: {
+      'Set-Cookie': await storage.destroySession(session),
+    },
+  })
 }
 
 // async function destroySession(request: Request) {
