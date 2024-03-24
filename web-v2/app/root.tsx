@@ -11,6 +11,7 @@ import {
   useLoaderData,
 } from '@remix-run/react'
 import dotenv from 'dotenv'
+import { LoaderFunction } from '@remix-run/node'
 
 declare global {
   interface Window {
@@ -27,7 +28,7 @@ declare global {
   }
 }
 
-export async function loader() {
+export const loader: LoaderFunction = () => {
   dotenv.config()
 
   return json({
