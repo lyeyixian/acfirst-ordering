@@ -1,41 +1,8 @@
-import { Link, useFetcher } from '@remix-run/react'
-import type { SyntheticEvent } from 'react'
-import { useCallback } from 'react'
-import { signIn } from '~/firebase.client'
-
-interface FormTarget extends EventTarget {
-  email?: { value: string }
-  password?: { value: string }
-}
+import { Link } from '@remix-run/react'
+import { useLogin } from '~/application/auth/authHooks'
 
 export default function LoginPage() {
-  const fetcher = useFetcher()
-
-  const handleSubmit = useCallback(
-    async (e: SyntheticEvent) => {
-      e.preventDefault()
-
-      const target: FormTarget = e.target
-      const email = target.email?.value || ''
-      const password = target.password?.value || ''
-
-      try {
-        console.log('signing in with email and password...')
-
-        const credential = await signIn(email, password)
-        const idToken = await credential.user.getIdToken()
-
-        console.log('after signing in DEBUG idToken: ', idToken)
-
-        // Trigger a POST request which the action will handle
-        fetcher.submit({ idToken }, { method: 'post', action: '/login' })
-      } catch (e: unknown) {
-        console.log('Error logging in!')
-        console.error(e)
-      }
-    },
-    [fetcher]
-  )
+  const { handleSubmit } = useLogin()
 
   return (
     <div className="login">
