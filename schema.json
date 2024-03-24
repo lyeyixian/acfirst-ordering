@@ -2,7 +2,16 @@
   "events": {
     "id": "firebase-id",
     "name": "refreshStocks | createInvoice | createDeliveryOrder",
-    "payload": {},
+    "payload": {
+      "docNo": "string",
+      "code": "string",
+      "data": [
+        {
+          "itemCode": "string",
+          "quantity": "number"
+        }
+      ]
+    },
     "status": "queued | processing | completed | failed",
     "createdBy": "userId",
     "createdAt": "timestamp",
