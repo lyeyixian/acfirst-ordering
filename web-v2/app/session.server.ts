@@ -1,6 +1,6 @@
-import { createCookieSessionStorage, redirect } from '@remix-run/node'
+import { createCookieSessionStorage, json, redirect } from '@remix-run/node'
 import dotenv from 'dotenv'
-import { generateSessionToken } from './firebase.server'
+import { generateSessionToken, verifySessionToken } from './firebase.server'
 import { TWO_WEEKS } from './constants'
 
 dotenv.config()
@@ -12,7 +12,7 @@ if (!sessionSecret) {
 
 const storage = createCookieSessionStorage({
   cookie: {
-    name: '__session',
+    name: '__acfirst_ordering_session',
     // normally you want this to be `secure: true`
     // but that doesn't work on localhost for Safari
     // https://web.dev/when-to-use-local-https/
@@ -47,18 +47,49 @@ export async function createUserSession(idToken: string, redirectTo: string) {
 //   return userEmail.toLowerCase()
 // }
 
-// async function getUserSession(request: Request) {
-//   const cookieSession = await getSession(request)
-//   const token = cookieSession.get('token')
-//   if (!token) return null
+/**
+ * Verifies the session by checking if the token exists and is valid.
+ * If the token is valid, it returns the user profile along with any additional data provided by the callback function.
+ * If the token is invalid, it redirects the user to the login page or logs them out.
+ * @param request - The request object.
+ * @param callback - An optional callback function that can provide additional data to be included in the response.
+ * @returns A remix response containing the user profile and any additional data.
+ */
+export async function verifySession(
+  request: Request,
+  callback?: () => {
+    [target: string]: unknown
+  }
+) {
+  const cookieSession = await getSession(request)
+  const token = cookieSession.get('token')
 
-//   try {
-//     const tokenUser = await adminAuth.verifySessionCookie(token, true)
-//     return tokenUser
-//   } catch (error) {
-//     return null
-//   }
-// }
+  if (!token) return redirect('/login')
+
+  try {
+    const decodedToken = await verifySessionToken(token)
+    const user = {
+      // TODO: get user profile from token
+      email: decodedToken.email,
+      uid: decodedToken.uid,
+    }
+    let data = { user }
+
+    if (callback) {
+      const callbackData = callback()
+
+      if (Object.keys(callbackData).length !== 0) {
+        data = { ...data, ...callbackData }
+      }
+    }
+
+    return json(data)
+  } catch (error) {
+    console.log('Error getting user from token: ', error)
+
+    return redirect('/logout')
+  }
+}
 
 // async function destroySession(request: Request) {
 //   const session = await getSession(request)

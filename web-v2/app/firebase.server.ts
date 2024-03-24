@@ -36,4 +36,8 @@ export async function generateSessionToken(idToken: string) {
   return await auth.createSessionCookie(idToken, { expiresIn: TWO_WEEKS })
 }
 
+export function verifySessionToken(token: string) {
+  return auth.verifySessionCookie(token, true)
+}
+
 export { auth, db }
