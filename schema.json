@@ -1,7 +1,7 @@
 {
   "events": {
     "id": "firebase-id",
-    "name": "refreshStocks | createInvoice | createDeliveryOrder",
+    "type": "refreshStocks | createInvoice | createDeliveryOrder",
     "payload": {
       "docNo": "string",
       "code": "string",
