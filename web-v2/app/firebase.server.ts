@@ -6,7 +6,7 @@ import {
 } from 'firebase-admin/app'
 import { getAuth } from 'firebase-admin/auth'
 import type { App } from 'firebase-admin/app'
-import { getFirestore } from 'firebase-admin/firestore'
+import { Timestamp, getFirestore } from 'firebase-admin/firestore'
 import { TWO_WEEKS } from './constants'
 
 let app: App
@@ -49,6 +49,7 @@ interface CreateUserPayload {
   userId: string
 }
 
+// Users
 export async function createUser(docId: string, payload: CreateUserPayload) {
   try {
     await db.collection('users').doc(docId).set(payload)
@@ -72,4 +73,28 @@ export async function getUser(email: string) {
   }
 
   return docSnapshot.data()
+}
+
+// Stocks
+interface Stock {
+  itemCode: string
+  location: string
+  batch: string
+  quantity: number
+  pricePerUnit: number
+  updatedAt: Timestamp
+}
+
+export async function getStocks() {
+  const querySnapshot = await db.collection('stocks').get()
+
+  const data: Stock[] = []
+
+  querySnapshot.forEach((doc) => {
+    const docData = doc.data() as Stock
+
+    data.push({ ...docData })
+  })
+
+  return data
 }

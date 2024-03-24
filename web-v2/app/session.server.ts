@@ -53,9 +53,9 @@ export async function createUserSession(idToken: string, redirectTo: string) {
  */
 export async function verifySession(
   request: Request,
-  callback?: () => {
+  callback?: () => Promise<{
     [target: string]: unknown
-  }
+  }>
 ) {
   const cookieSession = await getSession(request)
   const token = cookieSession.get('token')
@@ -67,7 +67,7 @@ export async function verifySession(
     let data = { user: await getUser(decodedToken.email || '') }
 
     if (callback) {
-      const callbackData = callback()
+      const callbackData = await callback()
 
       if (Object.keys(callbackData).length !== 0) {
         data = { ...data, ...callbackData }
