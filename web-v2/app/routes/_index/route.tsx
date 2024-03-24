@@ -4,6 +4,7 @@ import { IconMessageCircle, IconPhoto } from '@tabler/icons-react'
 import { useState } from 'react'
 import { homeLoader as loader } from './index.server'
 import { MetaFunction } from '@remix-run/node'
+import { StocksTable } from './StocksTable'
 
 export { loader }
 
@@ -16,7 +17,7 @@ export const meta: MetaFunction = () => {
 
 export default function HomeLayout() {
   const [activeTab, setActiveTab] = useState<string | null>('stocks')
-  const data = useLoaderData()
+  const data = useLoaderData<typeof loader>()
 
   console.log('DEBUG home layout data:', data)
 
@@ -40,10 +41,10 @@ export default function HomeLayout() {
             Order History
           </Tabs.Tab>
         </Tabs.List>
-        {/* <Tabs.Panel value="stocks" pt="md">
-          <StocksTable stocks={stocks} />
+        <Tabs.Panel value="stocks" pt="md">
+          <StocksTable stocks={data.stocks} />
         </Tabs.Panel>
-        <Tabs.Panel value="history" pt="md">
+        {/* <Tabs.Panel value="history" pt="md">
           <OrderHistory orderHistory={salesInvoices} />
         </Tabs.Panel> */}
       </Tabs>

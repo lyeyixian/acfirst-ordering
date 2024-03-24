@@ -76,7 +76,7 @@ export async function getUser(email: string) {
 }
 
 // Stocks
-interface Stock {
+export interface Stock {
   itemCode: string
   location: string
   batch: string
@@ -100,7 +100,7 @@ export async function getStocks() {
 }
 
 // Events
-interface Event {
+export interface Event {
   id: string
   type: EventType
   payload: EventPayload
