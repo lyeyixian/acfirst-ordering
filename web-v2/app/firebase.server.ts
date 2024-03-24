@@ -26,6 +26,7 @@ if (getApps().length === 0) {
 const auth = getAuth(app)
 const db = getFirestore(app)
 
+// Auth
 export async function generateSessionToken(idToken: string) {
   const decodedToken = await auth.verifyIdToken(idToken)
 
@@ -40,4 +41,22 @@ export function verifySessionToken(token: string) {
   return auth.verifySessionCookie(token, true)
 }
 
-export { auth, db }
+// Firestore
+interface CreateUserPayload {
+  username: string
+  email: string
+  company: string
+  userId: string
+}
+
+export async function createUser(docId: string, payload: CreateUserPayload) {
+  try {
+    await db.collection('users').doc(docId).set(payload)
+  } catch (error) {
+    console.log('Caught error creating user document: ', error)
+
+    // need to delete user, else the user cant sign up again
+    await auth.deleteUser(payload.userId)
+    throw new Error('Handled error creating user document')
+  }
+}
