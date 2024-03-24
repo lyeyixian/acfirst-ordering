@@ -1,6 +1,6 @@
 import { Link } from '@remix-run/react'
 import { useLogin } from '~/application/auth/authHooks'
-import { loginAction as action } from './login.server'
+import { loginAction as action } from './index.server'
 
 export { action }
 

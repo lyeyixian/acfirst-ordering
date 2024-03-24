@@ -1,3 +1,3 @@
-import { logoutLoader as loader } from './logout.server'
+import { logoutLoader as loader } from './index.server'
 
 export { loader }
