@@ -1,6 +1,7 @@
 import { createCookieSessionStorage, redirect } from '@remix-run/node'
 import dotenv from 'dotenv'
 import { generateSessionToken } from './firebase.server'
+import { TWO_WEEKS } from './constants'
 
 dotenv.config()
 
@@ -19,7 +20,7 @@ const storage = createCookieSessionStorage({
     secrets: [sessionSecret],
     sameSite: 'lax',
     path: '/',
-    maxAge: 60 * 60 * 24 * 30, // 30 days
+    maxAge: TWO_WEEKS,
     httpOnly: true,
   },
 })

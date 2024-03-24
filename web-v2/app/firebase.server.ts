@@ -7,6 +7,7 @@ import {
 import { getAuth } from 'firebase-admin/auth'
 import type { App } from 'firebase-admin/app'
 import { getFirestore } from 'firebase-admin/firestore'
+import { TWO_WEEKS } from './constants'
 
 let app: App
 
@@ -32,9 +33,7 @@ export async function generateSessionToken(idToken: string) {
     throw new Error('Recent sign in required')
   }
 
-  const twoWeeks = 60 * 60 * 24 * 14 * 1000
-
-  return await auth.createSessionCookie(idToken, { expiresIn: twoWeeks })
+  return await auth.createSessionCookie(idToken, { expiresIn: TWO_WEEKS })
 }
 
 export { auth, db }
