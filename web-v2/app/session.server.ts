@@ -92,18 +92,3 @@ export async function destroyUserSession(request: Request) {
     },
   })
 }
-
-// async function destroySession(request: Request) {
-//   const session = await getSession(request)
-
-//   return redirect('/login', {
-//     headers: { 'Set-Cookie': await storage.destroySession(session) },
-//   })
-// }
-
-// async function signOut(request: Request) {
-//   await signOutFirebase()
-//   return await destroySession(request)
-// }
-
-// export { createUserSession, signOut, getUserSession, getUserSessionEmail }
