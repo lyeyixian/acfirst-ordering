@@ -8,7 +8,7 @@
       "data": [
         {
           "itemCode": "string",
-          "quantity": "number"
+          "qty": "number"
         }
       ]
     },
