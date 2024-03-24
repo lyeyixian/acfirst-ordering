@@ -1,5 +1,10 @@
 import { initializeApp } from 'firebase/app'
-import { getAuth, inMemoryPersistence, setPersistence } from 'firebase/auth'
+import {
+  getAuth,
+  inMemoryPersistence,
+  setPersistence,
+  signInWithEmailAndPassword,
+} from 'firebase/auth'
 
 const firebaseConfig = {
   apiKey: window.ENV.API_KEY,
@@ -18,4 +23,6 @@ const auth = getAuth(app)
 // Let Remix handle the persistence via session cookies.
 setPersistence(auth, inMemoryPersistence)
 
-export { auth }
+export function signIn(email: string, password: string) {
+  return signInWithEmailAndPassword(auth, email, password)
+}
