@@ -1,11 +1,24 @@
 import { createCookieSessionStorage, json, redirect } from '@remix-run/node'
 import dotenv from 'dotenv'
 import {
+  User,
   generateSessionToken,
   getUser,
   verifySessionToken,
 } from './firebase.server'
 import { TWO_WEEKS } from './constants'
+
+interface CallbackData {
+  data?: Record<string, unknown>
+  error?: string
+  status: number
+}
+
+interface ResponseData {
+  user: User
+  data?: Record<string, unknown>
+  error?: string
+}
 
 dotenv.config()
 
@@ -53,9 +66,7 @@ export async function createUserSession(idToken: string, redirectTo: string) {
  */
 export async function verifySession(
   request: Request,
-  callback?: () => Promise<{
-    [target: string]: unknown
-  }>
+  callback?: (user: User) => Promise<CallbackData>
 ) {
   const cookieSession = await getSession(request)
   const token = cookieSession.get('token')
@@ -64,17 +75,23 @@ export async function verifySession(
 
   try {
     const decodedToken = await verifySessionToken(token)
-    let data = { user: await getUser(decodedToken.email || '') }
+    const user = await getUser(decodedToken.email || '')
+    let responseData: ResponseData = { user }
+    let status = null
 
+    // if a callback function is provided, call it and include its data in the responseData
     if (callback) {
-      const callbackData = await callback()
+      const { status: cbStatus, ...rest } = await callback(user)
 
-      if (Object.keys(callbackData).length !== 0) {
-        data = { ...data, ...callbackData }
-      }
+      status = cbStatus
+      responseData = { ...responseData, ...rest }
     }
 
-    return json(data)
+    if (status) {
+      return json(responseData, { status })
+    }
+
+    return json(responseData)
   } catch (error) {
     console.log('Error getting user from token: ', error)
 

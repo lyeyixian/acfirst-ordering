@@ -18,9 +18,10 @@ export const meta: MetaFunction = () => {
 
 export default function HomeLayout() {
   const [activeTab, setActiveTab] = useState<string | null>('stocks')
-  const data = useLoaderData<typeof loader>()
+  const loaderData = useLoaderData<typeof loader>()
+  const { stocks, events } = loaderData.data
 
-  console.log('DEBUG home layout data:', data)
+  console.log('DEBUG home layout data:', loaderData)
 
   return (
     <div className="remix__page">
@@ -43,10 +44,10 @@ export default function HomeLayout() {
           </Tabs.Tab>
         </Tabs.List>
         <Tabs.Panel value="stocks" pt="md">
-          <StocksTable stocks={data.stocks} />
+          <StocksTable stocks={stocks} />
         </Tabs.Panel>
         <Tabs.Panel value="history" pt="md">
-          <OrderHistory orderHistories={data.events} />
+          <OrderHistory orderHistories={events} />
         </Tabs.Panel>
       </Tabs>
     </div>

@@ -4,6 +4,9 @@ import { verifySession } from '~/session.server'
 
 export const homeLoader: LoaderFunction = async ({ request }) => {
   return verifySession(request, async () => {
-    return { stocks: await getStocks(), events: await getEvents() }
+    return {
+      data: { stocks: await getStocks(), events: await getEvents() },
+      status: 200,
+    }
   })
 }

@@ -42,6 +42,8 @@ export function verifySessionToken(token: string) {
 }
 
 // Firestore
+
+// Users
 interface CreateUserPayload {
   username: string
   email: string
@@ -49,7 +51,13 @@ interface CreateUserPayload {
   userId: string
 }
 
-// Users
+export interface User {
+  username: string
+  email: string
+  company: string
+  userId: string
+}
+
 export async function createUser(docId: string, payload: CreateUserPayload) {
   try {
     await db.collection('users').doc(docId).set(payload)
@@ -72,7 +80,7 @@ export async function getUser(email: string) {
     throw new Error('User does not exist')
   }
 
-  return docSnapshot.data()
+  return docSnapshot.data() as User
 }
 
 // Stocks
