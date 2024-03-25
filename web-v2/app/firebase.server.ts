@@ -103,7 +103,7 @@ export async function getStocks() {
 export interface Event {
   id: string
   type: EventType
-  payload: EventPayload
+  payload?: EventPayload
   status: EventStatus
   createdBy: string
   createdAt: Timestamp
@@ -123,7 +123,7 @@ enum EventStatus {
   FAILED = 'failed',
 }
 
-interface EventPayload {
+export interface EventPayload {
   docNo: string
   code: string
   description: string

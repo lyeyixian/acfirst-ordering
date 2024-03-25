@@ -5,6 +5,7 @@ import { useState } from 'react'
 import { homeLoader as loader } from './index.server'
 import { MetaFunction } from '@remix-run/node'
 import { StocksTable } from './StocksTable'
+import { OrderHistory } from './OrderHistory'
 
 export { loader }
 
@@ -44,9 +45,9 @@ export default function HomeLayout() {
         <Tabs.Panel value="stocks" pt="md">
           <StocksTable stocks={data.stocks} />
         </Tabs.Panel>
-        {/* <Tabs.Panel value="history" pt="md">
-          <OrderHistory orderHistory={salesInvoices} />
-        </Tabs.Panel> */}
+        <Tabs.Panel value="history" pt="md">
+          <OrderHistory orderHistories={data.events} />
+        </Tabs.Panel>
       </Tabs>
     </div>
   )

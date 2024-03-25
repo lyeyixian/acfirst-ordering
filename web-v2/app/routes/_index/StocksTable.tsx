@@ -9,6 +9,7 @@ const generateRows = (stocksData: Stock[]) => {
       <td>{data.batch}</td>
       <td>{data.location}</td>
       <td>{data.quantity}</td>
+      <td>{data.pricePerUnit}</td>
     </tr>
   ))
 }
@@ -32,6 +33,7 @@ export function StocksTable({ stocks }: { stocks: Stock[] }) {
             <th>Batch</th>
             <th>Location</th>
             <th>Quantity</th>
+            <th>Price per Unit</th>
           </tr>
         </thead>
         <tbody>{generateRows(stocks)}</tbody>
