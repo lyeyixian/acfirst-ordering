@@ -2,12 +2,12 @@ import { Tabs } from '@mantine/core'
 import { useLoaderData } from '@remix-run/react'
 import { IconMessageCircle, IconPhoto } from '@tabler/icons-react'
 import { useState } from 'react'
-import { homeLoader as loader } from './index.server'
+import { homeAction as action, homeLoader as loader } from './index.server'
 import { MetaFunction } from '@remix-run/node'
 import { StocksTable } from './StocksTable'
 import { OrderHistory } from './OrderHistory'
 
-export { loader }
+export { loader, action }
 
 export const meta: MetaFunction = () => {
   return [

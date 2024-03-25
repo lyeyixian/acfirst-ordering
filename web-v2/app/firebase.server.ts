@@ -8,6 +8,7 @@ import { getAuth } from 'firebase-admin/auth'
 import type { App } from 'firebase-admin/app'
 import { Timestamp, getFirestore } from 'firebase-admin/firestore'
 import { TWO_WEEKS } from './constants'
+import { EventType } from './type'
 
 let app: App
 
@@ -109,7 +110,7 @@ export async function getStocks() {
 
 // Events
 export interface Event {
-  id: string
+  id?: string
   type: EventType
   payload?: EventPayload
   status: EventStatus
@@ -118,13 +119,7 @@ export interface Event {
   updatedAt: Timestamp
 }
 
-enum EventType {
-  REFRESH_STOCKS = 'refreshStocks',
-  CREATE_INVOICE = 'createInvoice',
-  CREATE_DELIVERY_ORDER = 'createDeliveryOrder',
-}
-
-enum EventStatus {
+export enum EventStatus {
   QUEUED = 'queued',
   PROCESSING = 'processing',
   COMPLETED = 'completed',
@@ -155,4 +150,8 @@ export async function getEvents() {
   })
 
   return data
+}
+
+export async function createEvent(event: Event) {
+  return db.collection('events').add(event)
 }

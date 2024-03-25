@@ -15,7 +15,7 @@ const parseDate = (date: Timestamp) => {
 
 const generateRows = (orderHistories: Event[]) => {
   return orderHistories.map((data, index) => (
-    <tr key={index + data.id}>
+    <tr key={index}>
       <td>{data.id}</td>
       <td>{data.type}</td>
       <td>{JSON.stringify(data.payload)}</td>

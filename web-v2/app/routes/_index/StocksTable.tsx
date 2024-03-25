@@ -1,6 +1,7 @@
 import { useFetcher } from '@remix-run/react'
 import { Button, Container, Table } from '@mantine/core'
 import { Stock } from '~/firebase.server'
+import { EventType } from '~/type'
 
 const generateRows = (stocksData: Stock[]) => {
   return stocksData.map((data, index) => (
@@ -18,9 +19,8 @@ export function StocksTable({ stocks }: { stocks: Stock[] }) {
   const refreshStocksFetcher = useFetcher()
   return (
     <Container>
-      <refreshStocksFetcher.Form method="post" action="/api/events">
-        <input type="hidden" name="event" value={'refreshStocks'} />
-        <input type="hidden" name="payload" value={''} />
+      <refreshStocksFetcher.Form method="post">
+        <input type="hidden" name="type" value={EventType.REFRESH_STOCKS} />
         <Button mb={10} type="submit">
           Refresh Stocks
         </Button>
