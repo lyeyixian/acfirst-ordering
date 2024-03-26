@@ -132,7 +132,7 @@ export interface EventPayload {
   data: EventStockPayload[]
 }
 
-interface EventStockPayload {
+export interface EventStockPayload {
   itemCode: string
   qty: number
 }
