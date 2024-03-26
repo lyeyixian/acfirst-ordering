@@ -129,7 +129,6 @@ export enum EventStatus {
 export interface EventPayload {
   docNo: string
   code: string
-  description: string
   data: EventStockPayload[]
 }
 
