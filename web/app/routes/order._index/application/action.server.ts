@@ -1,5 +1,6 @@
 import { ActionFunction } from '@remix-run/node'
 import { Timestamp } from 'firebase-admin/firestore'
+import { sessionRepository } from '~/adapter/auth'
 import {
   Event,
   EventPayload,
@@ -7,11 +8,10 @@ import {
   EventStockPayload,
   createEvent,
 } from '~/firebase.server'
-import { verifySession } from '~/session.server'
 import { EventType } from '~/type'
 
 export const orderAction: ActionFunction = async ({ request }) => {
-  return verifySession(request, async (user) => {
+  return sessionRepository.verifySession(request, async (user) => {
     const formData = await request.formData()
 
     const type = formData.get('type')?.toString() as EventType

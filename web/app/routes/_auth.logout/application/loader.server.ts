@@ -1,5 +1,5 @@
 import { LoaderFunction } from '@remix-run/node'
-import { destroyUserSession } from '~/session.server'
+import { sessionRepository } from '~/adapter/auth'
 
 export const logoutLoader: LoaderFunction = async ({ request }) =>
-  destroyUserSession(request)
+  sessionRepository.destroyUserSession(request)

@@ -1,9 +1,9 @@
 import type { ActionFunction } from '@remix-run/node'
-import { createUserSession } from '~/session.server'
+import { sessionRepository } from '~/adapter/auth'
 
 export const loginAction: ActionFunction = async ({ request }) => {
   const form = await request.formData()
   const idToken = form.get('idToken')?.toString() || ''
 
-  return createUserSession(idToken, '/')
+  return sessionRepository.createUserSession(idToken, '/')
 }

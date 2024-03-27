@@ -1,6 +1,6 @@
-import { LoaderFunction } from "@remix-run/node"
-import { verifySession } from "~/session.server"
+import { LoaderFunction } from '@remix-run/node'
+import { sessionRepository } from '~/adapter/auth'
 
 export const orderLoader: LoaderFunction = async ({ request }) => {
-  return verifySession(request)
+  return sessionRepository.verifySession(request)
 }
