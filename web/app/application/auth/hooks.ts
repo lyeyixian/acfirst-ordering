@@ -24,7 +24,7 @@ export function useLogin() {
         const credential = await signIn(email, password)
         const idToken = await credential.user.getIdToken()
 
-        console.log('after signing in DEBUG idToken: ', idToken)
+        console.log('signed in!')
 
         // Trigger a POST request which the action will handle
         fetcher.submit({ idToken }, { method: 'post', action: '/login' })

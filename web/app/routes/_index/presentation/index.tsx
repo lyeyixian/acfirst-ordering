@@ -11,8 +11,6 @@ export default function HomePage() {
   const loaderData = useLoaderData<typeof homeLoader>()
   const { stocks, events } = loaderData.data
 
-  console.log('DEBUG home layout data:', loaderData)
-
   return (
     <div className="remix__page">
       <Tabs
