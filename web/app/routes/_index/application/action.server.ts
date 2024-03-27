@@ -1,23 +1,8 @@
-import { ActionFunction, LoaderFunction } from '@remix-run/node'
-import {
-  EventStatus,
-  User,
-  createEvent,
-  getEvents,
-  getStocks,
-} from '~/firebase.server'
-import { EventType } from '~/type'
-import { verifySession } from '~/session.server'
+import { ActionFunction } from '@remix-run/node'
 import { Timestamp } from 'firebase-admin/firestore'
-
-export const homeLoader: LoaderFunction = async ({ request }) => {
-  return verifySession(request, async () => {
-    return {
-      data: { stocks: await getStocks(), events: await getEvents() },
-      status: 200,
-    }
-  })
-}
+import { EventStatus, User, createEvent } from '~/firebase.server'
+import { verifySession } from '~/session.server'
+import { EventType } from '~/type'
 
 export const homeAction: ActionFunction = async ({ request }) => {
   return verifySession(request, async (user: User) => {

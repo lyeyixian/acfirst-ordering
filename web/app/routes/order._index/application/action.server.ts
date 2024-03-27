@@ -1,4 +1,4 @@
-import { ActionFunction, LoaderFunction } from '@remix-run/node'
+import { ActionFunction } from '@remix-run/node'
 import { Timestamp } from 'firebase-admin/firestore'
 import {
   Event,
@@ -9,10 +9,6 @@ import {
 } from '~/firebase.server'
 import { verifySession } from '~/session.server'
 import { EventType } from '~/type'
-
-export const orderLoader: LoaderFunction = async ({ request }) => {
-  return verifySession(request)
-}
 
 export const orderAction: ActionFunction = async ({ request }) => {
   return verifySession(request, async (user) => {

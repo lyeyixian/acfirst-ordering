@@ -1,12 +1,3 @@
-import { Outlet } from '@remix-run/react'
+import OrderLayout from './presentation'
 
-export default function OrderLayout() {
-  return (
-    <div>
-      <h1>Order Layout</h1>
-      <div>
-        <Outlet />
-      </div>
-    </div>
-  )
-}
+export default OrderLayout
