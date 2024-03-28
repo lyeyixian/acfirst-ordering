@@ -2,7 +2,7 @@ import { createCookieSessionStorage, json, redirect } from '@remix-run/node'
 import dotenv from 'dotenv'
 import { Auth } from 'firebase-admin/auth'
 import { TWO_WEEKS } from '~/constants'
-import { ISessionRepository } from '~/domain/ports/SessionRepository'
+import { ISessionRepository } from '~/application/SessionRepository'
 import { CallbackData, ResponseData, User } from '~/type'
 import { userRepository } from '../user'
 

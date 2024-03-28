@@ -1,5 +1,5 @@
 import { Firestore } from 'firebase-admin/firestore'
-import { IEventRepository } from '~/domain/ports/EventRepository'
+import { IEventRepository } from '~/application/EventRepository'
 import { Event } from '~/type'
 
 export function EventRepository(db: Firestore): IEventRepository {

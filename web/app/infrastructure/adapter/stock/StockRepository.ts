@@ -1,5 +1,5 @@
 import { Firestore } from 'firebase-admin/firestore'
-import { IStockRepository } from '~/domain/ports/StockRepository'
+import { IStockRepository } from '~/application/StockRepository'
 import { Stock } from '~/type'
 
 export function StockRepository(db: Firestore): IStockRepository {
