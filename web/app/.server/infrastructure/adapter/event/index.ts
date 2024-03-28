@@ -1,4 +1,4 @@
-import { db } from '~/infrastructure/firebase'
+import { db } from '~/.server/infrastructure/firebase'
 import { EventRepository } from './EventRepository'
 
 const eventRepository = EventRepository(db)

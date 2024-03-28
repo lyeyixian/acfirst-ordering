@@ -1,7 +1,7 @@
 import { ActionFunction } from '@remix-run/node'
 import { Timestamp } from 'firebase-admin/firestore'
-import { sessionRepository } from '~/infrastructure/adapter/auth'
-import { eventRepository } from '~/infrastructure/adapter/event'
+import { sessionRepository } from '~/.server/infrastructure/adapter/auth'
+import { eventRepository } from '~/.server/infrastructure/adapter/event'
 import {
   Event,
   EventPayload,

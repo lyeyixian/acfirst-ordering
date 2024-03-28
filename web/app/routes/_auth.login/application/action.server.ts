@@ -1,5 +1,5 @@
 import type { ActionFunction } from '@remix-run/node'
-import { sessionRepository } from '~/infrastructure/adapter/auth'
+import { sessionRepository } from '~/.server/infrastructure/adapter/auth'
 
 export const loginAction: ActionFunction = async ({ request }) => {
   const form = await request.formData()

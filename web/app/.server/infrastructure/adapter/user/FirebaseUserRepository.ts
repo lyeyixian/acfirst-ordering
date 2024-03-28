@@ -1,6 +1,6 @@
 import { Auth } from 'firebase-admin/auth'
 import { Firestore } from 'firebase-admin/firestore'
-import { IUserRepository } from '~/application/UserRepository'
+import { IUserRepository } from '~/.server/application/IUserRepository'
 import { CreateUserPayload, User } from '~/type'
 
 export function FirebaseUserRepository(
