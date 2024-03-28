@@ -1,9 +1,8 @@
 import { ActionFunction } from '@remix-run/node'
 import { Timestamp } from 'firebase-admin/firestore'
 import { sessionRepository } from '~/adapter/auth'
-import { EventStatus, createEvent } from '~/firebase.server'
-import { User } from '~/type'
-import { EventType } from '~/type'
+import { eventRepository } from '~/adapter/event'
+import { EventStatus, EventType, User } from '~/type'
 
 export const homeAction: ActionFunction = async ({ request }) => {
   return sessionRepository.verifySession(request, async (user: User) => {
@@ -24,7 +23,7 @@ export const homeAction: ActionFunction = async ({ request }) => {
 
     try {
       console.log('Creating event: ', requestBody)
-      const docRef = await createEvent(requestBody)
+      const docRef = await eventRepository.createEvent(requestBody)
       console.log('Event created: ', docRef.id)
 
       return { data: { msg: `Event created: ${docRef.id}` }, status: 200 }

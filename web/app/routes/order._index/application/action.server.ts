@@ -1,13 +1,11 @@
 import { ActionFunction } from '@remix-run/node'
 import { Timestamp } from 'firebase-admin/firestore'
 import { sessionRepository } from '~/adapter/auth'
-import {
-  Event,
-  EventPayload,
-  EventStatus,
-  EventStockPayload,
-  createEvent,
-} from '~/firebase.server'
+import { eventRepository } from '~/adapter/event'
+import { EventStockPayload } from '~/type'
+import { EventPayload } from '~/type'
+import { EventStatus } from '~/type'
+import { Event } from '~/type'
 import { EventType } from '~/type'
 
 export const orderAction: ActionFunction = async ({ request }) => {
@@ -56,7 +54,7 @@ export const orderAction: ActionFunction = async ({ request }) => {
 
     try {
       console.log('Creating event: ', requestBody)
-      const docRef = await createEvent(requestBody)
+      const docRef = await eventRepository.createEvent(requestBody)
       console.log('Event created: ', docRef.id)
 
       return { data: { msg: `Event created: ${docRef.id}` }, status: 200 }
