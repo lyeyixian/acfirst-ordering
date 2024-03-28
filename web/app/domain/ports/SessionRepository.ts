@@ -1,5 +1,5 @@
 import { TypedResponse } from '@remix-run/node'
-import { User } from '~/firebase.server'
+import { User } from '~/type'
 import { CallbackData, ResponseData } from '~/type'
 
 export interface ISessionRepository {

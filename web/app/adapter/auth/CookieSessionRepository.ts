@@ -1,16 +1,13 @@
 import { createCookieSessionStorage, json, redirect } from '@remix-run/node'
 import dotenv from 'dotenv'
+import { Auth } from 'firebase-admin/auth'
 import { TWO_WEEKS } from '~/constants'
 import { ISessionRepository } from '~/domain/ports/SessionRepository'
-import {
-  User,
-  generateSessionToken,
-  getUser,
-  verifySessionToken,
-} from '~/firebase.server'
-import { CallbackData, ResponseData } from '~/type'
+import { getUser } from '~/firebase.server'
+import { CallbackData, ResponseData, User } from '~/type'
+import { userRepository } from '../user'
 
-export function CookieSessionRepository(): ISessionRepository {
+export function CookieSessionRepository(auth: Auth): ISessionRepository {
   dotenv.config()
 
   const sessionSecret = process.env.SESSION_SECRET
@@ -34,6 +31,19 @@ export function CookieSessionRepository(): ISessionRepository {
   })
   const getSession = async (request: Request) =>
     storage.getSession(request.headers.get('Cookie'))
+
+  const generateSessionToken = async (idToken: string) => {
+    const decodedToken = await auth.verifyIdToken(idToken)
+
+    if (new Date().getTime() / 1000 - decodedToken.auth_time > 5 * 60) {
+      throw new Error('Recent sign in required')
+    }
+
+    return await auth.createSessionCookie(idToken, { expiresIn: TWO_WEEKS })
+  }
+  const verifySessionToken = (token: string) => {
+    return auth.verifySessionCookie(token, true)
+  }
 
   async function createUserSession(idToken: string, redirectTo: string) {
     const session = await storage.getSession()
@@ -66,7 +76,7 @@ export function CookieSessionRepository(): ISessionRepository {
 
     try {
       const decodedToken = await verifySessionToken(token)
-      const user = await getUser(decodedToken.email || '')
+      const user = await userRepository.getUser(decodedToken.email || '')
       let responseData: ResponseData = { user }
       let status = null
 

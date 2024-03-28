@@ -1,4 +1,4 @@
-import { User } from './firebase.server'
+import { User } from './type'
 
 export enum EventType {
   REFRESH_STOCKS = 'refreshStocks',
@@ -14,4 +14,18 @@ export interface ResponseData {
   user: User
   data?: Record<string, unknown>
   error?: string
+} // Firestore
+// Users
+
+export interface CreateUserPayload {
+  username: string
+  email: string
+  company: string
+  userId: string
+}
+export interface User {
+  username: string
+  email: string
+  company: string
+  userId: string
 }

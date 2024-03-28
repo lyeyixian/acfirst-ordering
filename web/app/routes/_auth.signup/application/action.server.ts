@@ -1,6 +1,6 @@
 import { json, type ActionFunction } from '@remix-run/node'
 import { sessionRepository } from '~/adapter/auth'
-import { createUser } from '~/firebase.server'
+import { userRepository } from '~/adapter/user'
 
 export const signUpAction: ActionFunction = async ({ request }) => {
   const formData = await request.formData()
@@ -11,7 +11,12 @@ export const signUpAction: ActionFunction = async ({ request }) => {
   const username = formData.get('username')?.toString() || ''
 
   try {
-    await createUser(email, { email, company, username, userId: uid })
+    await userRepository.createUser(email, {
+      email,
+      company,
+      username,
+      userId: uid,
+    })
   } catch (error) {
     console.log(error)
 
