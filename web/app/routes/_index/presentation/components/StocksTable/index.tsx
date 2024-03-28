@@ -1,7 +1,6 @@
 import { useFetcher } from '@remix-run/react'
 import { Button, Container, Table } from '@mantine/core'
-import { Stock } from '~/type'
-import { EventType } from '~/type'
+import { EventType, Stock } from '~/type'
 
 const generateRows = (stocksData: Stock[]) => {
   return stocksData.map((data, index) => (
