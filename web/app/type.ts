@@ -1,3 +1,4 @@
+import { Timestamp } from '@google-cloud/firestore'
 import { User } from './type'
 
 export enum EventType {
@@ -28,4 +29,15 @@ export interface User {
   email: string
   company: string
   userId: string
+} // Firestore
+// Users
+// Stocks
+
+export interface Stock {
+  itemCode: string
+  location: string
+  batch: string
+  quantity: number
+  pricePerUnit: number
+  updatedAt: Timestamp
 }

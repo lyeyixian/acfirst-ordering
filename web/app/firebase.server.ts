@@ -2,34 +2,6 @@ import { Timestamp } from 'firebase-admin/firestore'
 import { EventType } from './type'
 import { db } from './infrastructure/firebase'
 
-// Firestore
-
-// Users
-
-// Stocks
-export interface Stock {
-  itemCode: string
-  location: string
-  batch: string
-  quantity: number
-  pricePerUnit: number
-  updatedAt: Timestamp
-}
-
-export async function getStocks() {
-  const querySnapshot = await db.collection('stocks').get()
-
-  const data: Stock[] = []
-
-  querySnapshot.forEach((doc) => {
-    const docData = doc.data() as Stock
-
-    data.push({ ...docData })
-  })
-
-  return data
-}
-
 // Events
 export interface Event {
   id?: string

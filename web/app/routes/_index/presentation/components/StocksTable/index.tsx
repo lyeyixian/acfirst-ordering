@@ -1,6 +1,6 @@
 import { useFetcher } from '@remix-run/react'
 import { Button, Container, Table } from '@mantine/core'
-import { Stock } from '~/firebase.server'
+import { Stock } from '~/type'
 import { EventType } from '~/type'
 
 const generateRows = (stocksData: Stock[]) => {
