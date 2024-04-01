@@ -1,5 +1,5 @@
 import { Stock } from '~/common/type'
 
-export interface IStockRepository {
+export interface IStockService {
   getStocks: () => Promise<Stock[]>
 }

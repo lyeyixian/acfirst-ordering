@@ -1,6 +1,6 @@
 import { json, type ActionFunction } from '@remix-run/node'
-import { sessionRepository } from '~/.server/infrastructure/adapter/auth'
-import { userRepository } from '~/.server/infrastructure/adapter/user'
+import { sessionService } from '~/.server/services/SessionService'
+import { userService } from '~/.server/services/UserService'
 
 export const signUpAction: ActionFunction = async ({ request }) => {
   const formData = await request.formData()
@@ -11,7 +11,7 @@ export const signUpAction: ActionFunction = async ({ request }) => {
   const username = formData.get('username')?.toString() || ''
 
   try {
-    await userRepository.createUser(email, {
+    await userService.createUser(email, {
       email,
       company,
       username,
@@ -28,5 +28,5 @@ export const signUpAction: ActionFunction = async ({ request }) => {
 
   const idToken = formData.get('idToken')?.toString() || ''
 
-  return sessionRepository.createUserSession(idToken, '/')
+  return sessionService.createUserSession(idToken, '/')
 }

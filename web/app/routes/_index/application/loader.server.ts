@@ -1,14 +1,14 @@
 import { LoaderFunction } from '@remix-run/node'
-import { sessionRepository } from '~/.server/infrastructure/adapter/auth'
-import { eventRepository } from '~/.server/infrastructure/adapter/event'
-import { stockRepository } from '~/.server/infrastructure/adapter/stock'
+import { eventService } from '~/.server/services/EventService'
+import { sessionService } from '~/.server/services/SessionService'
+import { stockService } from '~/.server/services/StockService'
 
 export const homeLoader: LoaderFunction = async ({ request }) => {
-  return sessionRepository.verifySession(request, async () => {
+  return sessionService.verifySession(request, async () => {
     return {
       data: {
-        stocks: await stockRepository.getStocks(),
-        events: await eventRepository.getEvents(),
+        stocks: await stockService.getStocks(),
+        events: await eventService.getEvents(),
       },
       status: 200,
     }

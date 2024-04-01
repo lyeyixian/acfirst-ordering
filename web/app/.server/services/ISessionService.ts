@@ -2,7 +2,7 @@ import { TypedResponse } from '@remix-run/node'
 import { User } from '~/common/type'
 import { CallbackData, ResponseData } from '~/common/type'
 
-export interface ISessionRepository {
+export interface ISessionService {
   createUserSession: (
     idToken: string,
     redirectTo: string
