@@ -1,12 +1,12 @@
-import { Event, EventStatus, EventType, Stock, User } from '~/common/type'
+import { EventType, Stock, User } from '~/common/type'
 import { db } from '../infrastructure/firebase'
-import { Timestamp } from 'firebase-admin/firestore'
 import { eventService } from './EventService'
+import { DocumentReference } from 'firebase-admin/firestore'
 
 export interface IStockService {
   getStocks: () => Promise<Stock[]>
   getStock: (itemCode: string) => Promise<Stock>
-  refreshStocks: (user: User) => Promise<void>
+  refreshStocks: (user: User) => Promise<DocumentReference>
 }
 
 async function getStocks() {
@@ -34,15 +34,7 @@ async function getStock(itemCode: string) {
 }
 
 async function refreshStocks(user: User) {
-  const event: Event = {
-    type: EventType.REFRESH_STOCKS,
-    status: EventStatus.QUEUED,
-    createdBy: user.username,
-    createdAt: Timestamp.now(),
-    updatedAt: Timestamp.now(),
-  }
-
-  await eventService.createEvent(event)
+  return await eventService.createEvent(EventType.REFRESH_STOCKS, user)
 }
 
 export const stockService: IStockService = {

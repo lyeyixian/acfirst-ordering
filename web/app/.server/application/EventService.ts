@@ -1,10 +1,21 @@
-import { Event } from '~/common/type'
+import {
+  Event,
+  EventPayload,
+  EventStatus,
+  EventType,
+  User,
+} from '~/common/type'
 import { db } from '../infrastructure/firebase'
 import { DocumentReference } from '@google-cloud/firestore'
+import { Timestamp } from 'firebase-admin/firestore'
 
 export interface IEventService {
   getEvents: () => Promise<Event[]>
-  createEvent: (event: Event) => Promise<DocumentReference>
+  createEvent: (
+    type: EventType,
+    user: User,
+    payload?: EventPayload
+  ) => Promise<DocumentReference>
 }
 
 async function getEvents() {
@@ -21,8 +32,25 @@ async function getEvents() {
   return data
 }
 
-async function createEvent(event: Event) {
+async function _createEvent(event: Event) {
   return db.collection('events').add(event)
+}
+
+async function createEvent(
+  type: EventType,
+  user: User,
+  payload?: EventPayload
+) {
+  const event: Event = {
+    type,
+    payload: payload || null,
+    status: EventStatus.QUEUED,
+    createdBy: user.username,
+    createdAt: Timestamp.now(),
+    updatedAt: Timestamp.now(),
+  }
+
+  return _createEvent(event)
 }
 
 export const eventService: IEventService = {

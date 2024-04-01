@@ -22,7 +22,7 @@ export enum EventType {
 export interface Event {
   id?: string
   type: EventType
-  payload?: EventPayload
+  payload: EventPayload | null
   status: EventStatus
   createdBy: string
   createdAt: Timestamp

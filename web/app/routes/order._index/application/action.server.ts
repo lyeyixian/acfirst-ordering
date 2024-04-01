@@ -1,14 +1,7 @@
 import { ActionFunction } from '@remix-run/node'
-import { Timestamp } from 'firebase-admin/firestore'
 import { eventService } from '~/.server/application/EventService'
 import { sessionService } from '~/.server/application/SessionService'
-import {
-  Event,
-  EventPayload,
-  EventStatus,
-  EventStockPayload,
-  EventType,
-} from '~/common/type'
+import { EventPayload, EventStockPayload, EventType } from '~/common/type'
 
 export const orderAction: ActionFunction = async ({ request }) => {
   return sessionService.verifySession(request, async (user) => {
@@ -45,18 +38,10 @@ export const orderAction: ActionFunction = async ({ request }) => {
       code,
       data,
     }
-    const requestBody: Event = {
-      type,
-      payload: payload,
-      status: EventStatus.QUEUED,
-      createdBy: user.username,
-      createdAt: Timestamp.now(),
-      updatedAt: Timestamp.now(),
-    }
 
     try {
-      console.log('Creating event: ', requestBody)
-      const docRef = await eventService.createEvent(requestBody)
+      console.log('Creating event: ', type, 'with body: ', payload)
+      const docRef = await eventService.createEvent(type, user, payload)
       console.log('Event created: ', docRef.id)
 
       return { data: { msg: `Event created: ${docRef.id}` }, status: 200 }
