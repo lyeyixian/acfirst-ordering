@@ -4,11 +4,11 @@ import { sessionService } from '~/.server/application/SessionService'
 import { stockService } from '~/.server/application/StockService'
 
 export const homeLoader: LoaderFunction = async ({ request }) => {
-  return sessionService.verifySession(request, async () => {
+  return sessionService.verifySession(request, async (user) => {
     return {
       data: {
         stocks: await stockService.getStocks(),
-        events: await eventService.getEvents(),
+        events: await eventService.getEventsForUser(user),
       },
       status: 200,
     }
