@@ -1,4 +1,4 @@
-import { CreateUserPayload, User } from '~/type'
+import { CreateUserPayload, User } from '~/common/type'
 
 export interface IUserRepository {
   createUser: (docId: string, payload: CreateUserPayload) => Promise<void>

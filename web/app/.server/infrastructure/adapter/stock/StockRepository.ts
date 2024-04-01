@@ -1,6 +1,6 @@
 import { Firestore } from 'firebase-admin/firestore'
 import { IStockRepository } from '~/.server/application/IStockRepository'
-import { Stock } from '~/type'
+import { Stock } from '~/common/type'
 
 export function StockRepository(db: Firestore): IStockRepository {
   async function getStocks() {

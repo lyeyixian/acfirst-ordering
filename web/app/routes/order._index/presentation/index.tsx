@@ -1,4 +1,4 @@
-import { EventType } from '~/type'
+import { EventType } from '~/common/type'
 import { Form, useActionData, useNavigation } from '@remix-run/react'
 import { SyntheticEvent, useState } from 'react'
 import { Button, Flex, Title } from '@mantine/core'

@@ -2,7 +2,7 @@ import { ActionFunction } from '@remix-run/node'
 import { Timestamp } from 'firebase-admin/firestore'
 import { sessionRepository } from '~/.server/infrastructure/adapter/auth'
 import { eventRepository } from '~/.server/infrastructure/adapter/event'
-import { EventStatus, EventType, User } from '~/type'
+import { EventStatus, EventType, User } from '~/common/type'
 
 export const homeAction: ActionFunction = async ({ request }) => {
   return sessionRepository.verifySession(request, async (user: User) => {

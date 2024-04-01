@@ -8,7 +8,7 @@ import {
   EventStatus,
   EventStockPayload,
   EventType,
-} from '~/type'
+} from '~/common/type'
 
 export const orderAction: ActionFunction = async ({ request }) => {
   return sessionRepository.verifySession(request, async (user) => {

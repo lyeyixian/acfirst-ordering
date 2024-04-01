@@ -1,6 +1,6 @@
 import { TypedResponse } from '@remix-run/node'
-import { User } from '~/type'
-import { CallbackData, ResponseData } from '~/type'
+import { User } from '~/common/type'
+import { CallbackData, ResponseData } from '~/common/type'
 
 export interface ISessionRepository {
   createUserSession: (

@@ -1,6 +1,6 @@
 import { Firestore } from 'firebase-admin/firestore'
 import { IEventRepository } from '~/.server/application/IEventRepository'
-import { Event } from '~/type'
+import { Event } from '~/common/type'
 
 export function EventRepository(db: Firestore): IEventRepository {
   async function getEvents() {

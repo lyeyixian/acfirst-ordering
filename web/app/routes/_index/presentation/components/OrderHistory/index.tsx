@@ -1,6 +1,6 @@
 import { Container, Table } from '@mantine/core'
 import { Timestamp } from 'firebase-admin/firestore'
-import { Event } from '~/type'
+import { Event } from '~/common/type'
 
 const parseDate = (date: Timestamp) => {
   const firebaseDateTime = new Date(
