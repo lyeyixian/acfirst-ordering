@@ -1,7 +1,7 @@
 import { ActionFunction } from '@remix-run/node'
 import { Timestamp } from 'firebase-admin/firestore'
-import { eventService } from '~/.server/services/EventService'
-import { sessionService } from '~/.server/services/SessionService'
+import { eventService } from '~/.server/application/EventService'
+import { sessionService } from '~/.server/application/SessionService'
 import { EventStatus, EventType, User } from '~/common/type'
 
 export const homeAction: ActionFunction = async ({ request }) => {

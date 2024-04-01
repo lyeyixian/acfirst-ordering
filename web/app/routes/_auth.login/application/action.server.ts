@@ -1,5 +1,5 @@
 import type { ActionFunction } from '@remix-run/node'
-import { sessionService } from '~/.server/services/SessionService'
+import { sessionService } from '~/.server/application/SessionService'
 
 export const loginAction: ActionFunction = async ({ request }) => {
   const form = await request.formData()

@@ -1,6 +1,6 @@
 import { json, type ActionFunction } from '@remix-run/node'
-import { sessionService } from '~/.server/services/SessionService'
-import { userService } from '~/.server/services/UserService'
+import { sessionService } from '~/.server/application/SessionService'
+import { userService } from '~/.server/application/UserService'
 
 export const signUpAction: ActionFunction = async ({ request }) => {
   const formData = await request.formData()
