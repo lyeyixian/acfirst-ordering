@@ -1,5 +1,5 @@
 import { Link } from '@remix-run/react'
-import { useLogin } from '~/.client/hooks/auth/hooks'
+import { useLogin } from './hooks'
 
 export default function LoginPage() {
   const { handleSubmit } = useLogin()
