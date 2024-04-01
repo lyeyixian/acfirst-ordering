@@ -1,6 +1,9 @@
-import { IStockService } from '~/.server/services/IStockService'
 import { Stock } from '~/common/type'
 import { db } from '../infrastructure/firebase'
+
+export interface IStockService {
+  getStocks: () => Promise<Stock[]>
+}
 
 async function getStocks() {
   const querySnapshot = await db.collection('stocks').get()

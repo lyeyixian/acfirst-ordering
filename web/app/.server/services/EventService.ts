@@ -1,6 +1,11 @@
-import { IEventService } from '~/.server/services/IEventService'
 import { Event } from '~/common/type'
 import { db } from '../infrastructure/firebase'
+import { DocumentReference } from '@google-cloud/firestore'
+
+export interface IEventService {
+  getEvents: () => Promise<Event[]>
+  createEvent: (event: Event) => Promise<DocumentReference>
+}
 
 async function getEvents() {
   const querySnapshot = await db.collection('events').get()

@@ -1,6 +1,10 @@
-import { IUserService } from '~/.server/services/IUserService'
 import { CreateUserPayload, User } from '~/common/type'
 import { auth, db } from '../infrastructure/firebase'
+
+export interface IUserService {
+  createUser: (docId: string, payload: CreateUserPayload) => Promise<void>
+  getUser: (email: string) => Promise<User>
+}
 
 async function createUser(docId: string, payload: CreateUserPayload) {
   try {

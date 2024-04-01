@@ -1,10 +1,26 @@
-import { createCookieSessionStorage, json, redirect } from '@remix-run/node'
+import {
+  TypedResponse,
+  createCookieSessionStorage,
+  json,
+  redirect,
+} from '@remix-run/node'
 import dotenv from 'dotenv'
 import { TWO_WEEKS } from '~/common/constants'
-import { ISessionService } from '~/.server/services/ISessionService'
 import { CallbackData, ResponseData, User } from '~/common/type'
 import { auth } from '../infrastructure/firebase'
 import { userService } from './UserService'
+
+export interface ISessionService {
+  createUserSession: (
+    idToken: string,
+    redirectTo: string
+  ) => Promise<TypedResponse>
+  verifySession: (
+    request: Request,
+    callback?: (user: User) => Promise<CallbackData>
+  ) => Promise<TypedResponse<ResponseData>>
+  destroyUserSession: (request: Request) => Promise<TypedResponse>
+}
 
 dotenv.config()
 
