@@ -1,5 +1,5 @@
 import { useFetcher } from '@remix-run/react'
-import { SyntheticEvent, useCallback } from 'react'
+import { SyntheticEvent, useCallback, useEffect, useState } from 'react'
 import { signIn } from '~/firebase.client'
 
 interface LoginFormTarget extends EventTarget {
@@ -9,34 +9,39 @@ interface LoginFormTarget extends EventTarget {
 
 export function useLogin() {
   const fetcher = useFetcher()
+  const [isFirebaseLoading, setIsFirebaseLoading] = useState(false)
 
-  const handleSubmit = useCallback(
-    async (e: SyntheticEvent) => {
-      e.preventDefault()
+  const handleSubmit = useCallback(async (e: SyntheticEvent) => {
+    e.preventDefault()
 
-      const target: LoginFormTarget = e.target
-      const email = target.email?.value || ''
-      const password = target.password?.value || ''
+    const target: LoginFormTarget = e.target
+    const email = target.email?.value || ''
+    const password = target.password?.value || ''
 
-      try {
-        console.log('signing in with email and password...')
+    try {
+      console.log('signing in with email and password...')
 
-        const credential = await signIn(email, password)
-        const idToken = await credential.user.getIdToken()
+      setIsFirebaseLoading(true)
 
-        console.log('signed in!')
+      const credential = await signIn(email, password)
+      const idToken = await credential.user.getIdToken()
 
-        // Trigger a POST request which the action will handle
-        fetcher.submit({ idToken }, { method: 'post', action: '/login' })
-      } catch (e: unknown) {
-        console.log('Error logging in!')
-        console.error(e)
-      }
-    },
-    [fetcher]
-  )
+      console.log('signed in!')
+
+      // Trigger a POST request which the action will handle
+      fetcher.submit({ idToken }, { method: 'post', action: '/login' })
+    } catch (e: unknown) {
+      console.log('Error logging in!')
+      console.error(e)
+    }
+  }, [])
+
+  useEffect(() => {
+    setIsFirebaseLoading(fetcher.state !== 'idle')
+  }, [fetcher])
 
   return {
     handleSubmit,
+    isLoading: isFirebaseLoading,
   }
 }

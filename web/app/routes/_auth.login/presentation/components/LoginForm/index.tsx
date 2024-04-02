@@ -15,7 +15,7 @@ import { Link } from '@remix-run/react'
 import { useLogin } from '../../hooks'
 
 export default function LoginForm() {
-  const { handleSubmit } = useLogin()
+  const { handleSubmit, isLoading } = useLogin()
 
   return (
     <Container size={420}>
@@ -58,7 +58,7 @@ export default function LoginForm() {
             Forgot password?
           </Anchor>
         </Group>
-        <Button type="submit" fullWidth mt="xl">
+        <Button type="submit" fullWidth mt="xl" loading={isLoading}>
           Sign in
         </Button>
       </Paper>
