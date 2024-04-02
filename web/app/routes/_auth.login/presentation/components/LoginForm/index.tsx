@@ -20,7 +20,7 @@ export default function LoginForm() {
   return (
     <Container size={420}>
       <Title ta="center" className={classes.title}>
-        Welcome back to Acfirst Ordering!
+        Sign in to your account
       </Title>
       <Text c="dimmed" size="sm" ta="center" mt={5}>
         Do not have an account yet?{' '}

@@ -18,7 +18,7 @@ export default function SignUpForm() {
   return (
     <Container size={420}>
       <Title ta="center" className={classes.title}>
-        Sign Up with Acfirst Ordering!
+        Create your account
       </Title>
       <Text c="dimmed" size="sm" ta="center" mt={5}>
         Already have an account?{' '}
