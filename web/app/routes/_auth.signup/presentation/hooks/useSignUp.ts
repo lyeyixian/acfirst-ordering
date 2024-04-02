@@ -11,7 +11,7 @@ interface SignUpFormTarget extends EventTarget {
 
 export function useSignUp() {
   const fetcher = useFetcher()
-  const [isFirebaseLoading, setIsFirebaseLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
 
   const handleSubmit = useCallback(
     async (e: SyntheticEvent) => {
@@ -26,7 +26,7 @@ export function useSignUp() {
       try {
         console.log('creating user ...')
 
-        setIsFirebaseLoading(true)
+        setIsLoading(true)
 
         const credential = await signUp(email, password)
 
@@ -50,11 +50,11 @@ export function useSignUp() {
   )
 
   useEffect(() => {
-    setIsFirebaseLoading(fetcher.state !== 'idle')
+    setIsLoading(fetcher.state !== 'idle')
   }, [fetcher])
 
   return {
     handleSubmit,
-    isLoading: isFirebaseLoading,
+    isLoading,
   }
 }

@@ -9,7 +9,7 @@ interface LoginFormTarget extends EventTarget {
 
 export function useLogin() {
   const fetcher = useFetcher()
-  const [isFirebaseLoading, setIsFirebaseLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
 
   const handleSubmit = useCallback(async (e: SyntheticEvent) => {
     e.preventDefault()
@@ -21,7 +21,7 @@ export function useLogin() {
     try {
       console.log('signing in with email and password...')
 
-      setIsFirebaseLoading(true)
+      setIsLoading(true)
 
       const credential = await signIn(email, password)
       const idToken = await credential.user.getIdToken()
@@ -37,11 +37,11 @@ export function useLogin() {
   }, [])
 
   useEffect(() => {
-    setIsFirebaseLoading(fetcher.state !== 'idle')
+    setIsLoading(fetcher.state !== 'idle')
   }, [fetcher])
 
   return {
     handleSubmit,
-    isLoading: isFirebaseLoading,
+    isLoading: isLoading,
   }
 }
