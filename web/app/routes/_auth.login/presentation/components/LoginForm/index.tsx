@@ -14,6 +14,7 @@ import classes from './LoginForm.module.css'
 import { Link } from '@remix-run/react'
 import { useLogin } from '../../hooks/useLogin'
 
+// TODO: add validation and error from Mantine useForm hook
 export default function LoginForm() {
   const { handleSubmit, isLoading } = useLogin()
 

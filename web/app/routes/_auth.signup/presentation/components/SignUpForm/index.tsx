@@ -12,6 +12,7 @@ import classes from './SignUpForm.module.css'
 import { Link } from '@remix-run/react'
 import { useSignUp } from '../../hooks/useSignUp'
 
+// TODO: add validation and error from Mantine useForm hook
 export default function SignUpForm() {
   const { handleSubmit, isLoading } = useSignUp()
 
@@ -49,6 +50,7 @@ export default function SignUpForm() {
           required
           mt="md"
         />
+        {/* TODO: should be a dropdown of fixed company name that the user can choose from */}
         <TextInput label="Company Name" name="company" required mt="md" />
         <TextInput label="Username" name="username" required mt="md" />
 
