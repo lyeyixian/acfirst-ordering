@@ -1,5 +1,5 @@
 import { useFetcher } from '@remix-run/react'
-import { SyntheticEvent, useCallback } from 'react'
+import { SyntheticEvent, useCallback, useEffect, useState } from 'react'
 import { signUp } from '~/firebase.client'
 
 interface SignUpFormTarget extends EventTarget {
@@ -11,6 +11,7 @@ interface SignUpFormTarget extends EventTarget {
 
 export function useSignUp() {
   const fetcher = useFetcher()
+  const [isFirebaseLoading, setIsFirebaseLoading] = useState(false)
 
   const handleSubmit = useCallback(
     async (e: SyntheticEvent) => {
@@ -24,6 +25,8 @@ export function useSignUp() {
 
       try {
         console.log('creating user ...')
+
+        setIsFirebaseLoading(true)
 
         const credential = await signUp(email, password)
 
@@ -46,7 +49,12 @@ export function useSignUp() {
     [fetcher]
   )
 
+  useEffect(() => {
+    setIsFirebaseLoading(fetcher.state !== 'idle')
+  }, [fetcher])
+
   return {
     handleSubmit,
+    isLoading: isFirebaseLoading,
   }
 }
