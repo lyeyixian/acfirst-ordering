@@ -33,7 +33,7 @@ def convertDOtoSI(deliveryOrderDocNo, salesInvoiceDocNo, customerAccount, compan
         lMain.FindField("PostDate").value = lDate
         lMain.FindField("Description").AsString = "Generated from Delivery Order"
         lMain.FindField("DocKey").value = -1
-        lMain.FindField("DocNo").AsString = salesInvoiceDocNo
+        # lMain.FindField("DocNo").AsString = salesInvoiceDocNo
         lMain.FindField("Code").AsString        = customerAccount
         lMain.FindField("CompanyName").AsString = companyName
 

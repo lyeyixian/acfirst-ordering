@@ -1,12 +1,9 @@
 {
-    "DocNo": "test6",
-    "Code": "300-A0002",
+    "Code": "300-W0001",
     "Data": [
         {
-            "ItemCode": "HFK",
-            "Qty": 10,
-            "Batch": "BT-00001",
-            "Location": "BC"
+            "ItemCode": "WRM/White",
+            "Qty": 200
         }
     ]
 }     

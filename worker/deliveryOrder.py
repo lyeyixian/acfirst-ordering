@@ -30,34 +30,29 @@ def createDeliverOrder(salesData):
     lDate.strftime('%m/%d/%Y')
     
     parsedData = salesData
-    lDocKey = BizObject.FindKeyByRef("DocNo", parsedData["DocNo"])
         
-    if lDocKey is None:
-        BizObject.New()
-        lMain.FindField("DocDate").value = lDate
-        lMain.FindField("PostDate").value = lDate
+    BizObject.New()
+    lMain.FindField("DocDate").value = lDate
+    lMain.FindField("PostDate").value = lDate
 
-        for field in parsedData:
-            if field == "requestAt" or field == "user":
-                continue
-            print(field)
-            if field == "Data":
-                deliveryData = parsedData[field]
-                count = 1
-                for item in deliveryData:
-                    print(item)
-                    lDetail.Append()
-                    lDetail.FindField("Seq").value = count
-                    for fieldItem in item:
-                        print(fieldItem)
-                        lDetail.FindField(fieldItem).AsString = item[fieldItem]
-                    lDetail.Post()
-                    count += 1
-            else:
-                lMain.FindField(field).AsString = parsedData[field]        
-    else:
-        print("Delivery Id exists, cannot create delivery with duplicate ids!")
-        return
+    for field in parsedData:
+        if field == "requestAt" or field == "user":
+            continue
+        print(field)
+        if field == "Data":
+            deliveryData = parsedData[field]
+            count = 1
+            for item in deliveryData:
+                print(item)
+                lDetail.Append()
+                lDetail.FindField("Seq").value = count
+                for fieldItem in item:
+                    print(fieldItem)
+                    lDetail.FindField(fieldItem).AsString = item[fieldItem]
+                lDetail.Post()
+                count += 1
+        else:
+            lMain.FindField(field).AsString = parsedData[field]        
     try:
         BizObject.Save()          
     except Exception as e:
