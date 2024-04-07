@@ -3,7 +3,6 @@
     "id": "firebase-id",
     "type": "refreshStocks | createInvoice | createDeliveryOrder",
     "payload": {
-      "docNo": "string",
       "code": "string",
       "data": [
         {
