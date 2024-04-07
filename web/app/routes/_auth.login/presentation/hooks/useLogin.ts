@@ -1,6 +1,6 @@
 import { useFetcher } from '@remix-run/react'
 import { SyntheticEvent, useCallback, useEffect, useState } from 'react'
-import { signIn } from '~/firebase.client'
+import { signIn } from '~/.client/firebase'
 
 interface LoginFormTarget extends EventTarget {
   email?: { value: string }
