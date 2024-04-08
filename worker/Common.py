@@ -39,14 +39,32 @@ def ShowResult(ADataset):
                 fn = ADataset.Fields.Items(x).FieldName
                 fv = ADataset.FindField(fn).AsString
                 result[count][fn] = fv
-                # lresult = "Index : "+ str(x) + " FieldName : " + fn + " Value : " + fv
-                # print (lresult)
+                lresult = "Index : "+ str(x) + " FieldName : " + fn + " Value : " + fv
+                print (lresult)
             ADataset.Next()
             count += 1
         return result
     else:
         print ("Record Not Found")
         
-        
+def ShowOneResult(ADataset):
+    if ADataset.RecordCount > 0:
+        result = {}
+        count = 1
+        while count < 2:
+            result = {}
+            fc = ADataset.Fields.Count
+            for x in range(fc):
+                fn = ADataset.Fields.Items(x).FieldName
+                fv = ADataset.FindField(fn).AsString
+                result[fn] = fv
+                lresult = "Index : "+ str(x) + " FieldName : " + fn + " Value : " + fv
+                print (lresult)
+            ADataset.Next()
+            count += 1
+        return result
+    else:
+        print ("Record Not Found")     
+
 def QuotedStr(ACode):
     return "'" + ACode.replace("'", "''") + "'"

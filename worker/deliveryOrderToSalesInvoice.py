@@ -11,7 +11,6 @@ def convertDOtoSI(deliveryOrderDocNo, salesInvoiceDocNo, customerAccount, compan
     lSQL = lSQL + "WHERE FromDockey=(SELECT DocKey FROM SL_DO " 
     lSQL = lSQL + "WHERE DocNo='{}') ".format(deliveryOrderDocNo)
     lDataSet = ComServer.DBManager.NewDataSet(lSQL)
-
     if lDataSet.RecordCount == 0:
         # Get DO information (Not transferred)
         lSQL = "SELECT * FROM SL_DODTL "

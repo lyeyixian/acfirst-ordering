@@ -13,7 +13,7 @@ def getAllSalesInvoice():
     lSQL = lSQL + "FROM SL_IV A "
     lSQL = lSQL + "INNER JOIN SL_IVDTL B ON (A.DOCKEY=B.DOCKEY) "
     # lSQL = lSQL + "WHERE A.CODE='300-A0002' "
-    lSQL = lSQL + "AND A.CANCELLED='F' "
+    lSQL = lSQL + "WHERE A.CANCELLED='F' "
     
     lDataSet = ComServer.DBManager.NewDataSet(lSQL)
         

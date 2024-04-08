@@ -9,10 +9,10 @@ import salesInvoice
 import stock
 import stockQtyBalance
 import threading
-from google.cloud.firestore_v1.base_query import FieldFilter
-from dotenv import load_dotenv
+from google.cloud.firestore_v1.base_query import FieldFilter, Or
+# from dotenv import load_dotenv
 
-load_dotenv()
+# load_dotenv()
 
 cred = credentials.Certificate('../firebase-creds.json')
 app = initialize_app(cred)
@@ -21,7 +21,7 @@ db = firestore.client()
 global ComServer
 ComServer = Common.ComServer
 
-def listenStockByItemCodeQuery():
+def listenEvent():
     # [START firestore_listen_query_snapshots]
 
     # Create an Event for notifying main thread.
@@ -29,137 +29,61 @@ def listenStockByItemCodeQuery():
 
     # Create a callback on_snapshot function to capture changes
     def on_snapshot(col_snapshot, changes, read_time):
-        print("Received query snapshot: StockByItemCodeQuery")
-        print("DEBUG changes: ", changes)
+        print("Start listening to events")
         for change in changes:
             if change.type.name == "ADDED":
-                print(f"New listenStockByItemCodeQuery: {change.document.id}")
-                itemCode = change.document.get("itemCode")
-                print(itemCode)
-                Common.CheckLogin()
-                result = stockQtyBalance.getStocksBalanceByItemCodeAndLocationAndBatch(itemCode)
-                print(result)
-                db.collection("stockItemsByItemCodeBatchLocation").document(itemCode).set(result)
-            elif change.type.name == "MODIFIED":
-                print(f"Added stockqty: {change.document.id}")
-
-        # print(read_time)
-        callback_done.set()
-
-    col_query = db.collection("stockByItemCodeQuery").where(filter=FieldFilter("timestamp", ">=", datetime.now()-timedelta(minutes=1)))
-
-    # Watch the collection query
-    query_watch = col_query.on_snapshot(on_snapshot)
-    # query_watch.unsubscribe()
-
-def listenAllStocksQuery():
-    # [START firestore_listen_query_snapshots]
-
-    # Create an Event for notifying main thread.
-    callback_done = threading.Event()
-
-    # Create a callback on_snapshot function to capture changes
-    def on_snapshot(col_snapshot, changes, read_time):
-        print("Received query snapshot: AllStocksQuery")
-        for change in changes:
-            if change.type.name == "ADDED":
-                print(f"New listenAllStocksQuery: {change.document.id}")
-                Common.CheckLogin()
-                result = stockQtyBalance.getAllStocksBalanceByItemCodeAndLocationAndBatch()
-                print(result)
-                db.collection("allStocks").document("itemcodes").set(result)
-            elif change.type.name == "MODIFIED":
-                print(f"Added stockqty: {change.document.id}")
-
-        # print(read_time)
-        callback_done.set()
-
-    col_query = db.collection("allStocksQuery").where(filter=FieldFilter("timestamp", ">=", datetime.now()-timedelta(minutes=1)))
-
-    # Watch the collection query
-    query_watch = col_query.on_snapshot(on_snapshot)
-    # query_watch.unsubscribe()
-
-def listenSalesInvoicePost():
-    # [START firestore_listen_query_snapshots]
-
-    # Create an Event for notifying main thread.
-    callback_done = threading.Event()
-
-    # Create a callback on_snapshot function to capture changes
-    def on_snapshot(col_snapshot, changes, read_time):
-        print("Received query snapshot: SalesInvoicePost")
-        for change in changes:
-            if change.type.name == "ADDED":
-                print(f"New listenSalesInvoicePost: {change.document.id}")
                 data = change.document._data
+                db.collection("events").document(change.document.id).update({"updatedAt": datetime.now(), "status": "processing"})
                 print(data)
+                eventType = data["type"]
                 Common.CheckLogin()
-                result = salesInvoice.createSalesInvoice(data)
-                print(result)
-                db.collection("salesInvoice").document(change.document.id).update({"createdAt": datetime.now(), "status": "success"})
+                try:
+                    match eventType:
+                        case "refreshStocks":
+                            print(f"New refreshstocks: {change.document.id}")
+                            result = stockQtyBalance.getAllStocksBalanceByItemCodeAndLocationAndBatch()
+                            print(result)
+                            for stock in result:
+                                itemCode = stock["itemCode"].replace("/", "_")
+                                location = stock["location"]
+                                batch = stock["batch"]
+                                documentId = itemCode + "." + location + "." + batch
+                                db.collection("stocks").document(documentId).set(stock)
+                            db.collection("events").document(change.document.id).update({"updatedAt": datetime.now(), "status": "success"})
+                        case "createInvoice":
+                            print(f"New sales invoice: {change.document.id}")
+                            salesInvoice.createSalesInvoice(data["payload"])
+                            db.collection("events").document(change.document.id).update({"updatedAt": datetime.now(), "status": "success"})
+                        case "createDeliveryOrder":
+                            print(f"New listenDeliveryOrderPost: {change.document.id}")
+                            deliveryOrder.createDeliverOrder(data["payload"])
+                            latestDeliveryOrder = deliveryOrder.getLatestDeliveryOrder()
+                            print(latestDeliveryOrder)
+                            deliveryOrderDocNo = latestDeliveryOrder["DOCNO"]
+                            salesInvoiceDocNo = latestDeliveryOrder["DOCNO"]
+                            customerAccount = latestDeliveryOrder["CODE"]
+                            companyName = latestDeliveryOrder["COMPANYNAME"]
+                            deliveryOrderToSalesInvoice.convertDOtoSI(deliveryOrderDocNo, salesInvoiceDocNo, customerAccount, companyName)
+                            db.collection("events").document(change.document.id).update({"updatedAt": datetime.now(), "status": "success"})
+                except Exception as e:
+                    db.collection("events").document(change.document.id).update({"updatedAt": datetime.now(), "status": "failed", "reason": str(e)})
+                    print(e)
 
         # print(read_time)
         callback_done.set()
 
-    col_query = db.collection("salesInvoice").where(filter=FieldFilter("requestAt", ">=", datetime.now()-timedelta(minutes=1)))
+    filter1 = FieldFilter("status", "==", "queued")
+    filter2 = FieldFilter("status", "==", "processing")
+    orFilter = Or(filters=[filter1, filter2])
 
-    # Watch the collection query
-    query_watch = col_query.on_snapshot(on_snapshot)
-    # query_watch.unsubscribe()
-
-def listenDeliveryOrderPost():
-    # [START firestore_listen_query_snapshots]
-
-    # Create an Event for notifying main thread.
-    callback_done = threading.Event()
-
-    # Create a callback on_snapshot function to capture changes
-    def on_snapshot(col_snapshot, changes, read_time):
-        print("Received query snapshot: DeliveryOrderPost")
-        for change in changes:
-            if change.type.name == "ADDED":
-                print(f"New listenDeliveryOrderPost: {change.document.id}")
-                data = change.document._data
-                print(data)
-                Common.CheckLogin()
-                result = deliveryOrder.createDeliverOrder(data)
-                print(result)
-                db.collection("deliveryOrder").document(change.document.id).update({"createdAt": datetime.now(), "status": "success"})
-                deliveryOrderDocNo = data["DocNo"]
-                salesInvoiceDocNo = data["DocNo"]
-                customerAccount = data["Code"]
-                # companyName = data["CompanyName"] #TODO Add companyname in deliveryOrder field
-                companyName = "test"
-                convertResults = deliveryOrderToSalesInvoice.convertDOtoSI(deliveryOrderDocNo, salesInvoiceDocNo, customerAccount, companyName)
-                db.collection("salesInvoice").document(change.document.id).set(db.collection("deliveryOrder").document(change.document.id).get())
-                db.collection("salesInvoice").document(change.document.id).update({"createdAt": datetime.now(), "status": "success"})
-                print(convertResults)
-        # print(read_time)
-        callback_done.set()
-
-    col_query = db.collection("deliveryOrder").where(filter=FieldFilter("requestAt", ">=", datetime.now()-timedelta(minutes=1)))
+    col_query = db.collection("events").where(filter=orFilter)
 
     # Watch the collection query
     query_watch = col_query.on_snapshot(on_snapshot)
     # query_watch.unsubscribe()
 
 if __name__ == "__main__":
-    listenStockByItemCodeQuery()
-    listenAllStocksQuery()
-    listenSalesInvoicePost()
-    listenDeliveryOrderPost()
+    listenEvent()
 
-    # docs = db.collection("stockByItemCodeQuery").stream()
-
-    # for doc in docs:
-    #     print(f"{doc.id} => {doc.to_dict()["timestamp"]}")
-
-    # time = datetime.now(timezone.utc)-timedelta(minutes=1)
-    # print(time)
-    # docs = db.collection("stockByItemCodeQuery").where(filter=FieldFilter("timestamp", ">=", time)).stream()
-
-    # for doc in docs:
-    #     print(f"{doc.id} => {doc.to_dict()}")
     while True:
         pass

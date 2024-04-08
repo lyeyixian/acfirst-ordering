@@ -19,6 +19,18 @@ def getAllDeliveryOrder():
         
     return Common.ShowResult(lDataSet)
 
+def getLatestDeliveryOrder():
+    global ComServer
+    ComServer = Common.ComServer 
+    lSQL = "SELECT DOCNO, CODE, COMPANYNAME "
+    lSQL = lSQL + "FROM SL_DO "
+    lSQL = lSQL + "ORDER BY DOCKEY DESC "
+    print(lSQL)
+
+    lDataSet = ComServer.DBManager.NewDataSet(lSQL)
+        
+    return Common.ShowOneResult(lDataSet)
+
 def createDeliverOrder(salesData):
     global ComServer
     ComServer = Common.ComServer 
@@ -43,18 +55,16 @@ def createDeliverOrder(salesData):
             deliveryData = parsedData[field]
             count = 1
             for item in deliveryData:
-                print(item)
                 lDetail.Append()
                 lDetail.FindField("Seq").value = count
                 for fieldItem in item:
-                    print(fieldItem)
                     lDetail.FindField(fieldItem).AsString = item[fieldItem]
                 lDetail.Post()
                 count += 1
         else:
             lMain.FindField(field).AsString = parsedData[field]        
     try:
-        BizObject.Save()          
+        BizObject.Save()
     except Exception as e:
         print("Oops!", e)    
     BizObject.Close()
