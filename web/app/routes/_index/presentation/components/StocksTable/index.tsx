@@ -1,6 +1,6 @@
 import { useFetcher } from '@remix-run/react'
 import { useState, useEffect } from 'react';
-import { Button, Container } from '@mantine/core'
+import { Button, Container, Flex, Title } from '@mantine/core'
 import { EventType, Stock, StockRowData } from '~/common/type'
 
 import { AgGridReact } from 'ag-grid-react'; // AG Grid Component
@@ -32,13 +32,15 @@ export function StocksTable({ stocks }: { stocks: Stock[] }) {
 
   return (
     <Container size={1080}>
-      <refreshStocksFetcher.Form method="post">
-        <input type="hidden" name="type" value={EventType.REFRESH_STOCKS} />
-        <Button mb={10} type="submit">
-          Refresh Stocks
-        </Button>
-      </refreshStocksFetcher.Form>
-
+      <Flex mb={10} >
+        <Title order={2}>Stocks</Title>
+        <refreshStocksFetcher.Form method="post">
+          <input type="hidden" name="type" value={EventType.REFRESH_STOCKS} />
+          <Button ml={10} mt={5} type="submit">
+            Refresh Stocks
+          </Button>
+        </refreshStocksFetcher.Form>
+      </Flex>
       <div
         className="ag-theme-quartz" // applying the grid theme
         style={{ height: 700, width: "100%"}} // the grid will fill the size of the parent container

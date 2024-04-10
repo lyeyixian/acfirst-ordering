@@ -1,47 +1,74 @@
-import { Container, Table } from '@mantine/core'
+import { Container, Table, Title } from '@mantine/core'
+import { AgGridReact } from 'ag-grid-react'
 import { Timestamp } from 'firebase-admin/firestore'
-import { Event } from '~/common/type'
+import { useEffect, useState } from 'react'
+import { Event, EventPayload, EventRowData } from '~/common/type'
 
 const parseDate = (date: Timestamp) => {
-  const firebaseDateTime = new Date(
-    date.seconds * 1000 + date.nanoseconds / 100000
-  )
-  return (
-    firebaseDateTime.toLocaleDateString() +
-    '\n' +
-    firebaseDateTime.toLocaleTimeString()
-  )
+  try { 
+    return date.toDate()
+  } catch {
+    const firebaseDateTime = new Date(
+      date._seconds * 1000 + date._nanoseconds / 100000
+    )
+    return firebaseDateTime;
+  }
 }
 
-const generateRows = (orderHistories: Event[]) => {
-  return orderHistories.map((data, index) => (
-    <tr key={index}>
-      <td>{data.id}</td>
-      <td>{data.type}</td>
-      <td>{JSON.stringify(data.payload)}</td>
-      <td>{data.status}</td>
-      <td>{data.createdBy}</td>
-      <td>{parseDate(data.updatedAt)}</td>
-    </tr>
-  ))
+const parsePayload = (payload: EventPayload | null) => {
+  if (payload === null) return "";
+  let payloadString : string = "";
+  payloadString += "Company Code: " + payload.Code + "\n";
+  payload.Data.map( (item, index) => {
+    payloadString += index+1 + ". " + item.ItemCode + ": " + item.Qty + "\n"
+  })
+  return payloadString
 }
 
 export function OrderHistory({ orderHistories }: { orderHistories: Event[] }) {
+  const [rowData, setRowData] = useState<EventRowData[]>([])
+  const [colDefs, setColDefs] = useState([
+    { field: "Order ID", filter: 'agTextColumnFilter' },
+    { field: "Type", filter: 'agTextColumnFilter' },
+    { field: "Order", filter: 'agTextColumnFilter', minWidth: 300, wrapText: true, autoHeight: true, cellStyle: {whiteSpace: 'pre'} },
+    { field: "Status", filter: 'agTextColumnFilter'},
+    { field: "Created At", filter: 'agDateColumnFilter'},
+    { field: "Updated At", filter: 'agDateColumnFilter'},
+    { field: "Created By", filter: 'agTextColumnFilter'}
+  ]);
+
+  useEffect(() => {
+    const rows: EventRowData[] = [];
+    orderHistories.map((data) => {
+      if (data.type !== "refreshStocks") {
+          rows.push({
+            "Order ID": data.id, 
+            "Type": data.type, 
+            "Order": parsePayload(data.payload), 
+            "Status": data.status, 
+            "Created By": data.createdBy, 
+            "Updated At": parseDate(data.updatedAt),
+            "Created At": parseDate(data.createdAt)
+          })
+        }})
+    setRowData(rows)
+  }, [orderHistories]);
+
   return (
-    <Container>
-      <Table horizontalSpacing="xl" striped withTableBorder highlightOnHover>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Type</th>
-            <th>Payload</th>
-            <th>Status</th>
-            <th>Created By</th>
-            <th>Updated At</th>
-          </tr>
-        </thead>
-        <tbody>{generateRows(orderHistories)}</tbody>
-      </Table>
+    <Container size={1080}>
+      <Title order={2} mb={10}>Order History</Title>
+      <div
+        className="ag-theme-quartz" // applying the grid theme
+        style={{ height: 300, width: "100%"}} // the grid will fill the size of the parent container
+      >
+        <AgGridReact
+            sideBar='columns'
+            rowHeight={35}
+            rowData={rowData}
+            columnDefs={colDefs}
+        />
+      </div>
+
     </Container>
   )
 }
