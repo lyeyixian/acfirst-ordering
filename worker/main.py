@@ -48,11 +48,11 @@ def listenEvent():
                                 batch = stock["batch"]
                                 documentId = itemCode + "." + location + "." + batch
                                 db.collection("stocks").document(documentId).set(stock)
-                            db.collection("events").document(change.document.id).update({"updatedAt": datetime.now(), "status": "success"})
+                            db.collection("events").document(change.document.id).update({"updatedAt": datetime.now(), "status": "completed"})
                         case "createInvoice":
                             print(f"New sales invoice: {change.document.id}")
                             salesInvoice.createSalesInvoice(data["payload"])
-                            db.collection("events").document(change.document.id).update({"updatedAt": datetime.now(), "status": "success"})
+                            db.collection("events").document(change.document.id).update({"updatedAt": datetime.now(), "status": "completed"})
                         case "createDeliveryOrder":
                             print(f"New listenDeliveryOrderPost: {change.document.id}")
                             deliveryOrder.createDeliverOrder(data["payload"])
@@ -61,7 +61,7 @@ def listenEvent():
                             customerAccount = latestDeliveryOrder["CODE"]
                             companyName = latestDeliveryOrder["COMPANYNAME"]
                             deliveryOrderToSalesInvoice.convertDOtoSI(deliveryOrderDocNo, customerAccount, companyName)
-                            db.collection("events").document(change.document.id).update({"updatedAt": datetime.now(), "status": "success"})
+                            db.collection("events").document(change.document.id).update({"updatedAt": datetime.now(), "status": "completed"})
                 except Exception as e:
                     db.collection("events").document(change.document.id).update({"updatedAt": datetime.now(), "status": "failed", "reason": str(e)})
                     print(e)

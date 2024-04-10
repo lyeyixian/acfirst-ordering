@@ -32,7 +32,7 @@ export function StocksTable({ stocks }: { stocks: Stock[] }) {
 
   return (
     <Container size={1080}>
-      <Flex mb={10} >
+      <Flex mb={10}>
         <Title order={2}>Stocks</Title>
         <refreshStocksFetcher.Form method="post">
           <input type="hidden" name="type" value={EventType.REFRESH_STOCKS} />
@@ -46,6 +46,7 @@ export function StocksTable({ stocks }: { stocks: Stock[] }) {
         style={{ height: 700, width: "100%"}} // the grid will fill the size of the parent container
       >
         <AgGridReact
+            enableCellTextSelection
             rowHeight={35}
             rowData={rowData}
             columnDefs={colDefs}

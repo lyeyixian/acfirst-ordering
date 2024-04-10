@@ -14,3 +14,4 @@ export const homeLoader: LoaderFunction = async ({ request }) => {
     }
   })
 }
+

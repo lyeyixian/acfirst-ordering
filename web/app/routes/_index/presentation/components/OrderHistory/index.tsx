@@ -2,7 +2,9 @@ import { Container, Table, Title } from '@mantine/core'
 import { AgGridReact } from 'ag-grid-react'
 import { Timestamp } from 'firebase-admin/firestore'
 import { useEffect, useState } from 'react'
-import { Event, EventPayload, EventRowData } from '~/common/type'
+import { Event, EventPayload, EventRowData, EventType } from '~/common/type'
+import RetryEventRenderer from './RetryEventRenderer'
+import EventTypeRenderer from './EventTypeRenderer'
 
 const parseDate = (date: Timestamp) => {
   try { 
@@ -29,9 +31,9 @@ export function OrderHistory({ orderHistories }: { orderHistories: Event[] }) {
   const [rowData, setRowData] = useState<EventRowData[]>([])
   const [colDefs, setColDefs] = useState([
     { field: "Order ID", filter: 'agTextColumnFilter' },
-    { field: "Type", filter: 'agTextColumnFilter' },
+    { field: "Type", filter: 'agTextColumnFilter', cellRenderer: EventTypeRenderer },
     { field: "Order", filter: 'agTextColumnFilter', minWidth: 300, wrapText: true, autoHeight: true, cellStyle: {whiteSpace: 'pre'} },
-    { field: "Status", filter: 'agTextColumnFilter'},
+    { field: "Status", filter: 'agTextColumnFilter', cellRenderer: RetryEventRenderer},
     { field: "Created At", filter: 'agDateColumnFilter'},
     { field: "Updated At", filter: 'agDateColumnFilter'},
     { field: "Created By", filter: 'agTextColumnFilter'}
@@ -40,7 +42,7 @@ export function OrderHistory({ orderHistories }: { orderHistories: Event[] }) {
   useEffect(() => {
     const rows: EventRowData[] = [];
     orderHistories.map((data) => {
-      if (data.type !== "refreshStocks") {
+      if (data.type !== EventType.REFRESH_STOCKS) {
           rows.push({
             "Order ID": data.id, 
             "Type": data.type, 
@@ -62,7 +64,7 @@ export function OrderHistory({ orderHistories }: { orderHistories: Event[] }) {
         style={{ height: 300, width: "100%"}} // the grid will fill the size of the parent container
       >
         <AgGridReact
-            sideBar='columns'
+            enableCellTextSelection
             rowHeight={35}
             rowData={rowData}
             columnDefs={colDefs}

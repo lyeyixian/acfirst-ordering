@@ -24,6 +24,7 @@ export interface IEventService {
     payload?: EventPayload
   ) => Promise<WriteResult>
   deleteEvent: (id: string) => Promise<WriteResult>
+  retryEvent: (id: string) => Promise<WriteResult>
 }
 
 async function getEvents() {
@@ -96,10 +97,15 @@ async function deleteEvent(id: string) {
   return db.collection('events').doc(id).delete()
 }
 
+async function retryEvent(id: string) {
+  return db.collection('events').doc(id).update({"status": "queued", "updatedAt" : Timestamp.now()})
+}
+
 export const eventService: IEventService = {
   getEvents,
   createEvent,
   getEventsForUser,
   updateEvent,
   deleteEvent,
+  retryEvent
 }
