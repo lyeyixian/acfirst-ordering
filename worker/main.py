@@ -42,7 +42,6 @@ def listenEvent():
                         case "refreshStocks":
                             print(f"New refreshstocks: {change.document.id}")
                             result = stockQtyBalance.getAllStocksBalanceByItemCodeAndLocationAndBatch()
-                            print(result)
                             for stock in result:
                                 itemCode = stock["itemCode"].replace("/", "_")
                                 location = stock["location"]

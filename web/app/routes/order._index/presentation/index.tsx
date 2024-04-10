@@ -46,15 +46,6 @@ export default function OrderPage() {
             : EventType.CREATE_INVOICE
         }
       />
-      <p>
-        <label>
-          Doc No:{' '}
-          {actionData?.error && actionData.data && (
-            <em>{actionData.data.docNo}</em>
-          )}
-          <input type="text" name="docNo" />
-        </label>
-      </p>
       {inputs.map((item, index) => (
         <Flex key={index}>
           <label>

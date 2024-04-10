@@ -8,13 +8,11 @@ export const orderAction: ActionFunction = async ({ request }) => {
     const formData = await request.formData()
 
     const type = formData.get('type')?.toString() as EventType
-    const docNo = formData.get('docNo')?.toString() || ''
-    const code = user.company
+    const Code = user.company
     const itemCodes = formData.getAll('itemCode')
     const quantities = formData.getAll('quantity')
 
     const errors: Record<string, string> = {}
-    if (!docNo) errors.docNo = 'Document Number is required'
     if (!itemCodes || itemCodes.length === 0)
       errors.itemCodes = 'Item Codes are required'
     if (!quantities || quantities.length === 0)
@@ -24,19 +22,18 @@ export const orderAction: ActionFunction = async ({ request }) => {
       return { error: 'Missing required fields', data: errors, status: 400 }
     }
 
-    const data: EventStockPayload[] = []
+    const Data: EventStockPayload[] = []
 
     itemCodes.forEach((itemCode, i) =>
-      data.push({
-        itemCode: itemCode.toString(),
-        qty: parseInt(quantities[i].toString()),
+      Data.push({
+        ItemCode: itemCode.toString(),
+        Qty: parseInt(quantities[i].toString()),
       })
     )
 
     const payload: EventPayload = {
-      docNo,
-      code,
-      data,
+      Code,
+      Data,
     }
 
     try {

@@ -34,12 +34,14 @@ def getAllStocksBalanceByItemCodeAndLocationAndBatch():
     global ComServer
     ComServer = Common.ComServer 
 
-    lSQL = "SELECT  ItemCode, Location, Batch, Sum(Qty) Qty  FROM ST_TR   "
-    # lSQL = lSQL + "WHERE ITEMCODE = '{}' ".format(itemCode)
-    lSQL = lSQL + "GROUP BY ItemCode, Location, Batch "
+    lSQL = "(SELECT ItemCode, Location, Batch, Sum(Qty) Qty  FROM ST_TR"
+    lSQL = lSQL + " GROUP BY ItemCode, Location, Batch) AS Q1"
+    COSTSQL = "(SELECT REFCOST, REFPRICE, CODE FROM ST_ITEM_UOM) AS Q2"
+    FINALSQL = "SELECT Q1.*, Q2.* FROM "
+    FINALSQL += lSQL + " INNER JOIN " + COSTSQL + " ON (Q1.ItemCode=Q2.CODE)"
     
-    lDataSet = ComServer.DBManager.NewDataSet(lSQL)
-
+    lDataSet = ComServer.DBManager.NewDataSet(FINALSQL)
+        
     if lDataSet.RecordCount > 0:
         result = []
         while not lDataSet.eof:
@@ -48,6 +50,7 @@ def getAllStocksBalanceByItemCodeAndLocationAndBatch():
             stock["location"] = lDataSet.FindField('Location').AsString
             stock["batch"] = lDataSet.FindField('batch').AsString
             stock["quantity"] = lDataSet.FindField('Qty').AsString
+            stock["pricePerUnit"] = lDataSet.FindField('REFPRICE').AsString
             print(stock)
             # print("===================================")
             # print("Item Code | Location | Batch | Qty")

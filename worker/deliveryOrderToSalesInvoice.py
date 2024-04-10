@@ -78,5 +78,7 @@ def convertDOtoSI(deliveryOrderDocNo, customerAccount, companyName):
         BizObject.Save()          
     except Exception as e:
         print("Oops!", e)    
+        BizObject.Close()
+        raise e
     BizObject.Close()
     print ("Posting/Update Done")

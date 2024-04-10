@@ -37,14 +37,13 @@ export enum EventStatus {
 }
 
 export interface EventPayload {
-  docNo: string
-  code: string
-  data: EventStockPayload[]
+  Code: string
+  Data: EventStockPayload[]
 }
 
 export interface EventStockPayload {
-  itemCode: string
-  qty: number
+  ItemCode: string
+  Qty: number
 }
 
 // Users
@@ -71,3 +70,12 @@ export interface Stock {
   pricePerUnit: number
   updatedAt: Timestamp
 }
+
+export interface StockRowData {
+  "Item Code": string
+  "Location": string
+  "Batch": string
+  "Quantity": number
+  "Price per Unit (MYR)": number
+}
+
