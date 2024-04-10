@@ -13,7 +13,7 @@ def main():
 
     while True:
         print("1: Check stock balance by itemcode\n" +
-              "2: Check stock balance (Group by Item Code, Location, Batch)\n by itemcode" +
+              "2: Check stock balance (Group by Item Code, Location, Batch) by itemcode\n" +
               "3: Check all stocks balance (Group by Item Code, Location, Batch)\n" + 
               "4: Get all stocks details\n" +
               "5: Create Sales Invoice\n" + 
@@ -84,10 +84,9 @@ def main():
                     deliveryOrder.deleteDeliveryOrder(deliveryId)
                 case 11:
                     deliveryOrderDocNo = input("Enter Delivery Order Doc No: ")
-                    salesInvoiceDocNo = input("Enter Sales Invoice Doc No: ")
                     customerAccount = input("Customer Account (Code)")
                     companyName = input("Company Name")
-                    deliveryOrderToSalesInvoice.convertDOtoSI(deliveryOrderDocNo, salesInvoiceDocNo, customerAccount, companyName)
+                    deliveryOrderToSalesInvoice.convertDOtoSI(deliveryOrderDocNo, customerAccount, companyName)
                 case 12:
                     result = salesInvoice.getAllSalesInvoice()
                     print(result)

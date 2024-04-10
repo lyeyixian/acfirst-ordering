@@ -58,12 +58,10 @@ def listenEvent():
                             print(f"New listenDeliveryOrderPost: {change.document.id}")
                             deliveryOrder.createDeliverOrder(data["payload"])
                             latestDeliveryOrder = deliveryOrder.getLatestDeliveryOrder()
-                            print(latestDeliveryOrder)
                             deliveryOrderDocNo = latestDeliveryOrder["DOCNO"]
-                            salesInvoiceDocNo = latestDeliveryOrder["DOCNO"]
                             customerAccount = latestDeliveryOrder["CODE"]
                             companyName = latestDeliveryOrder["COMPANYNAME"]
-                            deliveryOrderToSalesInvoice.convertDOtoSI(deliveryOrderDocNo, salesInvoiceDocNo, customerAccount, companyName)
+                            deliveryOrderToSalesInvoice.convertDOtoSI(deliveryOrderDocNo, customerAccount, companyName)
                             db.collection("events").document(change.document.id).update({"updatedAt": datetime.now(), "status": "success"})
                 except Exception as e:
                     db.collection("events").document(change.document.id).update({"updatedAt": datetime.now(), "status": "failed", "reason": str(e)})

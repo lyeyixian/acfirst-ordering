@@ -50,7 +50,6 @@ def createDeliverOrder(salesData):
     for field in parsedData:
         if field == "requestAt" or field == "user":
             continue
-        print(field)
         if field == "Data":
             deliveryData = parsedData[field]
             count = 1
@@ -58,13 +57,16 @@ def createDeliverOrder(salesData):
                 lDetail.Append()
                 lDetail.FindField("Seq").value = count
                 for fieldItem in item:
+                    print(item[fieldItem])
                     lDetail.FindField(fieldItem).AsString = item[fieldItem]
                 lDetail.Post()
                 count += 1
         else:
+            print(parsedData[field])
             lMain.FindField(field).AsString = parsedData[field]        
     try:
         BizObject.Save()
+        
     except Exception as e:
         print("Oops!", e)    
     BizObject.Close()

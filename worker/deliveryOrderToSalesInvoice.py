@@ -2,7 +2,7 @@
 import Common
 from datetime import datetime
 
-def convertDOtoSI(deliveryOrderDocNo, salesInvoiceDocNo, customerAccount, companyName):
+def convertDOtoSI(deliveryOrderDocNo, customerAccount, companyName):
     global ComServer
     ComServer = Common.ComServer
 
@@ -30,13 +30,11 @@ def convertDOtoSI(deliveryOrderDocNo, salesInvoiceDocNo, customerAccount, compan
         BizObject.New()
         lMain.FindField("DocDate").value = lDate
         lMain.FindField("PostDate").value = lDate
-        lMain.FindField("Description").AsString = "Generated from Delivery Order"
+        lMain.FindField("Description").AsString = "Generated from Delivery Order {}".format(deliveryOrderDocNo)
         lMain.FindField("DocKey").value = -1
-        # lMain.FindField("DocNo").AsString = salesInvoiceDocNo
         lMain.FindField("Code").AsString        = customerAccount
         lMain.FindField("CompanyName").AsString = companyName
 
-        
         if lDoDetail.RecordCount > 0:
             count = 1
             while not lDoDetail.eof:
