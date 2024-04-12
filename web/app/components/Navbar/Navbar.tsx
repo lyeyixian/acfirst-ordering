@@ -1,6 +1,8 @@
 import { Group, rem, Image, Flex, Title, Box, ThemeIcon } from '@mantine/core';
 import {
+  IconHome,
   IconLogout,
+  IconShoppingCart,
 } from '@tabler/icons-react';
 import  Logo  from "./logo.png"
 import classes from './Navbar.module.css';
@@ -8,6 +10,39 @@ import { UserInfo } from './UserInfo';
 import { NavLink } from '@remix-run/react';
 
 export function Navbar() {
+  const links = [
+    {
+      link: "/",
+      icon: <IconHome style={{ width: rem(18), height: rem(18) }}/>,
+      text: "Home"
+    },
+
+    {
+      link: "/order",
+      icon: <IconShoppingCart style={{ width: rem(18), height: rem(18) }}/>,
+      text: "Order"
+    },
+    {
+      link: "/logout",
+      icon: <IconLogout style={{ width: rem(18), height: rem(18) }} />,
+      text: "Log Out"
+    }
+  ]
+  
+  const menuItems =links.map((link) => {
+    return (
+      <NavLink to={link.link} key={link.link}>
+      <Group justify="space-between" pl={10} pt={10}>
+        <Box style={{ display: 'flex', alignItems: 'center' }}>
+          <ThemeIcon variant="light" size={30}>
+            {link.icon}
+          </ThemeIcon>
+          <Box ml="md">{link.text}</Box>
+        </Box>
+      </Group>
+    </NavLink>
+    )
+  })
 
   return (
     <nav className={classes.navbar}>
@@ -26,16 +61,7 @@ export function Navbar() {
 
       <div className={classes.linksInner}>
         <UserInfo/>
-        <NavLink to="/logout">
-          <Group justify="space-between" pl={10} pt={10}>
-            <Box style={{ display: 'flex', alignItems: 'center' }}>
-              <ThemeIcon variant="light" size={30}>
-                <IconLogout style={{ width: rem(18), height: rem(18) }} />
-              </ThemeIcon>
-              <Box ml="md">Log Out</Box>
-            </Box>
-          </Group>
-        </NavLink>
+        {menuItems}
       </div>
 
     </nav>
