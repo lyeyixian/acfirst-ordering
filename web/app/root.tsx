@@ -12,6 +12,9 @@ import {
 } from '@remix-run/react'
 import dotenv from 'dotenv'
 import { LoaderFunction } from '@remix-run/node'
+import AppContainer from './components/AppContainer'
+import { sessionService } from './.server/application/SessionService'
+import { User } from './common/type'
 
 declare global {
   interface Window {
@@ -24,25 +27,26 @@ declare global {
       MESSAGING_SENDER_ID: string
       APP_ID: string
       MEASUREMENT_ID: string
-    }
+    },
   }
 }
 
 export const loader: LoaderFunction = () => {
   dotenv.config()
-
-  return json({
-    ENV: {
-      API_KEY: process.env.API_KEY,
-      AUTH_DOMAIN: process.env.AUTH_DOMAIN,
-      DATABASE_URL: process.env.DATABASE_URL,
-      PROJECT_ID: process.env.PROJECT_ID,
-      STORAGE_BUCKET: process.env.STORAGE_BUCKET,
-      MESSAGING_SENDER_ID: process.env.MESSAGING_SENDER_ID,
-      APP_ID: process.env.APP_ID,
-      MEASUREMENT_ID: process.env.MEASUREMENT_ID,
-    },
-  })
+  return json(
+    {
+      ENV: {
+        API_KEY: process.env.API_KEY,
+        AUTH_DOMAIN: process.env.AUTH_DOMAIN,
+        DATABASE_URL: process.env.DATABASE_URL,
+        PROJECT_ID: process.env.PROJECT_ID,
+        STORAGE_BUCKET: process.env.STORAGE_BUCKET,
+        MESSAGING_SENDER_ID: process.env.MESSAGING_SENDER_ID,
+        APP_ID: process.env.APP_ID,
+        MEASUREMENT_ID: process.env.MEASUREMENT_ID,
+      },
+    }
+  )
 }
 
 export function Layout({ children }: { children: React.ReactNode }) {
@@ -72,5 +76,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-  return <Outlet />
+  return (
+      <Outlet />
+  )
 }

@@ -20,6 +20,7 @@ export interface ISessionService {
     callback?: (user: User) => Promise<CallbackData>
   ) => Promise<TypedResponse<ResponseData>>
   destroyUserSession: (request: Request) => Promise<TypedResponse>
+  getUserSessionInfo: (request: Request) => Promise<User>
 }
 
 dotenv.config()
@@ -124,8 +125,17 @@ async function destroyUserSession(request: Request) {
   })
 }
 
+async function getUserSessionInfo(request: Request) {
+  const cookieSession = await _getSession(request)
+  const token = cookieSession.get('token')
+  const decodedToken = await _verifySessionToken(token)
+  return await userService.getUser(decodedToken.email || '')
+}
+
+
 export const sessionService: ISessionService = {
   createUserSession,
   verifySession,
   destroyUserSession,
+  getUserSessionInfo
 }
