@@ -26,7 +26,6 @@ export default function HeaderTabs() {
         <Image w={60} src="/nav-logo.svg" />
 
         <Menu
-          width={260}
           position="bottom-end"
           transitionProps={{ transition: 'pop-top-right' }}
           onClose={() => setUserMenuOpened(false)}
@@ -40,7 +39,7 @@ export default function HeaderTabs() {
               })}
             >
               <Group gap={7}>
-                <Avatar radius="xl" size="md" />
+                <Avatar radius="xl" size={30} />
                 <Text fw={500} size="sm" lh={1} mr={3}>
                   {company}
                 </Text>
