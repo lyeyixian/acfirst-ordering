@@ -7,22 +7,22 @@ import RetryEventRenderer from './RetryEventRenderer'
 import EventTypeRenderer from './EventTypeRenderer'
 
 const parseDate = (date: Timestamp) => {
-  try { 
+  try {
     return date.toDate()
   } catch {
     const firebaseDateTime = new Date(
       date._seconds * 1000 + date._nanoseconds / 100000
     )
-    return firebaseDateTime;
+    return firebaseDateTime
   }
 }
 
 const parsePayload = (payload: EventPayload | null) => {
-  if (payload === null) return "";
-  let payloadString : string = "";
-  payloadString += "Company Code: " + payload.Code + "\n";
-  payload.Data.map( (item, index) => {
-    payloadString += index+1 + ". " + item.ItemCode + ": " + item.Qty + "\n"
+  if (payload === null) return ''
+  let payloadString: string = ''
+  payloadString += 'Company Code: ' + payload.Code + '\n'
+  payload.Data.map((item, index) => {
+    payloadString += index + 1 + '. ' + item.ItemCode + ': ' + item.Qty + '\n'
   })
   return payloadString
 }
@@ -30,47 +30,64 @@ const parsePayload = (payload: EventPayload | null) => {
 export function OrderHistory({ orderHistories }: { orderHistories: Event[] }) {
   const [rowData, setRowData] = useState<EventRowData[]>([])
   const [colDefs, setColDefs] = useState([
-    { field: "Order ID", filter: 'agTextColumnFilter' },
-    { field: "Type", filter: 'agTextColumnFilter', cellRenderer: EventTypeRenderer },
-    { field: "Order", filter: 'agTextColumnFilter', minWidth: 300, wrapText: true, autoHeight: true, cellStyle: {whiteSpace: 'pre'} },
-    { field: "Status", filter: 'agTextColumnFilter', cellRenderer: RetryEventRenderer},
-    { field: "Created At", filter: 'agDateColumnFilter'},
-    { field: "Updated At", filter: 'agDateColumnFilter'},
-    { field: "Created By", filter: 'agTextColumnFilter'}
-  ]);
+    { field: 'Order ID', filter: 'agTextColumnFilter' },
+    {
+      field: 'Type',
+      filter: 'agTextColumnFilter',
+      cellRenderer: EventTypeRenderer,
+    },
+    {
+      field: 'Order',
+      filter: 'agTextColumnFilter',
+      minWidth: 300,
+      wrapText: true,
+      autoHeight: true,
+      cellStyle: { whiteSpace: 'pre' },
+    },
+    {
+      field: 'Status',
+      filter: 'agTextColumnFilter',
+      cellRenderer: RetryEventRenderer,
+    },
+    { field: 'Created At', filter: 'agDateColumnFilter' },
+    { field: 'Updated At', filter: 'agDateColumnFilter' },
+    { field: 'Created By', filter: 'agTextColumnFilter' },
+  ])
 
   useEffect(() => {
-    const rows: EventRowData[] = [];
+    const rows: EventRowData[] = []
     orderHistories.map((data) => {
       if (data.type !== EventType.REFRESH_STOCKS) {
-          rows.push({
-            "Order ID": data.id, 
-            "Type": data.type, 
-            "Order": parsePayload(data.payload), 
-            "Status": data.status, 
-            "Created By": data.createdBy, 
-            "Updated At": parseDate(data.updatedAt),
-            "Created At": parseDate(data.createdAt)
-          })
-        }})
+        rows.push({
+          'Order ID': data.id,
+          Type: data.type,
+          Order: parsePayload(data.payload),
+          Status: data.status,
+          'Created By': data.createdBy,
+          'Updated At': parseDate(data.updatedAt),
+          'Created At': parseDate(data.createdAt),
+        })
+      }
+    })
     setRowData(rows)
-  }, [orderHistories]);
+  }, [orderHistories])
 
   return (
     <Container size={1080}>
-      <Title order={2} mb={10}>Order History</Title>
+      <Title order={2} mb={10}>
+        Order History
+      </Title>
       <div
         className="ag-theme-quartz" // applying the grid theme
-        style={{ height: 300, width: "100%"}} // the grid will fill the size of the parent container
+        style={{ height: 300, width: '100%' }} // the grid will fill the size of the parent container
       >
         <AgGridReact
-            enableCellTextSelection
-            rowHeight={35}
-            rowData={rowData}
-            columnDefs={colDefs}
+          enableCellTextSelection
+          rowHeight={35}
+          rowData={rowData}
+          columnDefs={colDefs}
         />
       </div>
-
     </Container>
   )
 }
