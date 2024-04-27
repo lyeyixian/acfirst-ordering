@@ -72,19 +72,19 @@ export interface Stock {
 }
 
 export interface StockRowData {
-  "Item Code": string
-  "Location": string
-  "Batch": string
-  "Quantity": number
-  "Price per Unit (MYR)": number
+  'Item Code': string
+  Location: string
+  Batch: string
+  Quantity: number
+  'Price per Unit (MYR)': number
 }
 
 export interface EventRowData {
-  "Order ID": string | undefined
-  "Type": EventType
-  "Order": string | null
-  "Status": EventStatus
-  "Created By": string
-  "Created At": Date
-  "Updated At": Date
+  'Order ID': string | undefined
+  Type: EventType
+  Order: string | null
+  Status: EventStatus
+  'Created By': string
+  'Created At': Date
+  'Updated At': Date
 }
