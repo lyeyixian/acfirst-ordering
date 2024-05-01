@@ -1,4 +1,4 @@
-import { Container, Table, Title } from '@mantine/core'
+import { Container, Title } from '@mantine/core'
 import { AgGridReact } from 'ag-grid-react'
 import { Timestamp } from 'firebase-admin/firestore'
 import { useEffect, useState } from 'react'
@@ -64,6 +64,8 @@ export function OrderHistory({ orderHistories }: { orderHistories: Event[] }) {
         style={{ height: 300, width: "100%"}} // the grid will fill the size of the parent container
       >
         <AgGridReact
+            pagination={true}
+            paginationAutoPageSize={true}
             enableCellTextSelection
             rowHeight={35}
             rowData={rowData}

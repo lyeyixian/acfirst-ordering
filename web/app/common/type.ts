@@ -60,6 +60,7 @@ export interface User {
   email: string
   company: string
   userId: string
+  companyCode: string
 }
 
 // Stocks

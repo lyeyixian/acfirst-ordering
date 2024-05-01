@@ -46,6 +46,8 @@ export function StocksTable({ stocks }: { stocks: Stock[] }) {
         style={{ height: 700, width: "100%"}} // the grid will fill the size of the parent container
       >
         <AgGridReact
+            pagination={true}
+            paginationAutoPageSize={true}
             enableCellTextSelection
             rowHeight={35}
             rowData={rowData}
