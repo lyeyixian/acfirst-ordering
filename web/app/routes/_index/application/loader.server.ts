@@ -6,7 +6,7 @@ import { EventType } from '~/common/type'
 
 export const homeLoader: LoaderFunction = async ({ request }) => {
   return sessionService.verifySession(request, async (user) => {
-    eventService.createEvent(EventType.REFRESH_STOCKS, user)
+    eventService.createEvent(EventType.REFRESH_STOCKS, user) //Refresh stocks when homepage is loaded
     return {
       data: {
         stocks: await stockService.getStocks(),
