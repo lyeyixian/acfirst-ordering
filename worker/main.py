@@ -48,7 +48,7 @@ def listenEvent():
                                 batch = stock["batch"]
                                 documentId = itemCode + "." + location + "." + batch
                                 db.collection("stocks").document(documentId).set(stock)
-                            db.collection("events").document(change.document.id).update({"updatedAt": datetime.now(), "status": "completed"})
+                            db.collection("events").document(change.document.id).delete() # Done with refresh stocks event
                         case "createInvoice":
                             print(f"New sales invoice: {change.document.id}")
                             salesInvoice.createSalesInvoice(data["payload"])
