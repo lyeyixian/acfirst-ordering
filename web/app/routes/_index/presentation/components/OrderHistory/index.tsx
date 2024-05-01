@@ -37,8 +37,8 @@ export function OrderHistory({ orderHistories }: { orderHistories: Event[] }) {
     { field: "Created At", filter: 'agDateColumnFilter'},
     { field: "Updated At", filter: 'agDateColumnFilter'},
     { field: "Created By", filter: 'agTextColumnFilter'},
-    { field: "Status", cellRenderer: StatusEventRenderer, pinned: 'right', maxWidth: "75"},
-    { field: "Action", cellRenderer: ActionEventRenderer, pinned: 'right', maxWidth: "160"}
+    { field: "Status", cellRenderer: StatusEventRenderer, pinned: 'right', lockPosition: "right", maxWidth: "75"},
+    { field: "Action", cellRenderer: ActionEventRenderer, pinned: 'right', lockPosition: "right", maxWidth: "160"}
   ]);
 
   useEffect(() => {
