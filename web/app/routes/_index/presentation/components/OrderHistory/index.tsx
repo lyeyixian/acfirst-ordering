@@ -3,8 +3,9 @@ import { AgGridReact } from 'ag-grid-react'
 import { Timestamp } from 'firebase-admin/firestore'
 import { useEffect, useState } from 'react'
 import { Event, EventPayload, EventRowData, EventType } from '~/common/type'
-import RetryEventRenderer from './RetryEventRenderer'
 import EventTypeRenderer from './EventTypeRenderer'
+import StatusEventRenderer from './StatusEventRenderer'
+import ActionEventRenderer from './ActionEventRenderer'
 
 const parseDate = (date: Timestamp) => {
   try { 
@@ -33,10 +34,11 @@ export function OrderHistory({ orderHistories }: { orderHistories: Event[] }) {
     { field: "Order ID", filter: 'agTextColumnFilter' },
     { field: "Type", filter: 'agTextColumnFilter', cellRenderer: EventTypeRenderer },
     { field: "Order", filter: 'agTextColumnFilter', minWidth: 300, wrapText: true, autoHeight: true, cellStyle: {whiteSpace: 'pre'} },
-    { field: "Status", filter: 'agTextColumnFilter', cellRenderer: RetryEventRenderer},
     { field: "Created At", filter: 'agDateColumnFilter'},
     { field: "Updated At", filter: 'agDateColumnFilter'},
-    { field: "Created By", filter: 'agTextColumnFilter'}
+    { field: "Created By", filter: 'agTextColumnFilter'},
+    { field: "Status", cellRenderer: StatusEventRenderer, pinned: 'right', maxWidth: "75"},
+    { field: "Action", cellRenderer: ActionEventRenderer, pinned: 'right', maxWidth: "160"}
   ]);
 
   useEffect(() => {
