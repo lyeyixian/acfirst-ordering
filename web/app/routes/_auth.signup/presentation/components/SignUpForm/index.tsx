@@ -7,10 +7,12 @@ import {
   Text,
   Container,
   Button,
+  Select,
 } from '@mantine/core'
 import classes from './SignUpForm.module.css'
 import { Link } from '@remix-run/react'
 import { useSignUp } from '../../hooks/useSignUp'
+import { BRANCH_NAME_TO_CODE } from '~/common/constants'
 
 // TODO: add validation and error from Mantine useForm hook
 export default function SignUpForm() {
@@ -43,6 +45,7 @@ export default function SignUpForm() {
           name="email"
           required
         />
+        <TextInput label="Username" name="username" required mt="md" />
         <PasswordInput
           label="Password"
           placeholder="Your password"
@@ -50,9 +53,14 @@ export default function SignUpForm() {
           required
           mt="md"
         />
-        {/* TODO: should be a dropdown of fixed company name that the user can choose from */}
-        <TextInput label="Company Name" name="company" required mt="md" />
-        <TextInput label="Username" name="username" required mt="md" />
+        <Select
+          mt="md"
+          required
+          label="Branch Name"
+          placeholder="Branch"
+          name="company"
+          data={[...Object.keys(BRANCH_NAME_TO_CODE)]}
+        />        
 
         <Button type="submit" fullWidth mt="xl" loading={isLoading}>
           Sign up

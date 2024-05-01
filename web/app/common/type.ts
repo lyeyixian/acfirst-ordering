@@ -52,6 +52,7 @@ export interface CreateUserPayload {
   email: string
   company: string
   userId: string
+  companyCode: string
 }
 
 export interface User {
@@ -87,4 +88,8 @@ export interface EventRowData {
   "Created By": string
   "Created At": Date
   "Updated At": Date
+}
+
+export interface BranchNameToCode {
+  [key: string]: string
 }
