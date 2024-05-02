@@ -1,13 +1,14 @@
-import { Cart, ItemToStockRowData, StockRowData, User } from '~/common/type'
+import { Cart, CartItem, ItemToCartItem, StockRowData, User } from '~/common/type'
 import { db } from '../infrastructure/firebase'
 import { WriteResult } from 'firebase-admin/firestore'
+import { NoCartFoundError } from '~/common/errors'
 
 export interface ICartService {
   createUserCart: (email: string, payload: Cart) => Promise<WriteResult>
   updateUserCart: (email: string, payload: Cart) => Promise<WriteResult>
   getUserCart: (email: string) => Promise<Cart>
   deleteUserCart: (email: string) => Promise<WriteResult>
-  deleteCartItem: (email: string, item: StockRowData) => Promise<WriteResult>
+  deleteCartItem: (email: string, item: CartItem) => Promise<WriteResult>
 }
 
 async function createUserCart(email: string, payload: Cart) {
@@ -21,15 +22,15 @@ async function createUserCart(email: string, payload: Cart) {
 
 async function updateUserCart(email: string, payload: Cart) {
   try {
-    const updatedItemsMap: ItemToStockRowData = {}
+    const updatedItemsMap: ItemToCartItem = {}
     payload.items.map(item => {
-      updatedItemsMap[item['Item Code']+item.Location+item.Batch] = item
+      updatedItemsMap[item.itemCode+item.location+item.batch] = item
     })
-    const updatedItems: StockRowData[] = payload.items // We use all items in the updated payload
+    const updatedItems: CartItem[] = payload.items // We use all items in the updated payload
 
-    const existingItems: StockRowData[] = (await getUserCart(email)).items
+    const existingItems: CartItem[] = (await getUserCart(email)).items
     existingItems.forEach(item => {
-      const itemUniqueName = item['Item Code']+item.Location+item.Batch
+      const itemUniqueName = item.itemCode+item.location+item.batch
       if (!(itemUniqueName in updatedItemsMap)) {
         updatedItems.push(item) // Add existing item in old cart that is not in the payload to new cart
       }
@@ -48,7 +49,7 @@ async function getUserCart(email: string) {
     .get()
 
   if (!docSnapshot.exists) {
-    throw new Error('Cart does not exist')
+    throw new NoCartFoundError('Cart does not exist')
   }
 
   return docSnapshot.data() as Cart
@@ -58,12 +59,12 @@ async function deleteUserCart(email: string) {
   return db.collection('carts').doc(email.toLowerCase()).delete()
 }
 
-async function deleteCartItem(email: string, item: StockRowData) {
+async function deleteCartItem(email: string, item: CartItem) {
   const existingCart: Cart = await getUserCart(email)
   if (existingCart === undefined) {
     throw new Error('Handled error delete cart item')
   }
-  const updatedItems: StockRowData[] = existingCart.items.filter(data => data !== item)
+  const updatedItems: CartItem[] = existingCart.items.filter(data => data !== item)
   return db
     .collection('carts')
     .doc(email.toLowerCase())

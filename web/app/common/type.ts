@@ -85,8 +85,8 @@ export interface StockRowData {
   "Price per Unit (MYR)": number
 }
 
-export interface ItemToStockRowData {
-  [key: string]: StockRowData
+export interface ItemToCartItem {
+  [key: string]: CartItem
 }
 
 export interface EventRowData {
@@ -105,5 +105,5 @@ export interface BranchNameToCode {
 
 export interface Cart {
   email: string
-  items: StockRowData[]
+  items: CartItem[]
 }

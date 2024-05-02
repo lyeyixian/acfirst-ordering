@@ -1,7 +1,7 @@
-import { useFetcher } from '@remix-run/react'
+import { Form, useFetcher, useNavigation } from '@remix-run/react'
 import { useState, useEffect, useRef } from 'react';
-import { Button, Card, Container, Flex, Group, HoverCard, Modal, NumberInput, Text,Title } from '@mantine/core'
-import { Cart, CartItem, EventType, Stock, StockRowData } from '~/common/type'
+import { Button, Card, Container, Flex, Group, Modal, NumberInput, Text,Title } from '@mantine/core'
+import { CartItem, EventType, Stock, StockRowData } from '~/common/type'
 import classes from './CartItem.module.css'
 
 import { AgGridReact } from 'ag-grid-react'; // AG Grid Component
@@ -10,12 +10,14 @@ import "ag-grid-community/styles/ag-theme-quartz.css"; // Optional Theme applied
 import { useDisclosure } from '@mantine/hooks';
 import { GridReadyEvent, RowNode } from 'ag-grid-community';
 
+
 export function StocksTable({ stocks }: { stocks: Stock[] }) {
   const refreshStocksFetcher = useFetcher()
 
   const [opened, { open, close }] = useDisclosure(false);
   const [cartItems, setCartItems] = useState<CartItem[]>([])
   const [totalCost, setTotalCost] = useState(0)
+  const navigation = useNavigation()
 
   // Grid Stuff
   const gridRef = useRef();
@@ -139,13 +141,18 @@ export function StocksTable({ stocks }: { stocks: Stock[] }) {
           Add {cartItems.length !== 0 ? cartItems.length : "" } Items to Cart
         </Button>
         <Modal opened={opened} onClose={close} title="Add to Cart" size={'xl'}>
-          <Container>
+          <Form method="post">
             {cartItems.map((item, key) => {
               return (
                 <Card key={key} className={classes.card} shadow='sm' withBorder mb='sm'>
                   <Flex justify={'space-between'}>
                     <Group>
                       <div style={{ flex: 1 }}>
+                        <input name='itemCode' type='hidden' value={item.itemCode}/>
+                        <input name='location' type='hidden' value={item.location}/>
+                        <input name='batch' type='hidden' value={item.batch}/>
+                        <input name='pricePerUnit' type='hidden' value={item.pricePerUnit}/>
+                        <input name='quantity' type='hidden' value={item.quantity}/>
                         <Text size="sm" fw={500}>
                           {item.itemCode}
                         </Text>
@@ -174,6 +181,7 @@ export function StocksTable({ stocks }: { stocks: Stock[] }) {
                         </div>
                       </Group>
                       <NumberInput
+                        name='currentQuantity'
                         withAsterisk
                         min={1}
                         max={item.quantity}
@@ -196,19 +204,23 @@ export function StocksTable({ stocks }: { stocks: Stock[] }) {
               </Card>
               )
             })}
-            <Group className={classes.footerContainer} mt='md' justify={'right'}>
-              <Flex>
+              <Container className={classes.footerContainer} mt='md' >
+              <Flex justify={'right'}>
                 <Text fw={500}>Total Cost: {totalCost} MYR</Text>
                 <Button variant="outline" onClick={close} mx="md">
                       Cancel                            
                 </Button>
-                <Button variant="filled" mx="md" disabled={zeroQuantityItemExist()}>
-                  Add Items                            
+                <Button type="submit" variant="filled" mx="md" disabled={zeroQuantityItemExist()} onClick={close}>
+                  {navigation.state === 'idle' ? 'Add to Cart' : 'Adding...'}         
                 </Button>
               </Flex>
-              {zeroQuantityItemExist() ? (<Text size='md' c={'red'}>You must have at least 1 quantity for each item</Text>) : ""}
-            </Group>
-          </Container>
+              {zeroQuantityItemExist() ? (
+                <Text mx={'md'} mt={'md'} className={classes.zeroQuantityText} size='sm' c={'red'}>
+                  You must have at least 1 quantity for each item
+                </Text>
+              ) : ""}
+              </Container>
+          </Form>
         </Modal>
       </Flex>
     </Container>
