@@ -47,9 +47,9 @@ export const homeAction: ActionFunction = async ({ request }) => {
     const retryOrderId = formData.get('retryOrderId')?.toString()
     const deleteOrderId = formData.get('deleteOrderId')?.toString()
 
-    if (type) return createEvent(type, user);
-    if (retryOrderId) return retryEvent(retryOrderId);
-    if (deleteOrderId) return deleteEvent(deleteOrderId)
+    if (type) return createEvent(type, user); // For refreshStocks at StocksTable
+    if (retryOrderId) return retryEvent(retryOrderId); // For retryEvent at OrderHistory ActionEventRenderer
+    if (deleteOrderId) return deleteEvent(deleteOrderId) // For deleteEvent at OrderHistory ActionEventRenderer
 
     if (!type) {
       return { error: 'Missing type', status: 400 }

@@ -70,7 +70,11 @@ export interface Stock {
   batch: string
   quantity: number
   pricePerUnit: number
-  updatedAt: Timestamp
+  updatedAt: Timestamp | undefined
+}
+
+export interface CartItem extends Stock {
+  currentQuantity: number
 }
 
 export interface StockRowData {
