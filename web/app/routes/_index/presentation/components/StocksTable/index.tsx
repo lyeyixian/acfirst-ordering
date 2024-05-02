@@ -11,31 +11,27 @@ import { useDisclosure } from '@mantine/hooks';
 import { GridReadyEvent, RowNode } from 'ag-grid-community';
 
 export function StocksTable({ stocks }: { stocks: Stock[] }) {
+  const refreshStocksFetcher = useFetcher()
+
+  // Grid Stuff
+  const gridRef = useRef();
   const numberSort = (num1: number, num2: number) => {
     return num1 - num2;
   };
-
-  const refreshStocksFetcher = useFetcher()
-
-  const gridRef = useRef();
-
   const onGridReady = (params: GridReadyEvent) => {
     params.api.resetRowHeights();
   }
-
   const checkboxSelection = (params: RowNode) => {
     if (params.data.Quantity > 0) {
        return true;
     }
     return false;
   }
-
   const rowStyle = (params: RowNode) => {
       if (params.data.Quantity <= 0){
           return { background: '#f58484' };
         }
     }
- 
   const [rowData, setRowData] = useState<StockRowData[]>([])
   const [colDefs, setColDefs] = useState([
     { field: "Item Code", filter: 'agTextColumnFilter', checkboxSelection: checkboxSelection, headerCheckboxSelection: true, lockPosition: "left"},
@@ -44,9 +40,6 @@ export function StocksTable({ stocks }: { stocks: Stock[] }) {
     { field: "Quantity", filter: 'agNumberColumnFilter', sortable: true, comparator: numberSort},
     { field: "Price per Unit (MYR)", filter: 'agNumberColumnFilter', sortable: true, comparator: numberSort}
   ]);
-
-  const [opened, { open, close }] = useDisclosure(false);
-  const [selectedItems, setSelectedItems] = useState<StockRowData[]>([])
 
   useEffect(() => {
     const rows: StockRowData[] = [];
@@ -59,9 +52,14 @@ export function StocksTable({ stocks }: { stocks: Stock[] }) {
 
   const onSelectionChanged = () => {
     setSelectedItems(gridRef.current?.api.getSelectedNodes().map((node: RowNode) => node.data));
+    setCartItems(gridRef.current?.api.getSelectedNodes().map((node: RowNode) => node.data));
   };
-  
 
+  // Modal Stuff
+  const [opened, { open, close }] = useDisclosure(false);
+  const [selectedItems, setSelectedItems] = useState<StockRowData[]>([])
+  const [cartItems, setCartItems] = useState<StockRowData[]>([]) //Double copy to track current quantity in cart
+  
   return (
     <Container size={1080}>
       <Flex mb={10} justify={"space-between"}>
@@ -100,7 +98,7 @@ export function StocksTable({ stocks }: { stocks: Stock[] }) {
           <Container>
             {selectedItems.map((item, key) => {
               return (
-                <Card key={key} className={classes.user} shadow='sm' withBorder mb='sm'>
+                <Card key={key} className={classes.card} shadow='sm' withBorder mb='sm'>
                   <Flex justify={'space-between'}>
                     <Group>
                       <div style={{ flex: 1 }}>
@@ -116,6 +114,15 @@ export function StocksTable({ stocks }: { stocks: Stock[] }) {
                       </div>
                     </Group>
                     <Flex>
+                        <div style={{ flex: 1 }}>
+                        <Group>
+                          <Text size="sm" mr="md" fw={500}> Cost: </Text>
+                          <Text>{item.Quantity * item['Price per Unit (MYR)']}</Text>
+                        </Group>
+                        <Text size="xs"> Price per unit: {item['Price per Unit (MYR)']}</Text>
+                        </div>
+                    </Flex>
+                    <Flex>
                       <Group>
                         <div style={{ flex: 1 }}>
                         <Text size="sm" mr="md" fw={500}> Quantity: </Text>
@@ -130,14 +137,16 @@ export function StocksTable({ stocks }: { stocks: Stock[] }) {
                         clampBehavior="strict"
                         stepHoldDelay={500}
                         stepHoldInterval={100}
+                        // onChange={(value) => cartItems.filter(i => i['Item Code']===item['Item Code'] && i.Batch===item.Batch && i.Location===item.Location).pop()?.Quantity=value}
+                        
                       />
                     </Flex>
-
                 </Flex>
               </Card>
               )
             })}
-            <Flex mt='md' justify={'right'}>
+            <Flex className={classes.footerContainer} mt='md' justify={'right'}>
+              <Text fw={500}>Total Cost: 100000 MYR</Text>
               <Button variant="outline" onClick={close} mx="md">
                     Cancel                            
               </Button>
