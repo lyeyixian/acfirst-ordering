@@ -23,7 +23,9 @@ export default function HeaderTabs() {
   return (
     <Container>
       <Group h="100%" justify="space-between">
-        <Image w={60} src="/nav-logo.svg" />
+        <Link to="/">
+          <Image w={60} src="/nav-logo.svg" />
+        </Link>
 
         <Menu
           position="bottom-end"
