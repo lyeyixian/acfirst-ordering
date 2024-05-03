@@ -1,6 +1,7 @@
 import { json, type ActionFunction } from '@remix-run/node'
 import { sessionService } from '~/.server/application/SessionService'
 import { userService } from '~/.server/application/UserService'
+import { BRANCH_NAME_TO_CODE } from '~/common/constants'
 
 export const signUpAction: ActionFunction = async ({ request }) => {
   const formData = await request.formData()
@@ -9,6 +10,7 @@ export const signUpAction: ActionFunction = async ({ request }) => {
   const uid = formData.get('uid')?.toString() || ''
   const company = formData.get('company')?.toString() || ''
   const username = formData.get('username')?.toString() || ''
+  const companyCode = BRANCH_NAME_TO_CODE[company]
 
   try {
     await userService.createUser(email, {
@@ -16,6 +18,7 @@ export const signUpAction: ActionFunction = async ({ request }) => {
       company,
       username,
       userId: uid,
+      companyCode
     })
   } catch (error) {
     console.log(error)

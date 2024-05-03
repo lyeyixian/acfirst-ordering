@@ -8,7 +8,7 @@ export const orderAction: ActionFunction = async ({ request }) => {
     const formData = await request.formData()
 
     const type = formData.get('type')?.toString() as EventType
-    const Code = user.company
+    const Code = user.companyCode
     const itemCodes = formData.getAll('itemCode')
     const quantities = formData.getAll('quantity')
 

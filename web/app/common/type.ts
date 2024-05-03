@@ -52,6 +52,7 @@ export interface CreateUserPayload {
   email: string
   company: string
   userId: string
+  companyCode: string
 }
 
 export interface User {
@@ -59,6 +60,7 @@ export interface User {
   email: string
   company: string
   userId: string
+  companyCode: string
 }
 
 // Stocks
@@ -68,7 +70,11 @@ export interface Stock {
   batch: string
   quantity: number
   pricePerUnit: number
-  updatedAt: Timestamp
+  updatedAt: Timestamp | undefined
+}
+
+export interface CartItem extends Stock {
+  currentQuantity: number
 }
 
 export interface StockRowData {
@@ -79,6 +85,10 @@ export interface StockRowData {
   'Price per Unit (MYR)': number
 }
 
+export interface ItemToCartItem {
+  [key: string]: CartItem
+}
+
 export interface EventRowData {
   'Order ID': string | undefined
   Type: EventType
@@ -87,4 +97,13 @@ export interface EventRowData {
   'Created By': string
   'Created At': Date
   'Updated At': Date
+}
+
+export interface BranchNameToCode {
+  [key: string]: string
+}
+
+export interface Cart {
+  email: string
+  items: CartItem[]
 }

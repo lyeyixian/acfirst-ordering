@@ -1,0 +1,26 @@
+.card {
+  display: block;
+  width: 100%;
+  padding: var(--mantine-spacing-md);
+  color: light-dark(var(--mantine-color-black), var(--mantine-color-dark-0));
+
+  /* :hover {
+      background-color: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-8));
+    } */
+}
+
+.footerContainer {
+  position: sticky;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: white;
+  z-index: 1;
+  min-height: 3rem;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+.zeroQuantityText {
+  text-align: end;
+}

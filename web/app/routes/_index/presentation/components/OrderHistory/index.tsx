@@ -1,10 +1,11 @@
-import { Container, Table, Title } from '@mantine/core'
+import { Container, Title } from '@mantine/core'
 import { AgGridReact } from 'ag-grid-react'
 import { Timestamp } from 'firebase-admin/firestore'
 import { useEffect, useState } from 'react'
 import { Event, EventPayload, EventRowData, EventType } from '~/common/type'
-import RetryEventRenderer from './RetryEventRenderer'
 import EventTypeRenderer from './EventTypeRenderer'
+import StatusEventRenderer from './StatusEventRenderer'
+import ActionEventRenderer from './ActionEventRenderer'
 
 const parseDate = (date: Timestamp) => {
   try {
@@ -30,29 +31,15 @@ const parsePayload = (payload: EventPayload | null) => {
 export function OrderHistory({ orderHistories }: { orderHistories: Event[] }) {
   const [rowData, setRowData] = useState<EventRowData[]>([])
   const [colDefs, setColDefs] = useState([
-    { field: 'Order ID', filter: 'agTextColumnFilter' },
-    {
-      field: 'Type',
-      filter: 'agTextColumnFilter',
-      cellRenderer: EventTypeRenderer,
-    },
-    {
-      field: 'Order',
-      filter: 'agTextColumnFilter',
-      minWidth: 300,
-      wrapText: true,
-      autoHeight: true,
-      cellStyle: { whiteSpace: 'pre' },
-    },
-    {
-      field: 'Status',
-      filter: 'agTextColumnFilter',
-      cellRenderer: RetryEventRenderer,
-    },
-    { field: 'Created At', filter: 'agDateColumnFilter' },
-    { field: 'Updated At', filter: 'agDateColumnFilter' },
-    { field: 'Created By', filter: 'agTextColumnFilter' },
-  ])
+    { field: "Order ID", filter: 'agTextColumnFilter' },
+    { field: "Type", filter: 'agTextColumnFilter', cellRenderer: EventTypeRenderer },
+    { field: "Order", filter: 'agTextColumnFilter', minWidth: 300, wrapText: true, autoHeight: true, cellStyle: {whiteSpace: 'pre'} },
+    { field: "Created At", filter: 'agDateColumnFilter'},
+    { field: "Updated At", filter: 'agDateColumnFilter'},
+    { field: "Created By", filter: 'agTextColumnFilter'},
+    { field: "Status", cellRenderer: StatusEventRenderer, pinned: 'right', lockPosition: "right", maxWidth: "75"},
+    { field: "Action", cellRenderer: ActionEventRenderer, pinned: 'right', lockPosition: "right", maxWidth: "160"}
+  ]);
 
   useEffect(() => {
     const rows: EventRowData[] = []
@@ -82,10 +69,12 @@ export function OrderHistory({ orderHistories }: { orderHistories: Event[] }) {
         style={{ height: 300, width: '100%' }} // the grid will fill the size of the parent container
       >
         <AgGridReact
-          enableCellTextSelection
-          rowHeight={35}
-          rowData={rowData}
-          columnDefs={colDefs}
+            pagination={true}
+            paginationAutoPageSize={true}
+            enableCellTextSelection
+            rowHeight={35}
+            rowData={rowData}
+            columnDefs={colDefs}
         />
       </div>
     </Container>
