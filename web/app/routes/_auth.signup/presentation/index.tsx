@@ -3,7 +3,7 @@ import SignUpForm from './components/SignUpForm'
 
 export default function SignUpPage() {
   return (
-    <Stack h="80vh" justify="center">
+    <Stack h="100vh" justify="center">
       <SignUpForm />
     </Stack>
   )

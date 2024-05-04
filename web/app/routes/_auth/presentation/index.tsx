@@ -1,12 +1,12 @@
+import { BackgroundImage } from '@mantine/core'
 import { Outlet } from '@remix-run/react'
 
 export default function AuthLayout() {
   return (
     <div>
-      <h1>Auth Layout</h1>
-      <div>
+      <BackgroundImage src="/login-page.avif">
         <Outlet />
-      </div>
+      </BackgroundImage>
     </div>
   )
 }
