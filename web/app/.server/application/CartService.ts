@@ -4,48 +4,48 @@ import { WriteResult } from 'firebase-admin/firestore'
 import { NoCartFoundError } from '~/common/errors'
 
 export interface ICartService {
-  createUserCart: (email: string, payload: Cart) => Promise<WriteResult>
-  updateUserCart: (email: string, payload: Cart) => Promise<WriteResult>
-  getUserCart: (email: string) => Promise<Cart>
-  deleteUserCart: (email: string) => Promise<WriteResult>
-  deleteCartItem: (email: string, item: CartItem) => Promise<WriteResult>
+  createUserCart: (userId: string, payload: Cart) => Promise<WriteResult>
+  updateUserCart: (userId: string, payload: Cart) => Promise<WriteResult>
+  getUserCart: (userId: string) => Promise<Cart>
+  deleteUserCart: (userId: string) => Promise<WriteResult>
+  deleteCartItem: (userId: string, item: CartItem) => Promise<WriteResult>
 }
 
-async function createUserCart(email: string, payload: Cart) {
+async function createUserCart(userId: string, payload: Cart) {
   try {
-    return db.collection('carts').doc(email).set(payload)
+    return db.collection('carts').doc(userId).set(payload)
   } catch (error) {
     console.log('Caught error creating cart document: ', error)
     throw new Error('Handled error creating cart document')
   }
 }
 
-async function updateUserCart(email: string, payload: Cart) {
+async function updateUserCart(userId: string, payload: Cart) {
   try {
     const updatedItemsMap: ItemToCartItem = {}
     payload.items.map(item => {
-      updatedItemsMap[item.itemCode+item.location+item.batch] = item
+      updatedItemsMap[item.stock.itemCode+item.stock.location+item.stock.batch] = item
     })
     const updatedItems: CartItem[] = payload.items // We use all items in the updated payload
 
-    const existingItems: CartItem[] = (await getUserCart(email)).items
+    const existingItems: CartItem[] = (await getUserCart(userId)).items
     existingItems.forEach(item => {
-      const itemUniqueName = item.itemCode+item.location+item.batch
+      const itemUniqueName = item.stock.itemCode+item.stock.location+item.stock.batch
       if (!(itemUniqueName in updatedItemsMap)) {
         updatedItems.push(item) // Add existing item in old cart that is not in the payload to new cart
       }
     })
-    return db.collection('carts').doc(email).update({items: updatedItems})
+    return db.collection('carts').doc(userId).update({items: updatedItems})
   } catch (error) {
     console.log('Caught error creating cart document: ', error)
     throw new Error('Handled error creating cart document')
   }
 }
 
-async function getUserCart(email: string) {
+async function getUserCart(userId: string) {
   const docSnapshot = await db
     .collection('carts')
-    .doc(email.toLowerCase())
+    .doc(userId)
     .get()
 
   if (!docSnapshot.exists) {
@@ -55,19 +55,19 @@ async function getUserCart(email: string) {
   return docSnapshot.data() as Cart
 }
 
-async function deleteUserCart(email: string) {
-  return db.collection('carts').doc(email.toLowerCase()).delete()
+async function deleteUserCart(userId: string) {
+  return db.collection('carts').doc(userId).delete()
 }
 
-async function deleteCartItem(email: string, item: CartItem) {
-  const existingCart: Cart = await getUserCart(email)
+async function deleteCartItem(userId: string, item: CartItem) {
+  const existingCart: Cart = await getUserCart(userId)
   if (existingCart === undefined) {
     throw new Error('Handled error delete cart item')
   }
   const updatedItems: CartItem[] = existingCart.items.filter(data => data !== item)
   return db
     .collection('carts')
-    .doc(email.toLowerCase())
+    .doc(userId)
     .update({items: updatedItems})
 }
 

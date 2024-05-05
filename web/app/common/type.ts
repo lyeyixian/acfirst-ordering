@@ -73,8 +73,9 @@ export interface Stock {
   updatedAt: Timestamp | undefined
 }
 
-export interface CartItem extends Stock {
+export interface CartItem {
   currentQuantity: number
+  stock: Stock
 }
 
 export interface StockRowData {
@@ -104,6 +105,6 @@ export interface BranchNameToCode {
 }
 
 export interface Cart {
-  email: string
+  userId: string
   items: CartItem[]
 }

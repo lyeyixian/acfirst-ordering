@@ -52,31 +52,33 @@ const addToCart = async (user: User, formData: FormData) => {
   const currentQuantities = formData.getAll('currentQuantity')
 
   const cart: Cart = {
-    email: user.email,
+    userId: user.userId,
     items: []
   }
   itemCodes.forEach((itemCode, i) =>
     cart.items.push({
-      itemCode: itemCode.toString(),
-      location: locations[i].toString(),
-      batch: batches[i].toString(),
-      pricePerUnit: parseInt(pricePerUnit[i].toString()),
-      quantity: parseInt(quantities[i].toString()),
       currentQuantity: parseInt(currentQuantities[i].toString()),
-      updatedAt: Timestamp.now()
+      stock: {
+        itemCode: itemCode.toString(),
+        location: locations[i].toString(),
+        batch: batches[i].toString(),
+        pricePerUnit: parseInt(pricePerUnit[i].toString()),
+        quantity: parseInt(quantities[i].toString()),
+        updatedAt: Timestamp.now()
+      }
     })
   )
 
   try {
-    await cartService.getUserCart(user.email);
+    await cartService.getUserCart(user.userId);
     //Existing cart exist, we update
-    const updatedCart = await cartService.updateUserCart(user.email, cart);
+    const updatedCart = await cartService.updateUserCart(user.userId, cart);
     return { data: { msg: `Cart updated: ${updatedCart}` }, status: 200 }
 
   } catch (error) {
     if (error instanceof NoCartFoundError) {
       // Cart does not exist, we create a new one
-      const newCart = await cartService.createUserCart(user.email, cart)
+      const newCart = await cartService.createUserCart(user.userId, cart)
       return { data: { msg: `Cart created: ${newCart}` }, status: 200 }
 
     }

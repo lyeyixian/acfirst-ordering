@@ -10,7 +10,7 @@ export const homeLoader: LoaderFunction = async ({ request }) => {
       data: {
         stocks: await stockService.getStocks(),
         events: await eventService.getEventsForUser(user),
-        cart: await cartService.getUserCart(user.email),
+        cart: await cartService.getUserCart(user.userId),
       },
       status: 200,
     }

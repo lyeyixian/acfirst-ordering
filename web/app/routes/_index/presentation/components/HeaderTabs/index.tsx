@@ -28,7 +28,7 @@ export default function HeaderTabs() {
   const { username, email, company } = useUser()
   const loaderData = useLoaderData<typeof homeLoader>()
   const { cart } = loaderData.data
-
+  
   return (
     <Container>
       <Group h="100%" justify="space-between">
@@ -49,7 +49,7 @@ export default function HeaderTabs() {
               })}
             >
               <Group gap={7}>
-                <Indicator color="red" label={cart.items.length} size={16}>
+                <Indicator color="red" label={cart === undefined || cart.items === undefined ? 0 : cart.items.length} size={16}>
                   <Avatar radius="xl" size={30} />
                 </Indicator>
                 <Text fw={500} size="sm" lh={1} mr={3}>
@@ -81,26 +81,26 @@ export default function HeaderTabs() {
             <Divider my="md" />
 
             <Box>
-              {cart.items.length ? (
+              {cart !== undefined && cart.items !== undefined && cart.items.length ? (
                 <>
                   <ScrollArea.Autosize mah={400} offsetScrollbars>
                     {cart.items.map((item: CartItem, index: number) => (
                       <Card key={index} p="sm" mt="sm">
                         <Group gap="sm">
                           <Text size="sm" fw={500}>
-                            {item.itemCode}
+                            {item.stock.itemCode}
                           </Text>
                           <Text size="sm" c="dimmed">
-                            {item.location}
+                            {item.stock.location}
                           </Text>
                           <Text size="sm" c="dimmed">
-                            {item.batch}
+                            {item.stock.batch}
                           </Text>
                           <Text size="sm" c="dimmed">
-                            {item.pricePerUnit}
+                            {item.stock.pricePerUnit}
                           </Text>
                           <Text size="sm" c="dimmed">
-                            {item.quantity}
+                            {item.stock.quantity}
                           </Text>
                         </Group>
                       </Card>

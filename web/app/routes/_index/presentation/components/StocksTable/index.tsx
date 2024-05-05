@@ -62,13 +62,15 @@ export function StocksTable({ stocks }: { stocks: Stock[] }) {
     const selectedItems: CartItem[] = []
     selectedRows.forEach(item => {
       const cartItem: CartItem = {
-        itemCode: item['Item Code'],
-        location: item.Location,
-        batch: item.Batch,
-        pricePerUnit: item['Price per Unit (MYR)'],
-        quantity: item.Quantity,
         currentQuantity: cartItems.filter(existingItem => isSameStockItem(existingItem, item)).pop()?.currentQuantity ?? 1, //Set 1 to be default selected quantity
-        updatedAt: undefined
+        stock: {
+          itemCode: item['Item Code'],
+          location: item.Location,
+          batch: item.Batch,
+          pricePerUnit: item['Price per Unit (MYR)'],
+          quantity: item.Quantity,
+          updatedAt: undefined
+        }
       }
       selectedItems.push(cartItem)
     })
@@ -78,21 +80,21 @@ export function StocksTable({ stocks }: { stocks: Stock[] }) {
   useEffect(() => {
     let cost = 0
     cartItems.forEach(item => {
-      cost += item.currentQuantity*item.pricePerUnit
+      cost += item.currentQuantity*item.stock.pricePerUnit
     })
     setTotalCost(cost);
   }, [cartItems, setCartItems])
 
   const isSameStockItem = (item1: CartItem, item2: StockRowData) => {
-    return item1.itemCode === item2['Item Code'] &&
-            item1.location === item2.Location &&
-            item1.batch === item2.Batch
+    return item1.stock.itemCode === item2['Item Code'] &&
+            item1.stock.location === item2.Location &&
+            item1.stock.batch === item2.Batch
   }
   
   const calculateTotalCost = () => {
     let cost = 0
     cartItems.forEach(item => {
-      cost += item.currentQuantity*item.pricePerUnit
+      cost += item.currentQuantity*item.stock.pricePerUnit
     })
     setTotalCost(cost);
 
@@ -148,19 +150,19 @@ export function StocksTable({ stocks }: { stocks: Stock[] }) {
                   <Flex justify={'space-between'}>
                     <Group>
                       <div style={{ flex: 1 }}>
-                        <input name='itemCode' type='hidden' value={item.itemCode}/>
-                        <input name='location' type='hidden' value={item.location}/>
-                        <input name='batch' type='hidden' value={item.batch}/>
-                        <input name='pricePerUnit' type='hidden' value={item.pricePerUnit}/>
-                        <input name='quantity' type='hidden' value={item.quantity}/>
+                        <input name='itemCode' type='hidden' value={item.stock.itemCode}/>
+                        <input name='location' type='hidden' value={item.stock.location}/>
+                        <input name='batch' type='hidden' value={item.stock.batch}/>
+                        <input name='pricePerUnit' type='hidden' value={item.stock.pricePerUnit}/>
+                        <input name='quantity' type='hidden' value={item.stock.quantity}/>
                         <Text size="sm" fw={500}>
-                          {item.itemCode}
+                          {item.stock.itemCode}
                         </Text>
                         <Text c="dimmed" size="sm">
-                          {item.location}
+                          {item.stock.location}
                         </Text>
                         <Text c="dimmed" size="sm">
-                          {item.batch}
+                          {item.stock.batch}
                         </Text>
                       </div>
                     </Group>
@@ -168,23 +170,23 @@ export function StocksTable({ stocks }: { stocks: Stock[] }) {
                         <div style={{ flex: 1 }}>
                         <Group>
                           <Text size="sm" mr="md" fw={500}> Cost: </Text>
-                          <Text>{item.currentQuantity * item.pricePerUnit}</Text>
+                          <Text>{item.currentQuantity * item.stock.pricePerUnit}</Text>
                         </Group>
-                        <Text size="xs"> Price per unit: {item.pricePerUnit}</Text>
+                        <Text size="xs"> Price per unit: {item.stock.pricePerUnit}</Text>
                         </div>
                     </Flex>
                     <Flex>
                       <Group>
                         <div style={{ flex: 1 }}>
                         <Text size="sm" mr="md" fw={500}> Quantity: </Text>
-                        <Text size="sm"> Max: {item.quantity}</Text>
+                        <Text size="sm"> Max: {item.stock.quantity}</Text>
                         </div>
                       </Group>
                       <NumberInput
                         name='currentQuantity'
                         withAsterisk
                         min={1}
-                        max={item.quantity}
+                        max={item.stock.quantity}
                         defaultValue={item.currentQuantity}
                         allowDecimal={false}
                         clampBehavior="strict"
