@@ -1,16 +1,16 @@
 import { LoaderFunction } from '@remix-run/node'
+import { cartService } from '~/.server/application/CartService'
 import { eventService } from '~/.server/application/EventService'
 import { sessionService } from '~/.server/application/SessionService'
 import { stockService } from '~/.server/application/StockService'
-import { EventType } from '~/common/type'
 
 export const homeLoader: LoaderFunction = async ({ request }) => {
   return sessionService.verifySession(request, async (user) => {
-    // eventService.createEvent(EventType.REFRESH_STOCKS, user) //Refresh stocks when homepage is loaded
     return {
       data: {
         stocks: await stockService.getStocks(),
         events: await eventService.getEventsForUser(user),
+        cart: await cartService.getUserCart(user.email),
       },
       status: 200,
     }

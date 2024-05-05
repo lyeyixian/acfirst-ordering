@@ -12,15 +12,22 @@ import {
   Popover,
   Divider,
   Button,
+  Indicator,
+  Box,
+  ScrollArea,
 } from '@mantine/core'
 import { IconLogout, IconChevronDown } from '@tabler/icons-react'
 import classes from './HeaderTabs.module.css'
 import { useUser } from '~/components/hooks/user'
-import { Link } from '@remix-run/react'
+import { Link, useLoaderData } from '@remix-run/react'
+import { homeLoader } from '~/routes/_index/application/loader.server'
+import { CartItem } from '~/common/type'
 
 export default function HeaderTabs() {
   const [userMenuOpened, setUserMenuOpened] = useState(false)
   const { username, email, company } = useUser()
+  const loaderData = useLoaderData<typeof homeLoader>()
+  const { cart } = loaderData.data
 
   return (
     <Container>
@@ -42,7 +49,9 @@ export default function HeaderTabs() {
               })}
             >
               <Group gap={7}>
-                <Avatar radius="xl" size={30} />
+                <Indicator color="red" label={cart.items.length} size={16}>
+                  <Avatar radius="xl" size={30} />
+                </Indicator>
                 <Text fw={500} size="sm" lh={1} mr={3}>
                   {company}
                 </Text>
@@ -68,6 +77,53 @@ export default function HeaderTabs() {
                 </Text>
               </Group>
             </Card>
+
+            <Divider my="md" />
+
+            <Box>
+              {cart.items.length ? (
+                <>
+                  <ScrollArea.Autosize mah={400} offsetScrollbars>
+                    {cart.items.map((item: CartItem, index: number) => (
+                      <Card key={index} p="sm" mt="sm">
+                        <Group gap="sm">
+                          <Text size="sm" fw={500}>
+                            {item.itemCode}
+                          </Text>
+                          <Text size="sm" c="dimmed">
+                            {item.location}
+                          </Text>
+                          <Text size="sm" c="dimmed">
+                            {item.batch}
+                          </Text>
+                          <Text size="sm" c="dimmed">
+                            {item.pricePerUnit}
+                          </Text>
+                          <Text size="sm" c="dimmed">
+                            {item.quantity}
+                          </Text>
+                        </Group>
+                      </Card>
+                    ))}
+                  </ScrollArea.Autosize>
+                  <Button
+                    fullWidth
+                    mt="xl"
+                    component={Link}
+                    to="/checkout" // TODO: add submit order page
+                    onClick={() => setUserMenuOpened(false)}
+                  >
+                    Checkout
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Text ta="center" size="sm" c="dimmed">
+                    Your cart is empty.
+                  </Text>
+                </>
+              )}
+            </Box>
 
             <Divider my="md" />
 
