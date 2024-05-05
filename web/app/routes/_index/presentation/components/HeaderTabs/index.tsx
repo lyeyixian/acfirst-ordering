@@ -5,20 +5,22 @@ import {
   UnstyledButton,
   Group,
   Text,
-  Menu,
   rem,
   Image,
   Container,
+  Card,
+  Popover,
+  Divider,
+  Button,
 } from '@mantine/core'
 import { IconLogout, IconChevronDown } from '@tabler/icons-react'
 import classes from './HeaderTabs.module.css'
 import { useUser } from '~/components/hooks/user'
-import UserInfo from '../UserInfo'
 import { Link } from '@remix-run/react'
 
 export default function HeaderTabs() {
   const [userMenuOpened, setUserMenuOpened] = useState(false)
-  const { company } = useUser()
+  const { username, email, company } = useUser()
 
   return (
     <Container>
@@ -27,14 +29,13 @@ export default function HeaderTabs() {
           <Image w={60} src="/nav-logo.svg" />
         </Link>
 
-        <Menu
+        <Popover
           position="bottom-end"
           transitionProps={{ transition: 'pop-top-right' }}
           onClose={() => setUserMenuOpened(false)}
           onOpen={() => setUserMenuOpened(true)}
-          withinPortal
         >
-          <Menu.Target>
+          <Popover.Target>
             <UnstyledButton
               className={cx(classes.user, {
                 [classes.userActive]: userMenuOpened,
@@ -51,27 +52,44 @@ export default function HeaderTabs() {
                 />
               </Group>
             </UnstyledButton>
-          </Menu.Target>
-          <Menu.Dropdown>
-            <Menu.Item component={UserInfo}></Menu.Item>
+          </Popover.Target>
 
-            <Menu.Divider />
+          <Popover.Dropdown>
+            <Card shadow="xs">
+              <Group gap="xs">
+                <Text size="sm" fw={500}>
+                  {username}
+                </Text>
+                <Text c="dimmed" size="sm">
+                  {email}
+                </Text>
+                <Text c="dimmed" size="sm">
+                  {company}
+                </Text>
+              </Group>
+            </Card>
 
-            <Menu.Item
+            <Divider my="md" />
+
+            <Button
+              variant="subtle"
               color="red"
-              leftSection={
+              fullWidth
+              component={Link}
+              to="/logout"
+            >
+              <Group gap="xs">
                 <IconLogout
                   style={{ width: rem(16), height: rem(16) }}
                   stroke={1.5}
                 />
-              }
-              component={Link}
-              to="/logout"
-            >
-              Log Out
-            </Menu.Item>
-          </Menu.Dropdown>
-        </Menu>
+                <Text size="sm" fw={500}>
+                  Log Out
+                </Text>
+              </Group>
+            </Button>
+          </Popover.Dropdown>
+        </Popover>
       </Group>
     </Container>
   )
