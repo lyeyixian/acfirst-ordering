@@ -6,7 +6,6 @@ import { sessionService } from '~/.server/application/SessionService'
 import { NoCartFoundError } from '~/common/errors'
 import { Cart, EventType, User } from '~/common/type'
 
-
 const createEvent = async (type: EventType, user: User) => {
   try {
     console.log('Creating event: ', type)
@@ -31,7 +30,6 @@ const retryEvent = async (orderId: string) => {
   }
 }
 
-
 const deleteEvent = async (orderId: string) => {
   try {
     console.log('Deleting event: ', orderId)
@@ -53,7 +51,7 @@ const addToCart = async (user: User, formData: FormData) => {
 
   const cart: Cart = {
     userId: user.userId,
-    items: []
+    items: [],
   }
   itemCodes.forEach((itemCode, i) =>
     cart.items.push({
@@ -64,28 +62,25 @@ const addToCart = async (user: User, formData: FormData) => {
         batch: batches[i].toString(),
         pricePerUnit: parseInt(pricePerUnit[i].toString()),
         quantity: parseInt(quantities[i].toString()),
-        updatedAt: Timestamp.now()
-      }
+        updatedAt: Timestamp.now(),
+      },
     })
   )
 
   try {
-    await cartService.getUserCart(user.userId);
+    await cartService.getUserCart(user.userId)
     //Existing cart exist, we update
-    const updatedCart = await cartService.updateUserCart(user.userId, cart);
+    const updatedCart = await cartService.updateUserCart(user.userId, cart)
     return { data: { msg: `Cart updated: ${updatedCart}` }, status: 200 }
-
   } catch (error) {
     if (error instanceof NoCartFoundError) {
       // Cart does not exist, we create a new one
       const newCart = await cartService.createUserCart(user.userId, cart)
       return { data: { msg: `Cart created: ${newCart}` }, status: 200 }
-
     }
     console.log('Catch error:', error)
     return { error: 'Error occur when adding to cart', status: 500 }
   }
-
 }
 export const homeAction: ActionFunction = async ({ request }) => {
   return sessionService.verifySession(request, async (user: User) => {
@@ -95,10 +90,10 @@ export const homeAction: ActionFunction = async ({ request }) => {
     const deleteOrderId = formData.get('deleteOrderId')?.toString()
     const itemCodes = formData.getAll('itemCode')
 
-    if (type) return createEvent(type, user); // For refreshStocks at StocksTable
-    if (retryOrderId) return retryEvent(retryOrderId); // For retryEvent at OrderHistory ActionEventRenderer
+    if (type) return createEvent(type, user) // For refreshStocks at StocksTable
+    if (retryOrderId) return retryEvent(retryOrderId) // For retryEvent at OrderHistory ActionEventRenderer
     if (deleteOrderId) return deleteEvent(deleteOrderId) // For deleteEvent at OrderHistory ActionEventRenderer
-    if (itemCodes) return addToCart(user, formData);
+    if (itemCodes) return addToCart(user, formData)
 
     if (!type) {
       return { error: 'Missing type', status: 400 }
@@ -108,6 +103,6 @@ export const homeAction: ActionFunction = async ({ request }) => {
       return { error: 'Missing order Id', status: 400 }
     }
 
-    return { error: 'Unexpected Error', status: 500}
+    return { error: 'Unexpected Error', status: 500 }
   })
 }
