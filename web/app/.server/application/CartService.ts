@@ -1,13 +1,7 @@
-import {
-  Cart,
-  CartItem,
-  ItemToCartItem,
-  StockRowData,
-  User,
-} from '~/common/type'
+import { Cart, CartItem, ItemToCartItem } from '~/common/type'
 import { db } from '../infrastructure/firebase'
 import { WriteResult } from 'firebase-admin/firestore'
-import { NoCartFoundError } from '~/common/errors'
+import { emptyCart } from './utils/CartUtils'
 
 export interface ICartService {
   createUserCart: (userId: string, payload: Cart) => Promise<WriteResult>
@@ -55,7 +49,11 @@ async function getUserCart(userId: string) {
   const docSnapshot = await db.collection('carts').doc(userId).get()
 
   if (!docSnapshot.exists) {
-    throw new NoCartFoundError('Cart does not exist')
+    const cart = emptyCart(userId)
+
+    await db.collection('carts').doc(userId).set(cart)
+
+    return cart
   }
 
   return docSnapshot.data() as Cart
