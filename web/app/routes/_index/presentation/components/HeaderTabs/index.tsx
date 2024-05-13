@@ -28,7 +28,7 @@ export default function HeaderTabs() {
   const { username, email, company } = useUser()
   const loaderData = useLoaderData<typeof homeLoader>()
   const { cart } = loaderData.data
-  
+
   return (
     <Container>
       <Group h="100%" justify="space-between">
@@ -49,7 +49,7 @@ export default function HeaderTabs() {
               })}
             >
               <Group gap={7}>
-                <Indicator color="red" label={cart === undefined || cart.items === undefined ? 0 : cart.items.length} size={16}>
+                <Indicator color="red" label={cart.items.length} size={16}>
                   <Avatar radius="xl" size={30} />
                 </Indicator>
                 <Text fw={500} size="sm" lh={1} mr={3}>
@@ -81,7 +81,7 @@ export default function HeaderTabs() {
             <Divider my="md" />
 
             <Box>
-              {cart !== undefined && cart.items !== undefined && cart.items.length ? (
+              {cart.items.length ? (
                 <>
                   <ScrollArea.Autosize mah={400} offsetScrollbars>
                     {cart.items.map((item: CartItem, index: number) => (
