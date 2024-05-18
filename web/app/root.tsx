@@ -11,7 +11,7 @@ import {
   useLoaderData,
 } from '@remix-run/react'
 import dotenv from 'dotenv'
-import { LoaderFunction } from '@remix-run/node'
+import { LoaderFunction, MetaFunction } from '@remix-run/node'
 import AppContainer from './components/AppContainer'
 
 declare global {
@@ -27,6 +27,13 @@ declare global {
       MEASUREMENT_ID: string
     }
   }
+}
+
+export const meta: MetaFunction = () => {
+  return [
+    { title: 'Acfirst Ordering' },
+    { name: 'description', content: 'Welcome to Acfirst Ordering!' },
+  ]
 }
 
 export const loader: LoaderFunction = () => {
