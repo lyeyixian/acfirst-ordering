@@ -12,6 +12,7 @@ import {
 } from '@remix-run/react'
 import dotenv from 'dotenv'
 import { LoaderFunction } from '@remix-run/node'
+import AppContainer from './components/AppContainer'
 
 declare global {
   interface Window {
@@ -30,6 +31,7 @@ declare global {
 
 export const loader: LoaderFunction = () => {
   dotenv.config()
+  console.log('DEBUG: root loader is called')
   return json({
     ENV: {
       API_KEY: process.env.API_KEY,
@@ -71,5 +73,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-  return <Outlet />
+  return (
+    <AppContainer>
+      <Outlet />
+    </AppContainer>
+  )
 }
