@@ -31,7 +31,7 @@ declare global {
 
 export const loader: LoaderFunction = () => {
   dotenv.config()
-  console.log('DEBUG: root loader is called')
+
   return json({
     ENV: {
       API_KEY: process.env.API_KEY,

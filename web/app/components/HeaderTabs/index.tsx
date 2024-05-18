@@ -1,10 +1,10 @@
 import { Group, Image, Container } from '@mantine/core'
 import { Link } from '@remix-run/react'
-import { useAuth } from '../hooks/auth'
 import HeaderPopover from './HeaderPopover'
+import { useCart } from '../hooks/cart'
 
 export default function HeaderTabs() {
-  const { isAuthRoute } = useAuth()
+  const { shouldRender } = useCart()
 
   return (
     <Container>
@@ -13,7 +13,7 @@ export default function HeaderTabs() {
           <Image w={60} src="/nav-logo.svg" />
         </Link>
 
-        {isAuthRoute ? null : <HeaderPopover />}
+        {shouldRender ? <HeaderPopover /> : null}
       </Group>
     </Container>
   )
