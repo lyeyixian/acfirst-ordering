@@ -31,15 +31,38 @@ const parsePayload = (payload: EventPayload | null) => {
 export function OrderHistory({ orderHistories }: { orderHistories: Event[] }) {
   const [rowData, setRowData] = useState<EventRowData[]>([])
   const [colDefs, setColDefs] = useState([
-    { field: "Order ID", filter: 'agTextColumnFilter' },
-    { field: "Type", filter: 'agTextColumnFilter', cellRenderer: EventTypeRenderer },
-    { field: "Order", filter: 'agTextColumnFilter', minWidth: 300, wrapText: true, autoHeight: true, cellStyle: {whiteSpace: 'pre'} },
-    { field: "Created At", filter: 'agDateColumnFilter'},
-    { field: "Updated At", filter: 'agDateColumnFilter'},
-    { field: "Created By", filter: 'agTextColumnFilter'},
-    { field: "Status", cellRenderer: StatusEventRenderer, pinned: 'right', lockPosition: "right", maxWidth: "75"},
-    { field: "Action", cellRenderer: ActionEventRenderer, pinned: 'right', lockPosition: "right", maxWidth: "160"}
-  ]);
+    { field: 'Order ID', filter: 'agTextColumnFilter' },
+    {
+      field: 'Type',
+      filter: 'agTextColumnFilter',
+      cellRenderer: EventTypeRenderer,
+    },
+    {
+      field: 'Order',
+      filter: 'agTextColumnFilter',
+      minWidth: 300,
+      wrapText: true,
+      autoHeight: true,
+      cellStyle: { whiteSpace: 'pre' },
+    },
+    { field: 'Created At', filter: 'agDateColumnFilter' },
+    { field: 'Updated At', filter: 'agDateColumnFilter' },
+    { field: 'Created By', filter: 'agTextColumnFilter' },
+    {
+      field: 'Status',
+      cellRenderer: StatusEventRenderer,
+      pinned: 'right',
+      lockPosition: 'right',
+      maxWidth: '75',
+    },
+    {
+      field: 'Action',
+      cellRenderer: ActionEventRenderer,
+      pinned: 'right',
+      lockPosition: 'right',
+      maxWidth: '160',
+    },
+  ])
 
   useEffect(() => {
     const rows: EventRowData[] = []
@@ -69,12 +92,12 @@ export function OrderHistory({ orderHistories }: { orderHistories: Event[] }) {
         style={{ height: 300, width: '100%' }} // the grid will fill the size of the parent container
       >
         <AgGridReact
-            pagination={true}
-            paginationAutoPageSize={true}
-            enableCellTextSelection
-            rowHeight={35}
-            rowData={rowData}
-            columnDefs={colDefs}
+          pagination={true}
+          paginationAutoPageSize={true}
+          enableCellTextSelection
+          rowHeight={35}
+          rowData={rowData}
+          columnDefs={colDefs}
         />
       </div>
     </Container>
