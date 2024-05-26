@@ -1,4 +1,4 @@
-import { AppShell } from '@mantine/core'
+import { AppShell, Container } from '@mantine/core'
 import HeaderTabs from '~/components/HeaderTabs'
 import RouterTransition from './RouterTransition'
 import React from 'react'
@@ -12,7 +12,7 @@ export default function AppContainer({ children }: React.PropsWithChildren) {
 
       <AppShell.Main>
         <RouterTransition />
-        {children}
+        <Container>{children}</Container>
       </AppShell.Main>
     </AppShell>
   )
