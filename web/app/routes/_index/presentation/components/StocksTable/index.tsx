@@ -145,7 +145,7 @@ export function StocksTable({ stocks }: { stocks: Stock[] }) {
   }
 
   return (
-    <Container size={1080}>
+    <div>
       <Flex mb={10} justify={'space-between'}>
         <Title order={2}>Stocks</Title>
         <refreshStocksFetcher.Form method="post">
@@ -312,6 +312,6 @@ export function StocksTable({ stocks }: { stocks: Stock[] }) {
           </Form>
         </Modal>
       </Flex>
-    </Container>
+    </div>
   )
 }

@@ -83,7 +83,7 @@ export function OrderHistory({ orderHistories }: { orderHistories: Event[] }) {
   }, [orderHistories])
 
   return (
-    <Container size={1080}>
+    <div>
       <Title order={2} mb={10}>
         Order History
       </Title>
@@ -100,6 +100,6 @@ export function OrderHistory({ orderHistories }: { orderHistories: Event[] }) {
           columnDefs={colDefs}
         />
       </div>
-    </Container>
+    </div>
   )
 }
