@@ -1,4 +1,5 @@
+import { checkoutLoader as loader } from './application/loader.server'
 import CheckoutPage from './presentation'
 
-// export { loader, action }
+export { loader }
 export default CheckoutPage
