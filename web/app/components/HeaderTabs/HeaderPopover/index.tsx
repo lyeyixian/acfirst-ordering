@@ -100,8 +100,6 @@ export default function HeaderPopover() {
               <Button
                 fullWidth
                 mt="xl"
-                component={Link}
-                to="/checkout"
                 onClick={() => setUserMenuOpened(false)}
               >
                 Checkout
