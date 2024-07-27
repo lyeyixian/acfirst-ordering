@@ -38,7 +38,6 @@ export default function HeaderPopover() {
       title: 'Checkout',
       children: <CheckoutModalBody />,
       zIndex: 301, // because the zIndex of Popover is 300
-      keepMounted: true,
     })
 
   return (
