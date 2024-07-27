@@ -84,5 +84,6 @@ module.exports = {
 
   rules: {
     'import/no-unresolved': 'off',
+    '@typescript-eslint/no-unused-vars': 'warn',
   },
 }
