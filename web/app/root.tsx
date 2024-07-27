@@ -13,6 +13,7 @@ import {
 import dotenv from 'dotenv'
 import { LoaderFunction, MetaFunction } from '@remix-run/node'
 import AppContainer from './components/AppContainer'
+import { ModalsProvider } from '@mantine/modals'
 
 declare global {
   interface Window {
@@ -65,7 +66,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-        <MantineProvider>{children}</MantineProvider>
+        <MantineProvider>
+          <ModalsProvider>{children}</ModalsProvider>
+        </MantineProvider>
         <ScrollRestoration />
         <script
           // to add env variables to the window object
