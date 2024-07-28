@@ -37,7 +37,6 @@ export default function HeaderPopover() {
     modals.openConfirmModal({
       title: 'Checkout',
       children: <CheckoutModalBody cart={cart} />,
-      zIndex: 301, // because the zIndex of Popover is 300
       labels: { confirm: 'Confirm', cancel: 'Cancel' },
       onCancel: () => console.log('Cancel'),
       onConfirm: () => console.log('Confirmed'),
