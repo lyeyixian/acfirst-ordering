@@ -40,6 +40,7 @@ export default function HeaderPopover() {
       labels: { confirm: 'Confirm', cancel: 'Cancel' },
       onCancel: () => console.log('Cancel'),
       onConfirm: () => console.log('Confirmed'),
+      size: 'auto',
     })
 
   return (
