@@ -1,5 +1,6 @@
 import { Card, Stack, Text } from '@mantine/core'
 import { Cart, CartItem } from '~/common/type'
+import { UsersTable } from './UsersTable'
 
 export default function CheckoutModalBody({ cart }: { cart: Cart }) {
   return (
@@ -25,6 +26,7 @@ export default function CheckoutModalBody({ cart }: { cart: Cart }) {
           </Stack>
         </Card>
       ))}
+      <UsersTable />
     </div>
   )
 }
